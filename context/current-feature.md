@@ -4,7 +4,7 @@ Dashboard UI Phase 1 — Initial layout, top bar, and placeholders.
 
 ## Status
 
-In Progress
+Completed
 
 ## Goals
 
@@ -25,3 +25,4 @@ In Progress
 
 - 2026-03-16: Initial Next.js and Tailwind CSS setup, project context files added
 - 2026-03-16: Started Dashboard UI Phase 1
+- 2026-03-16: Completed Dashboard UI Phase 1 — ShadCN init, /dashboard route, dark mode, top bar with search and buttons, sidebar/main placeholders
