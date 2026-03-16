@@ -1,14 +1,47 @@
 'use client';
 
-import { Search, Plus, Archive } from 'lucide-react';
+import { Search, Plus, Archive, PanelLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useSidebar } from './SidebarProvider';
+import { SidebarContent } from './Sidebar';
 
 export default function TopBar() {
+  const { toggle, mobileOpen, setMobileOpen } = useSidebar();
+
   return (
     <header className="flex items-center gap-4 border-b border-border px-4 h-12 shrink-0 bg-background">
+      {/* Sidebar toggle (desktop) */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="hidden md:inline-flex size-7"
+        onClick={toggle}
+      >
+        <PanelLeft className="size-4" />
+      </Button>
+
+      {/* Mobile drawer */}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden size-7"
+            />
+          }
+        >
+          <PanelLeft className="size-4" />
+        </SheetTrigger>
+        <SheetContent side="left" className="w-60 p-0">
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
+
       {/* Logo */}
-      <div className="flex items-center gap-2 w-52 shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
         <div className="flex items-center justify-center size-7 rounded-md bg-indigo-500 text-white font-bold text-xs">
           DS
         </div>
@@ -31,11 +64,11 @@ export default function TopBar() {
       <div className="flex items-center gap-2 ml-auto">
         <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8">
           <Archive className="size-3.5" />
-          New Collection
+          <span className="hidden sm:inline">New Collection</span>
         </Button>
         <Button size="sm" className="gap-1.5 text-xs h-8">
           <Plus className="size-3.5" />
-          New Item
+          <span className="hidden sm:inline">New Item</span>
         </Button>
       </div>
     </header>
