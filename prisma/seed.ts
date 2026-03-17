@@ -63,7 +63,7 @@ async function main() {
 
   // Create collections
   const collectionsData = [
-    { name: "React Patterns", description: "Reusable React patterns and hooks" },
+    { name: "React Patterns", description: "Reusable React patterns and hooks", isFavorite: true },
     { name: "AI Workflows", description: "AI prompts and workflow automations" },
     { name: "DevOps", description: "Infrastructure and deployment resources" },
     { name: "Terminal Commands", description: "Useful shell commands for everyday development" },

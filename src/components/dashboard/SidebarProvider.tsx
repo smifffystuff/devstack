@@ -1,12 +1,21 @@
 'use client';
 
 import { createContext, useContext, useState, useCallback } from 'react';
+import type { SidebarItemType } from '@/lib/db/items';
+import type { RecentCollection } from '@/lib/db/collections';
+
+export interface SidebarData {
+  itemTypes: SidebarItemType[];
+  favoriteCollections: RecentCollection[];
+  recentCollections: RecentCollection[];
+}
 
 interface SidebarContextValue {
   collapsed: boolean;
   mobileOpen: boolean;
   toggle: () => void;
   setMobileOpen: (open: boolean) => void;
+  data: SidebarData;
 }
 
 const SidebarContext = createContext<SidebarContextValue | null>(null);
@@ -19,7 +28,13 @@ export function useSidebar() {
   return context;
 }
 
-export default function SidebarProvider({ children }: { children: React.ReactNode }) {
+export default function SidebarProvider({
+  children,
+  data,
+}: {
+  children: React.ReactNode;
+  data: SidebarData;
+}) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -28,7 +43,7 @@ export default function SidebarProvider({ children }: { children: React.ReactNod
   }, []);
 
   return (
-    <SidebarContext.Provider value={{ collapsed, mobileOpen, toggle, setMobileOpen }}>
+    <SidebarContext.Provider value={{ collapsed, mobileOpen, toggle, setMobileOpen, data }}>
       {children}
     </SidebarContext.Provider>
   );

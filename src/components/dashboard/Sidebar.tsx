@@ -21,34 +21,37 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
-import { mockItemTypes, mockTypeCounts, mockCollections, mockUser } from '@/lib/mock-data';
+import { mockUser } from '@/lib/mock-data';
 import { useSidebar } from './SidebarProvider';
 
-const TYPE_ICONS: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
-  type_snippet: Code,
-  type_prompt: Sparkles,
-  type_command: Terminal,
-  type_note: FileText,
-  type_file: Paperclip,
-  type_image: Image,
-  type_url: LinkIcon,
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
+  Code: Code,
+  Sparkles: Sparkles,
+  Terminal: Terminal,
+  StickyNote: FileText,
+  File: Paperclip,
+  Image: Image,
+  Link: LinkIcon,
 };
 
-const TYPE_COLORS: Record<string, string> = Object.fromEntries(
-  mockItemTypes.map((t) => [t.id, t.color])
-);
+const TYPE_ORDER = ['snippet', 'prompt', 'command', 'note', 'file', 'image', 'link'];
 
-function TypeIcon({ typeId }: { typeId: string }) {
-  const Icon = TYPE_ICONS[typeId];
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function TypeIcon({ icon, color }: { icon: string; color: string }) {
+  const Icon = ICON_MAP[icon];
   if (!Icon) return null;
-  return <Icon className="size-4" style={{ color: TYPE_COLORS[typeId] }} />;
+  return <Icon className="size-4" style={{ color }} />;
 }
 
 function SidebarContent() {
-  const favoriteCollections = mockCollections.filter((c) => c.isFavorite);
-  const recentCollections = [...mockCollections]
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    .slice(0, 5);
+  const { data } = useSidebar();
+  const { favoriteCollections, recentCollections } = data;
+  const itemTypes = [...data.itemTypes].sort(
+    (a, b) => TYPE_ORDER.indexOf(a.name) - TYPE_ORDER.indexOf(b.name),
+  );
 
   return (
     <div className="flex flex-col h-full">
@@ -61,14 +64,14 @@ function SidebarContent() {
           </CollapsibleTrigger>
           <CollapsibleContent>
             <nav className="space-y-0.5">
-              {mockTypeCounts.map((type) => (
+              {itemTypes.map((type) => (
                 <Link
-                  key={type.typeId}
+                  key={type.id}
                   href={`/items/${type.name.toLowerCase()}`}
                   className="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
-                  <TypeIcon typeId={type.typeId} />
-                  <span className="flex-1 truncate">{type.name}</span>
+                  <TypeIcon icon={type.icon} color={type.color} />
+                  <span className="flex-1 truncate">{capitalize(type.name)}s</span>
                   <span className="text-xs text-muted-foreground tabular-nums">{type.count}</span>
                 </Link>
               ))}
@@ -86,29 +89,30 @@ function SidebarContent() {
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-3">
             {/* Favorites */}
-            <div>
-              <p className="px-2 pt-2 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
-                Favorites
-              </p>
-              <nav className="space-y-0.5">
-                {favoriteCollections.map((col) => (
-                  <Link
-                    key={col.id}
-                    href={`/collections/${col.id}`}
-                    className="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                  >
-                    <FolderOpen className="size-4 shrink-0" />
-                    <span className="flex-1 truncate">{col.name}</span>
-                    <Star className="size-3 text-yellow-500 fill-yellow-500 shrink-0" />
-                  </Link>
-                ))}
-              </nav>
-            </div>
+            {favoriteCollections.length > 0 && (
+              <div>
+                <p className="px-2 pt-2 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+                  Favorites
+                </p>
+                <nav className="space-y-0.5">
+                  {favoriteCollections.map((col) => (
+                    <Link
+                      key={col.id}
+                      href={`/collections/${col.id}`}
+                      className="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    >
+                      <Star className="size-4 text-yellow-500 fill-yellow-500 shrink-0" />
+                      <span className="flex-1 truncate">{col.name}</span>
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            )}
 
-            {/* All Collections (most recent) */}
+            {/* Recent Collections */}
             <div>
               <p className="px-2 pt-1 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
-                All Collections
+                Recent
               </p>
               <nav className="space-y-0.5">
                 {recentCollections.map((col) => (
@@ -117,12 +121,23 @@ function SidebarContent() {
                     href={`/collections/${col.id}`}
                     className="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                   >
-                    <FolderOpen className="size-4 shrink-0" />
+                    <span
+                      className="size-3 rounded-full shrink-0"
+                      style={{ backgroundColor: col.dominantColor || 'currentColor' }}
+                    />
                     <span className="flex-1 truncate">{col.name}</span>
                     <span className="text-xs text-muted-foreground tabular-nums">{col.itemCount}</span>
                   </Link>
                 ))}
               </nav>
+
+              {/* View all collections */}
+              <Link
+                href="/collections"
+                className="flex items-center gap-2.5 px-2 py-1.5 mt-1 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              >
+                <span className="flex-1">View all collections</span>
+              </Link>
             </div>
           </CollapsibleContent>
         </Collapsible>

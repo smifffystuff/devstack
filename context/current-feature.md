@@ -1,6 +1,6 @@
 # Current Feature
 
-Dashboard Items — Replace dummy item data in the dashboard (pinned and recent items) with real data from the database.
+Stats & Sidebar — Show real stats from the database and display system item types and actual collection data in the sidebar.
 
 ## Status
 
@@ -8,18 +8,17 @@ Completed
 
 ## Goals
 
-- Create src/lib/db/items.ts with data fetching functions
-- Fetch items directly in server component
-- Item card icon/border derived from the item type
-- Display item type tags and other existing info
-- If there are no pinned items, nothing should display there
-- Update collection stats display
+- Display stats from database data, keeping current design/layout
+- Display item types in sidebar with their icons, linking to /items/[typename]
+- Add "View all collections" link under collections list that goes to /collections
+- Keep star icons for favorite collections; recents show colored circle based on most-used item type
+- Create src/lib/db/items.ts database functions (use collections.ts as reference)
 
 ## Notes
 
-- Spec: @context/features/dashboard-items-spec.md
+- Spec: @context/features/stats-sidebar-spec.md
+- Reference: @src/lib/db/collections.ts
 - Schema: @prisma/schema.prisma
-- Screenshot reference: @context/screenshots/dashboard-ui-main.png
 
 ## History
 
@@ -38,3 +37,5 @@ Completed
 - 2026-03-17: Completed Dashboard Collections — Prisma data fetching in src/lib/db/collections.ts, server component fetches real collections, colored left border from dominant type, small type icons per collection, mock data removed from collections display
 - 2026-03-17: Started Dashboard Items
 - 2026-03-17: Completed Dashboard Items — Prisma data fetching in src/lib/db/items.ts, server component fetches real pinned/recent items and stats, icon/color derived from item type, empty pinned section hidden, mock data removed from items and stats display
+- 2026-03-17: Started Stats & Sidebar
+- 2026-03-17: Completed Stats & Sidebar — Real item type counts and collections in sidebar from database, colored circles for recents, yellow star for favorites, "View all collections" link, sidebar data via context provider
