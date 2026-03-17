@@ -1,6 +1,6 @@
 # Current Feature
 
-Seed Data — Populate the database with realistic sample data for development and demos.
+Dashboard Collections — Replace dummy collection data in the dashboard with real data from the database.
 
 ## Status
 
@@ -8,17 +8,19 @@ Completed
 
 ## Goals
 
-- Modify seed script to match seed-spec.md requirements
-- Create demo user with hashed password (bcryptjs, 12 rounds)
-- Create all 7 system item types with correct Lucide icons and colors
-- Populate 5 collections with realistic items (snippets, prompts, commands, links, notes)
-- Include proper tags for all items
+- Create src/lib/db/collections.ts with data fetching functions
+- Fetch collections directly in server component
+- Collection card border color derived from most-used content type in that collection
+- Show small icons of all types in that collection
+- Keep the current design and layout
+- Update collection stats display
 
 ## Notes
 
-- Spec: @context/features/seed-spec.md
+- Spec: @context/features/dashboard-collections-spec.md
 - Schema: @prisma/schema.prisma
-- Previous seed script exists and will be overwritten
+- Screenshot reference: @context/screenshots/dashboard-ui-main.png
+- Do not add items underneath yet — that will be done later
 
 ## History
 
@@ -33,3 +35,5 @@ Completed
 - 2026-03-17: Completed Prisma + Neon PostgreSQL Setup — Prisma 7 with Neon adapter, full schema with NextAuth models, indexes, cascade deletes, seed script with mock data, initial migration applied
 - 2026-03-17: Started Seed Data
 - 2026-03-17: Completed Seed Data — Demo user with hashed password, 7 system item types, 5 collections with 18 items, 22 tags, seed command configured in prisma.config.ts
+- 2026-03-17: Started Dashboard Collections
+- 2026-03-17: Completed Dashboard Collections — Prisma data fetching in src/lib/db/collections.ts, server component fetches real collections, colored left border from dominant type, small type icons per collection, mock data removed from collections display
