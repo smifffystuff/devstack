@@ -2,7 +2,7 @@
 
 ## Overview
 
-Create a seed script (`prisma/seed.ts`) to populate the database with sample data for development and demos.
+Modify the seed script (`prisma/seed.ts`) to populate the database with sample data for development and demos, remove any existing data first.
 
 ## Requirements
 

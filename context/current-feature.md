@@ -1,6 +1,6 @@
 # Current Feature
 
-Prisma + Neon PostgreSQL Setup — Database schema and ORM configuration.
+Seed Data — Populate the database with realistic sample data for development and demos.
 
 ## Status
 
@@ -8,21 +8,17 @@ Completed
 
 ## Goals
 
-- Set up Prisma ORM with Neon PostgreSQL (serverless)
-- Create initial schema based on data models in project-overview.md
-- Include NextAuth models (Account, Session, VerificationToken)
-- Add appropriate indexes and cascade deletes
-- Use Prisma 7 (with breaking changes from upgrade guide)
-- Always use migrations (`prisma migrate dev`), never push directly
+- Modify seed script to match seed-spec.md requirements
+- Create demo user with hashed password (bcryptjs, 12 rounds)
+- Create all 7 system item types with correct Lucide icons and colors
+- Populate 5 collections with realistic items (snippets, prompts, commands, links, notes)
+- Include proper tags for all items
 
 ## Notes
 
-- Spec: @context/features/database-spec.md
-- Data models reference: @context/project-overview.md
-- Database standards: @context/coding-standards.md
-- Prisma 7 upgrade guide: https://www.prisma.io/docs/orm/more/upgrade-guides/upgrading-versions/upgrading-to-prisma-7
-- Prisma setup guide: https://www.prisma.io/docs/getting-started/prisma-orm/quickstart/prisma-postgres
-- Separate dev and production database branches; DATABASE_URL points to dev branch
+- Spec: @context/features/seed-spec.md
+- Schema: @prisma/schema.prisma
+- Previous seed script exists and will be overwritten
 
 ## History
 
@@ -35,3 +31,5 @@ Completed
 - 2026-03-16: Completed Dashboard UI Phase 3 — Stats cards, recent collections grid, pinned items list, recent items list, ShadCN card/badge components
 - 2026-03-17: Started Prisma + Neon PostgreSQL Setup
 - 2026-03-17: Completed Prisma + Neon PostgreSQL Setup — Prisma 7 with Neon adapter, full schema with NextAuth models, indexes, cascade deletes, seed script with mock data, initial migration applied
+- 2026-03-17: Started Seed Data
+- 2026-03-17: Completed Seed Data — Demo user with hashed password, 7 system item types, 5 collections with 18 items, 22 tags, seed command configured in prisma.config.ts
