@@ -1,38 +1,42 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Package, FolderOpen, Star, Heart } from 'lucide-react';
-import { mockItems, mockCollections } from '@/lib/mock-data';
+import { Card, CardContent } from "@/components/ui/card";
+import { Package, FolderOpen, Star, Heart } from "lucide-react";
+import type { DashboardStats } from "@/lib/db/items";
 
-const stats = [
-  {
-    label: 'Total Items',
-    value: mockItems.length,
-    icon: Package,
-    color: 'text-blue-500',
-  },
-  {
-    label: 'Collections',
-    value: mockCollections.length,
-    icon: FolderOpen,
-    color: 'text-emerald-500',
-  },
-  {
-    label: 'Favorite Items',
-    value: mockItems.filter((i) => i.isFavorite).length,
-    icon: Star,
-    color: 'text-yellow-500',
-  },
-  {
-    label: 'Favorite Collections',
-    value: mockCollections.filter((c) => c.isFavorite).length,
-    icon: Heart,
-    color: 'text-pink-500',
-  },
-];
+interface StatsCardsProps {
+  stats: DashboardStats | null;
+}
 
-export default function StatsCards() {
+export default function StatsCards({ stats }: StatsCardsProps) {
+  const statItems = [
+    {
+      label: "Total Items",
+      value: stats?.totalItems ?? 0,
+      icon: Package,
+      color: "text-blue-500",
+    },
+    {
+      label: "Collections",
+      value: stats?.totalCollections ?? 0,
+      icon: FolderOpen,
+      color: "text-emerald-500",
+    },
+    {
+      label: "Favorite Items",
+      value: stats?.favoriteItems ?? 0,
+      icon: Star,
+      color: "text-yellow-500",
+    },
+    {
+      label: "Favorite Collections",
+      value: stats?.favoriteCollections ?? 0,
+      icon: Heart,
+      color: "text-pink-500",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat) => (
+      {statItems.map((stat) => (
         <Card key={stat.label} size="sm">
           <CardContent className="flex items-center gap-3">
             <div className={`${stat.color}`}>

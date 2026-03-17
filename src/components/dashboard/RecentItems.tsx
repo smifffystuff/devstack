@@ -2,46 +2,44 @@ import {
   Code,
   Sparkles,
   Terminal,
-  FileText,
-  Paperclip,
+  StickyNote,
+  File,
   Image,
   Link as LinkIcon,
   Star,
   Pin,
-} from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { mockItems, mockItemTypes } from '@/lib/mock-data';
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import type { DashboardItem } from "@/lib/db/items";
 
-const TYPE_ICONS: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
-  type_snippet: Code,
-  type_prompt: Sparkles,
-  type_command: Terminal,
-  type_note: FileText,
-  type_file: Paperclip,
-  type_image: Image,
-  type_url: LinkIcon,
+const ICON_MAP: Record<
+  string,
+  React.ComponentType<{ className?: string; style?: React.CSSProperties }>
+> = {
+  Code,
+  Sparkles,
+  Terminal,
+  StickyNote,
+  File,
+  Image,
+  Link: LinkIcon,
 };
 
-const TYPE_COLORS: Record<string, string> = Object.fromEntries(
-  mockItemTypes.map((t) => [t.id, t.color])
-);
-
-const recentItems = [...mockItems]
-  .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-  .slice(0, 10);
-
-function formatDate(dateStr: string) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-export default function RecentItems() {
+interface RecentItemsProps {
+  items: DashboardItem[];
+}
+
+export default function RecentItems({ items }: RecentItemsProps) {
   return (
     <section>
       <h2 className="text-lg font-semibold text-foreground mb-4">Recent</h2>
       <div className="space-y-1">
-        {recentItems.map((item) => {
-          const Icon = TYPE_ICONS[item.typeId];
+        {items.map((item) => {
+          const Icon = ICON_MAP[item.typeIcon];
           return (
             <div
               key={item.id}
@@ -49,7 +47,7 @@ export default function RecentItems() {
             >
               <div
                 className="flex items-center justify-center size-8 rounded-md bg-accent shrink-0"
-                style={{ color: TYPE_COLORS[item.typeId] }}
+                style={{ color: item.typeColor }}
               >
                 {Icon && <Icon className="size-4" />}
               </div>
@@ -65,11 +63,17 @@ export default function RecentItems() {
                     <Pin className="size-3 text-muted-foreground shrink-0" />
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground truncate">{item.description}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {item.description}
+                </p>
               </div>
               <div className="hidden sm:flex items-center gap-1.5 shrink-0">
                 {item.tags.slice(0, 3).map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-[10px] px-1.5 py-0">
+                  <Badge
+                    key={tag}
+                    variant="secondary"
+                    className="text-[10px] px-1.5 py-0"
+                  >
                     {tag}
                   </Badge>
                 ))}

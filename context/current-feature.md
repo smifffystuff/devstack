@@ -1,6 +1,6 @@
 # Current Feature
 
-Dashboard Collections — Replace dummy collection data in the dashboard with real data from the database.
+Dashboard Items — Replace dummy item data in the dashboard (pinned and recent items) with real data from the database.
 
 ## Status
 
@@ -8,19 +8,18 @@ Completed
 
 ## Goals
 
-- Create src/lib/db/collections.ts with data fetching functions
-- Fetch collections directly in server component
-- Collection card border color derived from most-used content type in that collection
-- Show small icons of all types in that collection
-- Keep the current design and layout
+- Create src/lib/db/items.ts with data fetching functions
+- Fetch items directly in server component
+- Item card icon/border derived from the item type
+- Display item type tags and other existing info
+- If there are no pinned items, nothing should display there
 - Update collection stats display
 
 ## Notes
 
-- Spec: @context/features/dashboard-collections-spec.md
+- Spec: @context/features/dashboard-items-spec.md
 - Schema: @prisma/schema.prisma
 - Screenshot reference: @context/screenshots/dashboard-ui-main.png
-- Do not add items underneath yet — that will be done later
 
 ## History
 
@@ -37,3 +36,5 @@ Completed
 - 2026-03-17: Completed Seed Data — Demo user with hashed password, 7 system item types, 5 collections with 18 items, 22 tags, seed command configured in prisma.config.ts
 - 2026-03-17: Started Dashboard Collections
 - 2026-03-17: Completed Dashboard Collections — Prisma data fetching in src/lib/db/collections.ts, server component fetches real collections, colored left border from dominant type, small type icons per collection, mock data removed from collections display
+- 2026-03-17: Started Dashboard Items
+- 2026-03-17: Completed Dashboard Items — Prisma data fetching in src/lib/db/items.ts, server component fetches real pinned/recent items and stats, icon/color derived from item type, empty pinned section hidden, mock data removed from items and stats display
