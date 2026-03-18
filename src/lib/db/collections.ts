@@ -5,7 +5,7 @@ export interface CollectionType {
   color: string;
 }
 
-export interface RecentCollection {
+export interface CollectionSummary {
   id: string;
   name: string;
   description: string | null;
@@ -17,7 +17,7 @@ export interface RecentCollection {
 
 export async function getFavoriteCollections(
   userId: string,
-): Promise<RecentCollection[]> {
+): Promise<CollectionSummary[]> {
   const collections = await prisma.collection.findMany({
     where: { userId, isFavorite: true },
     orderBy: { updatedAt: "desc" },
@@ -81,7 +81,7 @@ export async function getFavoriteCollections(
 export async function getRecentCollections(
   userId: string,
   limit = 6
-): Promise<RecentCollection[]> {
+): Promise<CollectionSummary[]> {
   const collections = await prisma.collection.findMany({
     where: { userId },
     orderBy: { updatedAt: "desc" },

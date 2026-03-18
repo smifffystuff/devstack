@@ -8,7 +8,8 @@ if (typeof globalThis.WebSocket === "undefined") {
   neonConfig.webSocketConstructor = require("ws");
 }
 
-const connectionString = process.env.DATABASE_URL!;
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error("DATABASE_URL environment variable is not set");
 
 const prismaClientSingleton = () => {
   const adapter = new PrismaNeon({ connectionString });
