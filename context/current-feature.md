@@ -2,23 +2,9 @@
 
 ## Status
 
-In Progress
-
 ## Goals
 
-Quick-win cleanup from code scan — low-risk fixes only.
-
-1. Extract duplicated `ICON_MAP` from 4 components into a shared `src/lib/item-type-icons.ts`
-2. Move `capitalize` utility from Sidebar.tsx to `src/lib/utils.ts`
-3. Move duplicated `formatDate` from PinnedItems/RecentItems to `src/lib/utils.ts`
-4. Add missing `aria-label` on icon-only buttons (TopBar, RecentCollections, Sidebar)
-5. Add runtime guard for `DATABASE_URL` in `src/lib/prisma.ts`
-6. Rename `RecentCollection` type to `CollectionSummary` for semantic accuracy
-
 ## Notes
-
-- All changes are refactors or accessibility improvements — no behavior changes
-- Identified by code-scanner agent on 2026-03-18
 
 ## History
 
@@ -41,3 +27,5 @@ Quick-win cleanup from code scan — low-risk fixes only.
 - 2026-03-17: Completed Stats & Sidebar — Real item type counts and collections in sidebar from database, colored circles for recents, yellow star for favorites, "View all collections" link, sidebar data via context provider
 - 2026-03-18: Started Add Pro Badge
 - 2026-03-18: Completed Add Pro Badge — PRO badge on File and Image types in sidebar using ShadCN Badge component, outline variant, subtle sizing
+- 2026-03-18: Started Quick-Win Cleanup
+- 2026-03-18: Completed Quick-Win Cleanup — Extracted shared ICON_MAP, moved capitalize/formatDate to utils, added aria-labels, DATABASE_URL runtime guard, renamed RecentCollection to CollectionSummary
