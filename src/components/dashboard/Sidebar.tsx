@@ -12,7 +12,6 @@ import {
   ChevronDown,
   Star,
   Settings,
-  FolderOpen,
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
