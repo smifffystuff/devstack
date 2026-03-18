@@ -20,6 +20,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { mockUser } from '@/lib/mock-data';
 import { useSidebar } from './SidebarProvider';
@@ -71,7 +72,14 @@ function SidebarContent() {
                   className="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
                   <TypeIcon icon={type.icon} color={type.color} />
-                  <span className="flex-1 truncate">{capitalize(type.name)}s</span>
+                  <span className="flex-1 truncate">
+                    {capitalize(type.name)}s
+                    {(type.name === 'file' || type.name === 'image') && (
+                      <Badge variant="outline" className="ml-1.5 h-4 px-1 text-[10px] font-semibold align-middle">
+                        PRO
+                      </Badge>
+                    )}
+                  </span>
                   <span className="text-xs text-muted-foreground tabular-nums">{type.count}</span>
                 </Link>
               ))}

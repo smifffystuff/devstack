@@ -1,24 +1,21 @@
 # Current Feature
 
-Stats & Sidebar — Show real stats from the database and display system item types and actual collection data in the sidebar.
+Add Pro Badge — Add a PRO badge to File and Image item types in the sidebar.
 
 ## Status
 
-Completed
+In Progress
 
 ## Goals
 
-- Display stats from database data, keeping current design/layout
-- Display item types in sidebar with their icons, linking to /items/[typename]
-- Add "View all collections" link under collections list that goes to /collections
-- Keep star icons for favorite collections; recents show colored circle based on most-used item type
-- Create src/lib/db/items.ts database functions (use collections.ts as reference)
+- Add a PRO badge next to File and Image types in the sidebar
+- Use ShadCN UI Badge component
+- Keep badge clean and subtle
+- PRO text in all uppercase
 
 ## Notes
 
-- Spec: @context/features/stats-sidebar-spec.md
-- Reference: @src/lib/db/collections.ts
-- Schema: @prisma/schema.prisma
+- Spec: @context/features/add-pro-badge-spec.md
 
 ## History
 
@@ -39,3 +36,4 @@ Completed
 - 2026-03-17: Completed Dashboard Items — Prisma data fetching in src/lib/db/items.ts, server component fetches real pinned/recent items and stats, icon/color derived from item type, empty pinned section hidden, mock data removed from items and stats display
 - 2026-03-17: Started Stats & Sidebar
 - 2026-03-17: Completed Stats & Sidebar — Real item type counts and collections in sidebar from database, colored circles for recents, yellow star for favorites, "View all collections" link, sidebar data via context provider
+- 2026-03-18: Started Add Pro Badge
