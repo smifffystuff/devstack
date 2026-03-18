@@ -1,18 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  Code,
-  Sparkles,
-  Terminal,
-  FileText,
-  Paperclip,
-  Image,
-  Link as LinkIcon,
-  ChevronDown,
-  Star,
-  Settings,
-} from 'lucide-react';
+import { ChevronDown, Star, Settings } from 'lucide-react';
+import { ICON_MAP } from '@/lib/item-type-icons';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Collapsible,
@@ -21,24 +11,11 @@ import {
 } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { capitalize } from '@/lib/utils';
 import { mockUser } from '@/lib/mock-data';
 import { useSidebar } from './SidebarProvider';
 
-const ICON_MAP: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
-  Code: Code,
-  Sparkles: Sparkles,
-  Terminal: Terminal,
-  StickyNote: FileText,
-  File: Paperclip,
-  Image: Image,
-  Link: LinkIcon,
-};
-
 const TYPE_ORDER = ['snippet', 'prompt', 'command', 'note', 'file', 'image', 'link'];
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
 
 function TypeIcon({ icon, color }: { icon: string; color: string }) {
   const Icon = ICON_MAP[icon];
@@ -165,7 +142,7 @@ function SidebarContent() {
             <p className="text-sm font-medium text-foreground truncate">{mockUser.name}</p>
             <p className="text-xs text-muted-foreground truncate">{mockUser.email}</p>
           </div>
-          <button className="text-muted-foreground hover:text-foreground transition-colors">
+          <button className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Settings">
             <Settings className="size-4" />
           </button>
         </div>

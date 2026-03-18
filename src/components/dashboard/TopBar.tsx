@@ -18,6 +18,7 @@ export default function TopBar() {
         size="icon"
         className="hidden md:inline-flex size-7"
         onClick={toggle}
+        aria-label="Toggle sidebar"
       >
         <PanelLeft className="size-4" />
       </Button>
@@ -54,6 +55,7 @@ export default function TopBar() {
         <Input
           placeholder="Search items..."
           className="pl-8 pr-12 h-8 bg-muted border-0 text-sm rounded-md"
+          aria-label="Search items"
         />
         <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
           ⌘ K

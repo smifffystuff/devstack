@@ -2,9 +2,23 @@
 
 ## Status
 
+In Progress
+
 ## Goals
 
+Quick-win cleanup from code scan — low-risk fixes only.
+
+1. Extract duplicated `ICON_MAP` from 4 components into a shared `src/lib/item-type-icons.ts`
+2. Move `capitalize` utility from Sidebar.tsx to `src/lib/utils.ts`
+3. Move duplicated `formatDate` from PinnedItems/RecentItems to `src/lib/utils.ts`
+4. Add missing `aria-label` on icon-only buttons (TopBar, RecentCollections, Sidebar)
+5. Add runtime guard for `DATABASE_URL` in `src/lib/prisma.ts`
+6. Rename `RecentCollection` type to `CollectionSummary` for semantic accuracy
+
 ## Notes
+
+- All changes are refactors or accessibility improvements — no behavior changes
+- Identified by code-scanner agent on 2026-03-18
 
 ## History
 

@@ -1,33 +1,8 @@
-import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link as LinkIcon,
-  Star,
-  Pin,
-} from "lucide-react";
+import { Star, Pin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { ICON_MAP } from "@/lib/item-type-icons";
+import { formatDate } from "@/lib/utils";
 import type { DashboardItem } from "@/lib/db/items";
-
-const ICON_MAP: Record<
-  string,
-  React.ComponentType<{ className?: string; style?: React.CSSProperties }>
-> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: LinkIcon,
-};
-
-function formatDate(date: Date) {
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
 
 interface PinnedItemsProps {
   items: DashboardItem[];

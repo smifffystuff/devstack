@@ -6,34 +6,12 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import {
-  Star,
-  MoreHorizontal,
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link as LinkIcon,
-} from "lucide-react";
-import type { RecentCollection } from "@/lib/db/collections";
-
-const ICON_MAP: Record<
-  string,
-  React.ComponentType<{ className?: string; style?: React.CSSProperties }>
-> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: LinkIcon,
-};
+import { Star, MoreHorizontal } from "lucide-react";
+import { ICON_MAP } from "@/lib/item-type-icons";
+import type { CollectionSummary } from "@/lib/db/collections";
 
 interface RecentCollectionsProps {
-  collections: RecentCollection[];
+  collections: CollectionSummary[];
 }
 
 export default function RecentCollections({
@@ -67,7 +45,7 @@ export default function RecentCollections({
                   <Star className="size-3.5 text-yellow-500 fill-yellow-500 shrink-0" />
                 )}
               </div>
-              <button className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors">
+              <button className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors" aria-label="Collection options">
                 <MoreHorizontal className="size-4" />
               </button>
               <CardDescription>{col.itemCount} items</CardDescription>

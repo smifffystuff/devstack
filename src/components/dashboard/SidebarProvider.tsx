@@ -2,12 +2,12 @@
 
 import { createContext, useContext, useState, useCallback } from 'react';
 import type { SidebarItemType } from '@/lib/db/items';
-import type { RecentCollection } from '@/lib/db/collections';
+import type { CollectionSummary } from '@/lib/db/collections';
 
 export interface SidebarData {
   itemTypes: SidebarItemType[];
-  favoriteCollections: RecentCollection[];
-  recentCollections: RecentCollection[];
+  favoriteCollections: CollectionSummary[];
+  recentCollections: CollectionSummary[];
 }
 
 interface SidebarContextValue {
