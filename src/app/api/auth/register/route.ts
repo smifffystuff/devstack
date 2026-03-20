@@ -33,19 +33,29 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 12)
 
+    const emailVerificationEnabled =
+      process.env.ENABLE_EMAIL_VERIFICATION === "true"
+
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        ...(!emailVerificationEnabled && { emailVerified: new Date() }),
       },
     })
 
-    const verificationToken = await generateVerificationToken(email)
-    await sendVerificationEmail(email, verificationToken.token)
+    if (emailVerificationEnabled) {
+      const verificationToken = await generateVerificationToken(email)
+      await sendVerificationEmail(email, verificationToken.token)
+    }
 
     return NextResponse.json(
-      { success: true, user: { id: user.id, name: user.name, email: user.email } },
+      {
+        success: true,
+        user: { id: user.id, name: user.name, email: user.email },
+        redirect: emailVerificationEnabled ? "/verify-email" : "/sign-in",
+      },
       { status: 201 }
     )
   } catch {
