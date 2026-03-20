@@ -33,3 +33,4 @@
 - 2026-03-20: Completed Auth Credentials — Credentials provider with split pattern (placeholder in auth.config.ts, bcrypt validation in auth.ts), registration API route at /api/auth/register with input validation
 - 2026-03-20: Completed Auth UI — Custom sign-in page with email/password and GitHub OAuth, register page with validation and success toast, reusable UserAvatar component, sidebar dropdown with sign-out, session-based dashboard replacing demo user
 - 2026-03-20: Completed Email Verification — Resend integration, verification token generation, verify API route, check-your-email page with status states, unverified users blocked from sign-in
+- 2026-03-20: Completed Email Verification Toggle — ENABLE_EMAIL_VERIFICATION env var, auto-verify users when disabled, skip verification check on sign-in, dynamic redirect after registration
