@@ -8,7 +8,7 @@ export const proxy = auth((req) => {
   const isProtected = req.nextUrl.pathname.startsWith("/dashboard")
 
   if (isProtected && !req.auth) {
-    return NextResponse.redirect(new URL("/api/auth/signin", req.url))
+    return NextResponse.redirect(new URL("/sign-in", req.url))
   }
 
   return NextResponse.next()

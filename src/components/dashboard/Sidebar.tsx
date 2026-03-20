@@ -1,18 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronDown, Star, Settings } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import { ChevronDown, LogOut, Star } from 'lucide-react';
 import { ICON_MAP } from '@/lib/item-type-icons';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { capitalize } from '@/lib/utils';
-import { mockUser } from '@/lib/mock-data';
+import UserAvatar from '@/components/shared/UserAvatar';
 import { useSidebar } from './SidebarProvider';
 
 const TYPE_ORDER = ['snippet', 'prompt', 'command', 'note', 'file', 'image', 'link'];
@@ -129,23 +135,27 @@ function SidebarContent() {
 
       {/* User Area */}
       <div className="border-t border-border p-3">
-        <div className="flex items-center gap-2.5">
-          <Avatar className="size-7">
-            <AvatarFallback className="bg-muted text-xs font-medium">
-              {mockUser.name
-                .split(' ')
-                .map((n) => n[0])
-                .join('')}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">{mockUser.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{mockUser.email}</p>
-          </div>
-          <button className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Settings">
-            <Settings className="size-4" />
-          </button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className="flex items-center gap-2.5 w-full rounded-md p-1 -m-1 hover:bg-accent transition-colors"
+            aria-label="User menu"
+          >
+            <UserAvatar name={data.user.name} image={data.user.image} className="size-7" />
+            <div className="flex-1 min-w-0 text-left">
+              <p className="text-sm font-medium text-foreground truncate">{data.user.name}</p>
+              <p className="text-xs text-muted-foreground truncate">{data.user.email}</p>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="top" align="start" className="w-56">
+            <DropdownMenuItem onClick={() => window.location.href = '/profile'}>
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/sign-in' })}>
+              <LogOut className="size-4 mr-2" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

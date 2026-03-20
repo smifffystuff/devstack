@@ -4,10 +4,17 @@ import { createContext, useContext, useState, useCallback } from 'react';
 import type { SidebarItemType } from '@/lib/db/items';
 import type { CollectionSummary } from '@/lib/db/collections';
 
+export interface SidebarUser {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
+
 export interface SidebarData {
   itemTypes: SidebarItemType[];
   favoriteCollections: CollectionSummary[];
   recentCollections: CollectionSummary[];
+  user: SidebarUser;
 }
 
 interface SidebarContextValue {

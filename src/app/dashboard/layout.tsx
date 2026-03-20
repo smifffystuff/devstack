@@ -1,34 +1,40 @@
+import { redirect } from 'next/navigation';
+import { auth } from '@/auth';
 import TopBar from '@/components/dashboard/TopBar';
 import Sidebar from '@/components/dashboard/Sidebar';
 import SidebarProvider from '@/components/dashboard/SidebarProvider';
 import { getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
 import { getItemTypesWithCounts } from '@/lib/db/items';
-import { prisma } from '@/lib/prisma';
-
-async function getDemoUserId(): Promise<string | null> {
-  const user = await prisma.user.findUnique({
-    where: { email: "demo@devstash.io" },
-    select: { id: true },
-  });
-  return user?.id ?? null;
-}
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const userId = await getDemoUserId();
+  const session = await auth();
 
-  const [itemTypes, favoriteCollections, recentCollections] = userId
-    ? await Promise.all([
-        getItemTypesWithCounts(userId),
-        getFavoriteCollections(userId),
-        getRecentCollections(userId, 5),
-      ])
-    : [[], [], []];
+  if (!session?.user?.id) {
+    redirect('/sign-in');
+  }
 
-  const sidebarData = { itemTypes, favoriteCollections, recentCollections };
+  const userId = session.user.id;
+
+  const [itemTypes, favoriteCollections, recentCollections] = await Promise.all([
+    getItemTypesWithCounts(userId),
+    getFavoriteCollections(userId),
+    getRecentCollections(userId, 5),
+  ]);
+
+  const sidebarData = {
+    itemTypes,
+    favoriteCollections,
+    recentCollections,
+    user: {
+      name: session.user.name,
+      email: session.user.email,
+      image: session.user.image,
+    },
+  };
 
   return (
     <SidebarProvider data={sidebarData}>

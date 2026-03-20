@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import StatsCards from "@/components/dashboard/StatsCards";
 import RecentCollections from "@/components/dashboard/RecentCollections";
 import PinnedItems from "@/components/dashboard/PinnedItems";
@@ -8,27 +10,22 @@ import {
   getRecentItems,
   getDashboardStats,
 } from "@/lib/db/items";
-import { prisma } from "@/lib/prisma";
-
-async function getDemoUserId(): Promise<string | null> {
-  const user = await prisma.user.findUnique({
-    where: { email: "demo@devstash.io" },
-    select: { id: true },
-  });
-  return user?.id ?? null;
-}
 
 export default async function DashboardPage() {
-  const userId = await getDemoUserId();
+  const session = await auth();
 
-  const [collections, pinnedItems, recentItems, stats] = userId
-    ? await Promise.all([
-        getRecentCollections(userId),
-        getPinnedItems(userId),
-        getRecentItems(userId),
-        getDashboardStats(userId),
-      ])
-    : [[], [], [], null];
+  if (!session?.user?.id) {
+    redirect("/sign-in");
+  }
+
+  const userId = session.user.id;
+
+  const [collections, pinnedItems, recentItems, stats] = await Promise.all([
+    getRecentCollections(userId),
+    getPinnedItems(userId),
+    getRecentItems(userId),
+    getDashboardStats(userId),
+  ]);
 
   return (
     <div className="space-y-8 max-w-6xl">
