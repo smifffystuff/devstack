@@ -31,6 +31,10 @@ export default function SignInPage() {
     setLoading(false);
 
     if (result?.error) {
+      if (result.code === 'EMAIL_NOT_VERIFIED') {
+        router.push('/verify-email');
+        return;
+      }
       setError('Invalid email or password');
       return;
     }

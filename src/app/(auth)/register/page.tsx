@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,10 +42,7 @@ export default function RegisterPage() {
       return;
     }
 
-    toast.success('Account created! You can now sign in.', {
-      style: { backgroundColor: 'oklch(0.3 0.1 145)', color: 'oklch(0.9 0.15 145)', borderColor: 'oklch(0.4 0.12 145)' },
-    });
-    router.push('/sign-in');
+    router.push('/verify-email');
   }
 
   return (

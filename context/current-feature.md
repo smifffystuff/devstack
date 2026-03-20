@@ -1,10 +1,21 @@
-# Current Feature
+# Current Feature: Email Verification on Register
 
 ## Status
+In Progress
 
 ## Goals
+- Send a verification email via Resend when a user registers
+- Email contains a unique verification link the user must click
+- Clicking the link marks the user's email as verified
+- Unverified users cannot access the dashboard (redirect to a "check your email" page)
+- Use `onboarding@resend.dev` as the sender address
+- Store verification token in the database with expiration
 
 ## Notes
+- Using Resend as the email provider (RESEND_API_KEY already in .env)
+- From address: onboarding@resend.dev (Resend's test sender)
+- Integrate with the existing NextAuth + credentials registration flow
+- Add an `emailVerified` field / verification token model to the database
 
 ## History
 
