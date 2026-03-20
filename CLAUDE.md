@@ -11,6 +11,14 @@ Read the following to get the full context of the project:
 - @context/ai-interactions.md
 - @context/current-feature.md
 
+## Neon Database
+
+When using the Neon MCP tools, always use these defaults:
+
+- **Project:** `mute-mouse-11312488` (devstash)
+- **Branch:** `br-nameless-brook-abrtyh6v` (development)
+- **Never** operate on the production branch (ID: `br-red-lake-aby2k1yj`) unless explicitly instructed
+
 ## Commands
 
 - `npm run dev` — start development server
