@@ -1,25 +1,10 @@
-# Current Feature: Forgot Password
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Add "Forgot password?" link on the sign-in page
-- Create a forgot password page (`/forgot-password`) with email input form
-- Reuse the existing `VerificationToken` model and `generateVerificationToken` for reset tokens
-- Create a `sendPasswordResetEmail` function using the existing Resend integration
-- Create an API route (`/api/auth/reset-password`) to validate the token and update the password
-- Create a reset password page (`/reset-password`) with new password + confirm password form
-- Handle token expiry and invalid token states with user-friendly messages
-
 ## Notes
-
-- Reuse existing patterns: `generateVerificationToken` from `src/lib/tokens.ts`, Resend email from `src/lib/email.ts`
-- The `VerificationToken` model already supports this use case (identifier + token + expires)
-- Follow the same split: server-side token validation in API route, client-side form pages in `(auth)` group
-- Respect the `ENABLE_EMAIL_VERIFICATION` toggle — forgot password should always work regardless of this setting
 
 ## History
 
@@ -49,3 +34,4 @@ In Progress
 - 2026-03-20: Completed Auth UI — Custom sign-in page with email/password and GitHub OAuth, register page with validation and success toast, reusable UserAvatar component, sidebar dropdown with sign-out, session-based dashboard replacing demo user
 - 2026-03-20: Completed Email Verification — Resend integration, verification token generation, verify API route, check-your-email page with status states, unverified users blocked from sign-in
 - 2026-03-20: Completed Email Verification Toggle — ENABLE_EMAIL_VERIFICATION env var, auto-verify users when disabled, skip verification check on sign-in, dynamic redirect after registration
+- 2026-03-21: Completed Forgot Password — Forgot password link on sign-in, /forgot-password email form, /reset-password with token validation, /api/auth/reset-password route, reused VerificationToken model with 1hr expiry, email enumeration prevention
