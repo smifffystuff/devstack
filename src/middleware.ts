@@ -4,7 +4,7 @@ import authConfig from "./auth.config"
 
 const { auth } = NextAuth(authConfig)
 
-export const proxy = auth((req) => {
+export const middleware = auth((req) => {
   const isProtected = req.nextUrl.pathname.startsWith("/dashboard")
 
   if (isProtected && !req.auth) {

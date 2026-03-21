@@ -22,19 +22,23 @@ export async function POST(request: Request) {
       )
     }
 
+    const emailVerificationEnabled =
+      process.env.ENABLE_EMAIL_VERIFICATION === "true"
+
     const existingUser = await prisma.user.findUnique({ where: { email } })
 
     if (existingUser) {
+      // Return the same response as success to prevent email enumeration
       return NextResponse.json(
-        { error: "User already exists" },
-        { status: 409 }
+        {
+          success: true,
+          redirect: emailVerificationEnabled ? "/verify-email" : "/sign-in",
+        },
+        { status: 201 }
       )
     }
 
     const hashedPassword = await bcrypt.hash(password, 12)
-
-    const emailVerificationEnabled =
-      process.env.ENABLE_EMAIL_VERIFICATION === "true"
 
     const user = await prisma.user.create({
       data: {
