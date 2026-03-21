@@ -22,6 +22,23 @@ export default function SignInPage() {
     setError('');
     setLoading(true);
 
+    const check = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!check.ok) {
+      setLoading(false);
+      const data = await check.json();
+      if (data.error === 'EMAIL_NOT_VERIFIED') {
+        router.push('/verify-email');
+        return;
+      }
+      setError(data.error || 'Invalid email or password');
+      return;
+    }
+
     const result = await signIn('credentials', {
       email,
       password,
@@ -31,10 +48,6 @@ export default function SignInPage() {
     setLoading(false);
 
     if (result?.error) {
-      if (result.code === 'EMAIL_NOT_VERIFIED') {
-        router.push('/verify-email');
-        return;
-      }
       setError('Invalid email or password');
       return;
     }

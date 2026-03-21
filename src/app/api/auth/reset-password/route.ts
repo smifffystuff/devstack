@@ -3,8 +3,15 @@ import { hash } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { generatePasswordResetToken } from "@/lib/tokens"
 import { sendPasswordResetEmail } from "@/lib/email"
+import { checkRateLimit, getIP, rateLimitResponse } from "@/lib/rate-limit"
 
 export async function POST(request: NextRequest) {
+  const ip = getIP(request)
+  const rateLimit = await checkRateLimit("forgotPassword", ip)
+  if (!rateLimit.success) {
+    return rateLimitResponse(rateLimit.reset)
+  }
+
   const { email } = await request.json()
 
   if (!email || typeof email !== "string") {
@@ -30,6 +37,12 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const ip = getIP(request)
+  const rateLimit = await checkRateLimit("resetPassword", ip)
+  if (!rateLimit.success) {
+    return rateLimitResponse(rateLimit.reset)
+  }
+
   const { token, password } = await request.json()
 
   if (!token || typeof token !== "string") {
