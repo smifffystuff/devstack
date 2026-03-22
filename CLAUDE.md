@@ -25,5 +25,7 @@ When using the Neon MCP tools, always use these defaults:
 - `npm run build` — production build
 - `npm run start` — serve production build
 - `npm run lint` — run ESLint
+- `npm test` — run unit tests (Vitest, server actions & utilities only)
+- `npm run test:watch` — run tests in watch mode
 
 
