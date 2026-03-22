@@ -23,7 +23,8 @@ export default function PinnedItems({ items }: PinnedItemsProps) {
           return (
             <div
               key={item.id}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-accent transition-colors cursor-pointer"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg border-l-2 hover:bg-accent transition-colors cursor-pointer"
+              style={{ borderLeftColor: item.typeColor || undefined }}
             >
               <div
                 className="flex items-center justify-center size-8 rounded-md bg-accent shrink-0"
