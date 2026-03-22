@@ -1,7 +1,7 @@
 import { Star, Pin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ICON_MAP } from "@/lib/item-type-icons";
-import { formatDate } from "@/lib/utils";
+import { relativeDate } from "@/lib/utils";
 import type { DashboardItem } from "@/lib/db/items";
 
 interface PinnedItemsProps {
@@ -58,7 +58,7 @@ export default function PinnedItems({ items }: PinnedItemsProps) {
                 ))}
               </div>
               <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
-                {formatDate(item.createdAt)}
+                {relativeDate(item.createdAt)}
               </span>
             </div>
           );

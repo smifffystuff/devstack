@@ -1,7 +1,7 @@
 import { Star, Pin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ICON_MAP } from "@/lib/item-type-icons";
-import { formatDate } from "@/lib/utils";
+import { relativeDate } from "@/lib/utils";
 import type { DashboardItem } from "@/lib/db/items";
 
 interface RecentItemsProps {
@@ -55,7 +55,7 @@ export default function RecentItems({ items }: RecentItemsProps) {
                 ))}
               </div>
               <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
-                {formatDate(item.updatedAt)}
+                {relativeDate(item.updatedAt)}
               </span>
             </div>
           );
