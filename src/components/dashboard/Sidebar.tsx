@@ -50,7 +50,7 @@ function SidebarContent() {
               {itemTypes.map((type) => (
                 <Link
                   key={type.id}
-                  href={`/items/${type.name.toLowerCase()}`}
+                  href={`/dashboard/items/${type.name.toLowerCase()}`}
                   className="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
                   <TypeIcon icon={type.icon} color={type.color} />

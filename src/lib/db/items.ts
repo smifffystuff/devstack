@@ -114,6 +114,41 @@ export async function getItemTypesWithCounts(
   }));
 }
 
+export interface ItemTypeInfo {
+  name: string;
+  icon: string;
+  color: string;
+}
+
+export async function getItemTypeByName(
+  typeName: string,
+): Promise<ItemTypeInfo | null> {
+  const type = await prisma.itemType.findFirst({
+    where: { name: { equals: typeName, mode: "insensitive" }, isSystem: true },
+    select: { name: true, icon: true, color: true },
+  });
+
+  if (!type) return null;
+
+  return { name: type.name, icon: type.icon ?? "", color: type.color ?? "" };
+}
+
+export async function getItemsByType(
+  userId: string,
+  typeName: string,
+): Promise<DashboardItem[]> {
+  const items = await prisma.item.findMany({
+    where: {
+      userId,
+      type: { name: { equals: typeName, mode: "insensitive" } },
+    },
+    orderBy: { updatedAt: "desc" },
+    include: itemInclude,
+  });
+
+  return items.map(mapItem);
+}
+
 export async function getDashboardStats(
   userId: string,
 ): Promise<DashboardStats> {

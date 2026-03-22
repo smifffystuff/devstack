@@ -1,10 +1,19 @@
-# Current Feature
+# Current Feature: Items List View — 3 Column Responsive Grid
 
 ## Status
 
+In Progress
+
 ## Goals
 
+- Change items listing grid from 2 columns to 3 columns on larger screens
+- Keep responsive: 1 column on small, 2 on medium, 3 on large+
+- Apply to the `/dashboard/items/[type]` listing page
+
 ## Notes
+
+- Update grid classes on the items listing page only
+- Maintain existing card styling and layout
 
 ## History
 
