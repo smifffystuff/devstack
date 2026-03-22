@@ -1,26 +1,10 @@
-# Current Feature: Item Drawer
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Right-side slide-in drawer (shadcn Sheet) opens when clicking an ItemCard
-- Works on both dashboard and items list pages
-- Action bar with Favorite (star, yellow when active), Pin, Copy, Edit (pencil), Delete (trash, right-aligned)
-- Display item details: title, type badges, description, content, tags, collections, created/updated dates
-- Client wrapper component to manage drawer state (pages remain server components)
-- Full item data fetched on click via API route (`/api/items/[id]`), no page navigation
-- Query function in `lib/db/items.ts`, API route with auth check
-- Skeleton/loading state while fetching
-- Focus on drawer details display only — code editor and item-specific features come later
-
 ## Notes
-
-- Reference screenshot: context/screenshots/dashboard-ui-drawer.png
-- Card data still fetched by server component as before; drawer fetches full detail on click
-- No separate item detail page — the drawer IS the item detail view
 
 ## History
 
@@ -57,3 +41,4 @@ In Progress
 - 2026-03-22: Completed Vitest Setup — Vitest configured for unit testing server actions and utilities only (.test.ts), sample tests for utils, npm test and test:watch scripts, updated docs
 - 2026-03-22: Completed Relative Dates — relativeDate() utility for item cards showing "Just now", "5m ago", "Yesterday", etc., applied to ItemCard, RecentItems, PinnedItems, with 7 unit tests
 - 2026-03-22: Completed Items List View — Dynamic /dashboard/items/[type] route with type-filtered items, ItemCard component, 3-column responsive grid (1/2/3 cols), sidebar links fixed to /dashboard/items/ path
+- 2026-03-22: Completed Item Drawer — Right-side Sheet drawer for item details, action bar (favorite/pin/copy/edit/delete), /api/items/[id] route with auth, getItemById query, ItemDrawerProvider context, skeleton loading, works on dashboard and items list pages
