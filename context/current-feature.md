@@ -1,19 +1,10 @@
-# Current Feature: Items List View — 3 Column Responsive Grid
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Change items listing grid from 2 columns to 3 columns on larger screens
-- Keep responsive: 1 column on small, 2 on medium, 3 on large+
-- Apply to the `/dashboard/items/[type]` listing page
-
 ## Notes
-
-- Update grid classes on the items listing page only
-- Maintain existing card styling and layout
 
 ## History
 
@@ -47,3 +38,6 @@ In Progress
 - 2026-03-21: Completed Profile Page — /dashboard/profile route with user info, usage stats with type breakdown, change password dialog (email users only), delete account with DELETE confirmation, ShadCN dialog/alert-dialog components
 - 2026-03-21: Completed Rate Limiting for Auth — Upstash Redis + sliding window rate limits on login, register, forgot-password, reset-password routes, reusable rate-limit utility, custom /api/auth/login pre-check route, 429 responses with Retry-After header, fail-open design
 - 2026-03-21: Completed Convert Auth Pages to SSR — Extracted 5 client components (SignInForm, RegisterForm, ForgotPasswordForm, ResetPasswordForm, VerifyEmailStatus) into src/components/auth/, pages are now server components, searchParams read server-side for reset-password and verify-email
+- 2026-03-22: Completed Vitest Setup — Vitest configured for unit testing server actions and utilities only (.test.ts), sample tests for utils, npm test and test:watch scripts, updated docs
+- 2026-03-22: Completed Relative Dates — relativeDate() utility for item cards showing "Just now", "5m ago", "Yesterday", etc., applied to ItemCard, RecentItems, PinnedItems, with 7 unit tests
+- 2026-03-22: Completed Items List View — Dynamic /dashboard/items/[type] route with type-filtered items, ItemCard component, 3-column responsive grid (1/2/3 cols), sidebar links fixed to /dashboard/items/ path
