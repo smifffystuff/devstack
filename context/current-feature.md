@@ -1,10 +1,23 @@
-# Current Feature
+# Current Feature: Convert Auth Pages to Server-Side Rendering
 
 ## Status
+In Progress
 
 ## Goals
+- Convert all 5 client-side auth pages to server-rendered pages with extracted client components
+- sign-in/page.tsx — server page + SignInForm client component
+- register/page.tsx — server page + RegisterForm client component
+- forgot-password/page.tsx — server page + ForgotPasswordForm client component
+- reset-password/page.tsx — server page + ResetPasswordForm client component
+- verify-email/page.tsx — server page + VerifyEmailStatus client component
+- Keep all existing functionality intact (form handling, validation, navigation, toasts)
+- Follow project conventions: server components by default, "use client" only where needed
 
 ## Notes
+- Each page currently has the entire page as a client component due to form state/interactivity
+- Pattern: extract interactive form/UI into a client component under src/components/auth/, keep page.tsx as a server component that handles layout and passes any server-side data
+- verify-email may benefit from reading searchParams on the server side before passing to client
+- reset-password reads a token from searchParams that can be extracted server-side
 
 ## History
 
