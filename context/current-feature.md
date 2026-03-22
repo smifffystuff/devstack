@@ -1,23 +1,10 @@
-# Current Feature: Convert Auth Pages to Server-Side Rendering
+# Current Feature
 
 ## Status
-In Progress
 
 ## Goals
-- Convert all 5 client-side auth pages to server-rendered pages with extracted client components
-- sign-in/page.tsx — server page + SignInForm client component
-- register/page.tsx — server page + RegisterForm client component
-- forgot-password/page.tsx — server page + ForgotPasswordForm client component
-- reset-password/page.tsx — server page + ResetPasswordForm client component
-- verify-email/page.tsx — server page + VerifyEmailStatus client component
-- Keep all existing functionality intact (form handling, validation, navigation, toasts)
-- Follow project conventions: server components by default, "use client" only where needed
 
 ## Notes
-- Each page currently has the entire page as a client component due to form state/interactivity
-- Pattern: extract interactive form/UI into a client component under src/components/auth/, keep page.tsx as a server component that handles layout and passes any server-side data
-- verify-email may benefit from reading searchParams on the server side before passing to client
-- reset-password reads a token from searchParams that can be extracted server-side
 
 ## History
 
@@ -50,3 +37,4 @@ In Progress
 - 2026-03-21: Completed Forgot Password — Forgot password link on sign-in, /forgot-password email form, /reset-password with token validation, /api/auth/reset-password route, reused VerificationToken model with 1hr expiry, email enumeration prevention
 - 2026-03-21: Completed Profile Page — /dashboard/profile route with user info, usage stats with type breakdown, change password dialog (email users only), delete account with DELETE confirmation, ShadCN dialog/alert-dialog components
 - 2026-03-21: Completed Rate Limiting for Auth — Upstash Redis + sliding window rate limits on login, register, forgot-password, reset-password routes, reusable rate-limit utility, custom /api/auth/login pre-check route, 429 responses with Retry-After header, fail-open design
+- 2026-03-21: Completed Convert Auth Pages to SSR — Extracted 5 client components (SignInForm, RegisterForm, ForgotPasswordForm, ResetPasswordForm, VerifyEmailStatus) into src/components/auth/, pages are now server components, searchParams read server-side for reset-password and verify-email
