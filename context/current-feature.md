@@ -1,27 +1,10 @@
-# Current Feature: Item Drawer Edit Mode
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Edit button in drawer action bar toggles inline edit mode (no navigation)
-- Action bar replaced with Save / Cancel buttons in edit mode
-- Editable fields: title, description, tags (all types) + content, language, url (type-specific)
-- Zod validation in server action with error feedback
-- Server action `updateItem` in src/actions/items.ts with `{ success, data, error }` pattern
-- Query function `updateItem` in src/lib/db/items.ts with tag disconnect/reconnect
-- Toast on save success/error, router.refresh() after save
-- Cancel discards changes and returns to view mode
-
 ## Notes
-
-- No form library — controlled inputs with local state
-- Content textarea is plain text (no code editor yet)
-- Item type, collections, and dates are non-editable in edit mode
-- Disable Save button client-side when title is empty
-- Tags entered as comma-separated text, converted to array on save
 
 ## History
 
@@ -59,3 +42,4 @@ In Progress
 - 2026-03-22: Completed Relative Dates — relativeDate() utility for item cards showing "Just now", "5m ago", "Yesterday", etc., applied to ItemCard, RecentItems, PinnedItems, with 7 unit tests
 - 2026-03-22: Completed Items List View — Dynamic /dashboard/items/[type] route with type-filtered items, ItemCard component, 3-column responsive grid (1/2/3 cols), sidebar links fixed to /dashboard/items/ path
 - 2026-03-22: Completed Item Drawer — Right-side Sheet drawer for item details, action bar (favorite/pin/copy/edit/delete), /api/items/[id] route with auth, getItemById query, ItemDrawerProvider context, skeleton loading, works on dashboard and items list pages
+- 2026-03-22: Completed Item Drawer Edit Mode — Inline edit mode via pencil button, editable title/description/tags + type-specific fields (content/language/url), Zod validation schema, updateItem server action and query with tag disconnect/reconnect, toast feedback, 13 validation tests
