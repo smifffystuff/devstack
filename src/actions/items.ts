@@ -1,0 +1,31 @@
+"use server";
+
+import { auth } from "@/auth";
+import { updateItem as updateItemQuery } from "@/lib/db/items";
+import { updateItemSchema } from "@/lib/validations/items";
+
+export async function updateItem(itemId: string, formData: unknown) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  const parsed = updateItemSchema.safeParse(formData);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    const item = await updateItemQuery(session.user.id, itemId, parsed.data);
+    if (!item) {
+      return { success: false, error: "Item not found" };
+    }
+
+    return { success: true, data: item };
+  } catch {
+    return { success: false, error: "Failed to update item" };
+  }
+}

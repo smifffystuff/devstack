@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { UpdateItemInput } from "@/lib/validations/items";
 
 export interface DashboardItem {
   id: string;
@@ -200,6 +201,71 @@ export async function getItemById(
 
   if (!item) return null;
 
+  return mapItemDetail(item);
+}
+
+export async function updateItem(
+  userId: string,
+  itemId: string,
+  data: UpdateItemInput,
+): Promise<ItemDetail | null> {
+  const existing = await prisma.item.findFirst({
+    where: { id: itemId, userId },
+    select: { id: true },
+  });
+
+  if (!existing) return null;
+
+  await prisma.itemTag.deleteMany({ where: { itemId } });
+
+  const item = await prisma.item.update({
+    where: { id: itemId },
+    data: {
+      title: data.title,
+      description: data.description ?? null,
+      content: data.content ?? null,
+      url: data.url || null,
+      language: data.language ?? null,
+      tags: {
+        create: data.tags.map((name) => ({
+          tag: {
+            connectOrCreate: {
+              where: { userId_name: { name, userId } },
+              create: { name, userId },
+            },
+          },
+        })),
+      },
+    },
+    include: {
+      type: { select: { name: true, icon: true, color: true } },
+      tags: { select: { tag: { select: { name: true } } } },
+      collection: { select: { id: true, name: true } },
+    },
+  });
+
+  return mapItemDetail(item);
+}
+
+function mapItemDetail(item: {
+  id: string;
+  title: string;
+  description: string | null;
+  content: string | null;
+  contentType: string;
+  url: string | null;
+  fileUrl: string | null;
+  fileName: string | null;
+  fileSize: number | null;
+  language: string | null;
+  isFavorite: boolean;
+  isPinned: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  type: { name: string; icon: string | null; color: string | null };
+  tags: { tag: { name: string } }[];
+  collection: { id: string; name: string } | null;
+}): ItemDetail {
   return {
     id: item.id,
     title: item.title,
@@ -217,7 +283,9 @@ export async function getItemById(
     typeIcon: item.type.icon ?? "",
     typeColor: item.type.color ?? "",
     tags: item.tags.map((t) => t.tag.name),
-    collections: item.collection ? [{ id: item.collection.id, name: item.collection.name }] : [],
+    collections: item.collection
+      ? [{ id: item.collection.id, name: item.collection.name }]
+      : [],
     createdAt: item.createdAt,
     updatedAt: item.updatedAt,
   };
