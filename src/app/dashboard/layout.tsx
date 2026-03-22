@@ -3,6 +3,7 @@ import { auth } from '@/auth';
 import TopBar from '@/components/dashboard/TopBar';
 import Sidebar from '@/components/dashboard/Sidebar';
 import SidebarProvider from '@/components/dashboard/SidebarProvider';
+import ItemDrawerProvider from '@/components/items/ItemDrawerProvider';
 import { getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
 import { getItemTypesWithCounts } from '@/lib/db/items';
 
@@ -43,7 +44,9 @@ export default async function DashboardLayout({
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />
           <main className="flex-1 overflow-y-auto p-6">
-            {children}
+            <ItemDrawerProvider>
+              {children}
+            </ItemDrawerProvider>
           </main>
         </div>
       </div>

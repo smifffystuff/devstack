@@ -1,7 +1,10 @@
+"use client";
+
 import { Star, Pin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { relativeDate } from "@/lib/utils";
+import { useItemDrawer } from "@/components/items/ItemDrawerProvider";
 import type { DashboardItem } from "@/lib/db/items";
 
 interface RecentItemsProps {
@@ -9,6 +12,8 @@ interface RecentItemsProps {
 }
 
 export default function RecentItems({ items }: RecentItemsProps) {
+  const { openItem } = useItemDrawer();
+
   return (
     <section>
       <h2 className="text-lg font-semibold text-foreground mb-4">Recent</h2>
@@ -18,6 +23,15 @@ export default function RecentItems({ items }: RecentItemsProps) {
           return (
             <div
               key={item.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => openItem(item.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openItem(item.id);
+                }
+              }}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg border-l-2 hover:bg-accent transition-colors cursor-pointer"
               style={{ borderLeftColor: item.typeColor || undefined }}
             >

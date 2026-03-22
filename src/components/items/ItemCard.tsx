@@ -1,7 +1,10 @@
+"use client";
+
 import { Star, Pin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { relativeDate } from "@/lib/utils";
+import { useItemDrawer } from "./ItemDrawerProvider";
 import type { DashboardItem } from "@/lib/db/items";
 
 interface ItemCardProps {
@@ -9,10 +12,20 @@ interface ItemCardProps {
 }
 
 export default function ItemCard({ item }: ItemCardProps) {
+  const { openItem } = useItemDrawer();
   const Icon = ICON_MAP[item.typeIcon];
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      onClick={() => openItem(item.id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openItem(item.id);
+        }
+      }}
       className="flex items-center gap-3 px-4 py-3 rounded-lg border border-border border-l-2 hover:bg-accent transition-colors cursor-pointer"
       style={{ borderLeftColor: item.typeColor || undefined }}
     >
