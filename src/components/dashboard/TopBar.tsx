@@ -1,6 +1,7 @@
 'use client';
 
-import { Search, Plus, Archive, PanelLeft } from 'lucide-react';
+import { Search, Archive, PanelLeft } from 'lucide-react';
+import NewItemDialog from '@/components/items/NewItemDialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -68,10 +69,7 @@ export default function TopBar() {
           <Archive className="size-3.5" />
           <span className="hidden sm:inline">New Collection</span>
         </Button>
-        <Button size="sm" className="gap-1.5 text-xs h-8">
-          <Plus className="size-3.5" />
-          <span className="hidden sm:inline">New Item</span>
-        </Button>
+        <NewItemDialog />
       </div>
     </header>
   );

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { updateItemSchema } from "./items";
+import { createItemSchema, updateItemSchema } from "./items";
 
 describe("updateItemSchema", () => {
   it("accepts valid minimal input", () => {
@@ -104,5 +104,67 @@ describe("updateItemSchema", () => {
     });
     expect(result.success).toBe(true);
     expect(result.data?.description).toBeNull();
+  });
+});
+
+describe("createItemSchema", () => {
+  it("accepts valid minimal input", () => {
+    const result = createItemSchema.safeParse({
+      title: "My Item",
+      typeName: "Snippet",
+    });
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual({
+      title: "My Item",
+      typeName: "Snippet",
+      tags: [],
+    });
+  });
+
+  it("accepts full input with all fields", () => {
+    const result = createItemSchema.safeParse({
+      title: "My Snippet",
+      typeName: "Snippet",
+      description: "A useful snippet",
+      content: "console.log('hello')",
+      language: "javascript",
+      tags: ["react", "hooks"],
+    });
+    expect(result.success).toBe(true);
+    expect(result.data?.tags).toEqual(["react", "hooks"]);
+  });
+
+  it("rejects missing typeName", () => {
+    const result = createItemSchema.safeParse({ title: "Test" });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects empty typeName", () => {
+    const result = createItemSchema.safeParse({ title: "Test", typeName: "" });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects empty title", () => {
+    const result = createItemSchema.safeParse({ title: "", typeName: "Note" });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects invalid URL", () => {
+    const result = createItemSchema.safeParse({
+      title: "Link",
+      typeName: "Link",
+      url: "not-a-url",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts valid URL", () => {
+    const result = createItemSchema.safeParse({
+      title: "Link",
+      typeName: "Link",
+      url: "https://example.com",
+    });
+    expect(result.success).toBe(true);
+    expect(result.data?.url).toBe("https://example.com");
   });
 });
