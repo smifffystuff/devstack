@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { uploadToR2, validateFile, getUploadType } from "@/lib/r2";
+import { uploadToR2, deleteFromR2, validateFile, getUploadType } from "@/lib/r2";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -49,6 +49,34 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { error: "Failed to upload file" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { fileUrl } = (await request.json()) as { fileUrl?: string };
+  if (!fileUrl) {
+    return NextResponse.json({ error: "fileUrl is required" }, { status: 400 });
+  }
+
+  // Only allow users to delete files in their own directory
+  const expectedPrefix = `${process.env.R2_PUBLIC_URL}/${session.user.id}/`;
+  if (!fileUrl.startsWith(expectedPrefix)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  try {
+    await deleteFromR2(fileUrl);
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to delete file" },
       { status: 500 },
     );
   }

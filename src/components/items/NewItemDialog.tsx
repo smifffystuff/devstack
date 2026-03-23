@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,6 +62,7 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
     fileName: string;
     fileSize: number;
   } | null>(null);
+  const fileUrlRef = useRef<string | null>(null);
 
   const typeLower = typeName.toLowerCase();
   const showContent = CONTENT_TYPES.includes(typeLower);
@@ -69,7 +70,20 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
   const showUrl = typeLower === "link";
   const showFileUpload = typeLower === "file" || typeLower === "image";
 
-  function resetForm() {
+  function cleanupR2() {
+    const url = fileUrlRef.current;
+    if (url) {
+      fileUrlRef.current = null;
+      fetch("/api/items/upload", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileUrl: url }),
+      }).catch(() => {});
+    }
+  }
+
+  function resetForm(cleanup = true) {
+    if (cleanup) cleanupR2();
     setTypeName(resolvedDefault);
     setTitle("");
     setDescription("");
@@ -114,7 +128,7 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
     }
 
     toast.success("Item created");
-    resetForm();
+    resetForm(false);
     setOpen(false);
     router.refresh();
   }
@@ -265,8 +279,10 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
                 onUploadComplete={(data) => {
                   if (data.fileUrl) {
                     setFileData(data);
+                    fileUrlRef.current = data.fileUrl;
                   } else {
                     setFileData(null);
+                    fileUrlRef.current = null;
                   }
                 }}
                 onError={(msg) => toast.error(msg)}

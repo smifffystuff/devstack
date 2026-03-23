@@ -111,10 +111,17 @@ export default function FileUpload({
   );
 
   const handleRemove = useCallback(() => {
+    if (uploadedFile?.fileUrl) {
+      fetch("/api/items/upload", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileUrl: uploadedFile.fileUrl }),
+      }).catch(() => {});
+    }
     setUploadedFile(null);
     onUploadComplete({ fileUrl: "", fileName: "", fileSize: 0 });
     if (inputRef.current) inputRef.current.value = "";
-  }, [onUploadComplete]);
+  }, [onUploadComplete, uploadedFile]);
 
   if (uploadedFile && uploadedFile.fileUrl) {
     return (
