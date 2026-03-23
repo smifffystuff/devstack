@@ -1,24 +1,10 @@
-# Current Feature: Item Create
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Add "New Item" modal dialog using ShadCN Dialog component
-- Type selector for snippet, prompt, command, note, link
-- Dynamic fields based on selected type (title required for all, URL required for link, content/language for snippet/command, content for prompt/note)
-- Tags and description fields for all types
-- Server action `createItem` with Zod validation
-- Query function `createItem` in `lib/db/items.ts`
-- Toast on success, close modal, and refresh UI
-
 ## Notes
-
-- Opens from "New Item" button in top bar
-- Exclude File and Image types (Pro-only)
-- Follow existing patterns from item edit (Zod schema, server action, db query)
 
 ## History
 
@@ -58,3 +44,4 @@ In Progress
 - 2026-03-22: Completed Item Drawer — Right-side Sheet drawer for item details, action bar (favorite/pin/copy/edit/delete), /api/items/[id] route with auth, getItemById query, ItemDrawerProvider context, skeleton loading, works on dashboard and items list pages
 - 2026-03-22: Completed Item Drawer Edit Mode — Inline edit mode via pencil button, editable title/description/tags + type-specific fields (content/language/url), Zod validation schema, updateItem server action and query with tag disconnect/reconnect, toast feedback, 13 validation tests
 - 2026-03-22: Completed Delete Item — AlertDialog confirmation in item drawer, deleteItem server action and db query with auth check, success/error toast, drawer close and UI refresh on delete, 5 unit tests
+- 2026-03-23: Completed Item Create — New Item dialog from top bar, type selector (snippet/prompt/command/note/link), dynamic fields per type, createItem server action and db query with Zod validation, toast feedback, 13 unit tests
