@@ -19,6 +19,7 @@ import { ICON_MAP } from "@/lib/item-type-icons";
 import { createItem } from "@/actions/items";
 import { toast } from "sonner";
 import CodeEditor from "./CodeEditor";
+import MarkdownEditor from "./MarkdownEditor";
 
 const ITEM_TYPES = [
   { name: "Snippet", icon: "Code", color: "#3b82f6" },
@@ -30,6 +31,7 @@ const ITEM_TYPES = [
 
 const CONTENT_TYPES = ["snippet", "prompt", "command", "note"];
 const LANGUAGE_TYPES = ["snippet", "command"];
+const MARKDOWN_TYPES = ["note", "prompt"];
 
 interface NewItemDialogProps {
   defaultType?: string;
@@ -193,6 +195,11 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
                   value={content}
                   onChange={setContent}
                   language={language || undefined}
+                />
+              ) : MARKDOWN_TYPES.includes(typeLower) ? (
+                <MarkdownEditor
+                  value={content}
+                  onChange={setContent}
                 />
               ) : (
                 <Textarea

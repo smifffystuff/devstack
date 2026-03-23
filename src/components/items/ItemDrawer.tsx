@@ -38,7 +38,10 @@ import { ICON_MAP } from "@/lib/item-type-icons";
 import { deleteItem } from "@/actions/items";
 import ItemDrawerEdit from "./ItemDrawerEdit";
 import CodeEditor from "./CodeEditor";
+import MarkdownEditor from "./MarkdownEditor";
 import type { ItemDetail } from "@/lib/db/items";
+
+const MARKDOWN_TYPES = ["note", "prompt"];
 
 const CODE_TYPES = ["snippet", "command"];
 
@@ -242,6 +245,11 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                       <CodeEditor
                         value={item.content}
                         language={item.language ?? undefined}
+                        readOnly
+                      />
+                    ) : MARKDOWN_TYPES.includes(item.typeName.toLowerCase()) ? (
+                      <MarkdownEditor
+                        value={item.content}
                         readOnly
                       />
                     ) : (

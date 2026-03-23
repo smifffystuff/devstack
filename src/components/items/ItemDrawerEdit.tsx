@@ -13,6 +13,7 @@ import { ICON_MAP } from "@/lib/item-type-icons";
 import { updateItem } from "@/actions/items";
 import { toast } from "sonner";
 import CodeEditor from "./CodeEditor";
+import MarkdownEditor from "./MarkdownEditor";
 import type { ItemDetail } from "@/lib/db/items";
 
 function fullDate(date: Date) {
@@ -25,6 +26,7 @@ function fullDate(date: Date) {
 
 const CONTENT_TYPES = ["snippet", "prompt", "command", "note"];
 const LANGUAGE_TYPES = ["snippet", "command"];
+const MARKDOWN_TYPES = ["note", "prompt"];
 
 interface ItemDrawerEditProps {
   item: ItemDetail;
@@ -147,6 +149,11 @@ export default function ItemDrawerEdit({
                 value={content}
                 onChange={setContent}
                 language={language || undefined}
+              />
+            ) : MARKDOWN_TYPES.includes(typeLower) ? (
+              <MarkdownEditor
+                value={content}
+                onChange={setContent}
               />
             ) : (
               <Textarea
