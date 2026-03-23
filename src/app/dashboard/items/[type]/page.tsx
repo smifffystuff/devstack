@@ -4,6 +4,7 @@ import { getItemsByType, getItemTypeByName } from "@/lib/db/items";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { capitalize } from "@/lib/utils";
 import ItemCard from "@/components/items/ItemCard";
+import ImageCard from "@/components/items/ImageCard";
 import NewItemDialog from "@/components/items/NewItemDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -58,9 +59,13 @@ export default async function ItemsTypePage({
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {items.map((item) => (
-            <ItemCard key={item.id} item={item} />
-          ))}
+          {items.map((item) =>
+            type === "image" ? (
+              <ImageCard key={item.id} item={item} />
+            ) : (
+              <ItemCard key={item.id} item={item} />
+            ),
+          )}
         </div>
       )}
     </div>
