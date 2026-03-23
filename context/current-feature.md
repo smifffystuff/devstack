@@ -1,20 +1,10 @@
-# Current Feature: Delete Item
+# Current Feature
 
 ## Status
-In Progress
 
 ## Goals
-- Add delete functionality to items via the item drawer action bar
-- Show a ShadCN confirmation dialog (AlertDialog) before deleting
-- Call a server action to delete the item from the database
-- Show a success toast after deletion
-- Close the drawer and refresh the UI after successful delete
 
 ## Notes
-- Delete button already exists in the item drawer action bar (trash icon)
-- Use ShadCN AlertDialog for the confirmation step
-- Use existing toast pattern for success/error feedback
-- Should handle auth check (only item owner can delete)
 
 ## History
 
@@ -53,3 +43,4 @@ In Progress
 - 2026-03-22: Completed Items List View — Dynamic /dashboard/items/[type] route with type-filtered items, ItemCard component, 3-column responsive grid (1/2/3 cols), sidebar links fixed to /dashboard/items/ path
 - 2026-03-22: Completed Item Drawer — Right-side Sheet drawer for item details, action bar (favorite/pin/copy/edit/delete), /api/items/[id] route with auth, getItemById query, ItemDrawerProvider context, skeleton loading, works on dashboard and items list pages
 - 2026-03-22: Completed Item Drawer Edit Mode — Inline edit mode via pencil button, editable title/description/tags + type-specific fields (content/language/url), Zod validation schema, updateItem server action and query with tag disconnect/reconnect, toast feedback, 13 validation tests
+- 2026-03-22: Completed Delete Item — AlertDialog confirmation in item drawer, deleteItem server action and db query with auth check, success/error toast, drawer close and UI refresh on delete, 5 unit tests
