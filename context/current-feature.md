@@ -2,9 +2,15 @@
 
 ## Status
 
+Not Started
+
 ## Goals
 
+<!-- goals will be populated when a feature is loaded -->
+
 ## Notes
+
+<!-- notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -47,3 +53,4 @@
 - 2026-03-23: Completed Item Create — New Item dialog from top bar, type selector (snippet/prompt/command/note/link), dynamic fields per type, createItem server action and db query with Zod validation, toast feedback, 13 unit tests
 - 2026-03-23: Completed Code Editor — Monaco Editor component with macOS window dots, copy button, language label, dark theme, fluid height (max 400px), readonly and edit modes for snippets/commands, type-specific "New {Type}" button on item type pages with pre-selected type in dialog
 - 2026-03-23: Completed Markdown Editor — MarkdownEditor component with Write/Preview tabs, react-markdown with remark-gfm, macOS-style header with copy button, dark theme markdown preview CSS, fluid height, integrated into NewItemDialog, ItemDrawer view mode, and ItemDrawerEdit for notes and prompts
+- 2026-03-23: Completed File Upload with Cloudflare R2 — Upload API route with R2 integration, FileUpload component with drag-and-drop and progress indicator, download proxy route, image preview and file info in ItemDrawer, size limits (5MB images, 10MB files), allowed extensions and MIME type validation
