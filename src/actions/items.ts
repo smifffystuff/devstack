@@ -7,6 +7,7 @@ import {
   deleteItem as deleteItemQuery,
 } from "@/lib/db/items";
 import { createItemSchema, updateItemSchema } from "@/lib/validations/items";
+import { deleteFromR2 } from "@/lib/r2";
 
 export async function createItem(formData: unknown) {
   const session = await auth();
@@ -67,9 +68,17 @@ export async function deleteItem(itemId: string) {
   }
 
   try {
-    const deleted = await deleteItemQuery(session.user.id, itemId);
-    if (!deleted) {
+    const result = await deleteItemQuery(session.user.id, itemId);
+    if (!result.deleted) {
       return { success: false, error: "Item not found" };
+    }
+
+    if (result.fileUrl) {
+      try {
+        await deleteFromR2(result.fileUrl);
+      } catch {
+        // File cleanup is best-effort; item is already deleted
+      }
     }
 
     return { success: true };

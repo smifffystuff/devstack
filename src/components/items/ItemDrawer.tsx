@@ -32,6 +32,8 @@ import {
   Tag,
   FolderOpen,
   Calendar,
+  Download,
+  File,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ICON_MAP } from "@/lib/item-type-icons";
@@ -273,6 +275,49 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                       className="text-sm text-blue-400 hover:underline break-all"
                     >
                       {item.url}
+                    </a>
+                  </div>
+                )}
+
+                {/* File / Image display */}
+                {item.fileUrl && (
+                  <div>
+                    <h3 className="text-sm font-medium text-foreground mb-2">
+                      {item.typeName.toLowerCase() === "image" ? "Image" : "File"}
+                    </h3>
+                    {item.typeName.toLowerCase() === "image" ? (
+                      <img
+                        src={item.fileUrl}
+                        alt={item.fileName || item.title}
+                        className="max-w-full rounded-lg border border-border"
+                      />
+                    ) : (
+                      <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded bg-muted">
+                          <File className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="truncate text-sm font-medium">
+                            {item.fileName}
+                          </p>
+                          {item.fileSize && (
+                            <p className="text-xs text-muted-foreground">
+                              {item.fileSize < 1024
+                                ? `${item.fileSize} B`
+                                : item.fileSize < 1024 * 1024
+                                  ? `${(item.fileSize / 1024).toFixed(1)} KB`
+                                  : `${(item.fileSize / (1024 * 1024)).toFixed(1)} MB`}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    <a
+                      href={`/api/items/download/${item.id}`}
+                      className="inline-flex items-center gap-1.5 mt-2 text-sm text-blue-400 hover:underline"
+                    >
+                      <Download className="size-3.5" />
+                      Download
                     </a>
                   </div>
                 )}

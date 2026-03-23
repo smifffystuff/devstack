@@ -218,14 +218,19 @@ export async function createItem(
 
   if (!type) return null;
 
+  const isFileType = ["file", "image"].includes(data.typeName.toLowerCase());
+
   const item = await prisma.item.create({
     data: {
       title: data.title,
       description: data.description ?? null,
       content: data.content ?? null,
-      contentType: "text",
+      contentType: isFileType ? "file" : "text",
       url: data.url || null,
       language: data.language ?? null,
+      fileUrl: isFileType ? (data.fileUrl ?? null) : null,
+      fileName: isFileType ? (data.fileName ?? null) : null,
+      fileSize: isFileType ? (data.fileSize ?? null) : null,
       userId,
       typeId: type.id,
       tags: {
@@ -295,16 +300,16 @@ export async function updateItem(
 export async function deleteItem(
   userId: string,
   itemId: string,
-): Promise<boolean> {
+): Promise<{ deleted: boolean; fileUrl: string | null }> {
   const existing = await prisma.item.findFirst({
     where: { id: itemId, userId },
-    select: { id: true },
+    select: { id: true, fileUrl: true },
   });
 
-  if (!existing) return false;
+  if (!existing) return { deleted: false, fileUrl: null };
 
   await prisma.item.delete({ where: { id: itemId } });
-  return true;
+  return { deleted: true, fileUrl: existing.fileUrl };
 }
 
 function mapItemDetail(item: {

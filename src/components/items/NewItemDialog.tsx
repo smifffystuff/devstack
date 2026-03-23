@@ -20,6 +20,7 @@ import { createItem } from "@/actions/items";
 import { toast } from "sonner";
 import CodeEditor from "./CodeEditor";
 import MarkdownEditor from "./MarkdownEditor";
+import FileUpload from "./FileUpload";
 
 const ITEM_TYPES = [
   { name: "Snippet", icon: "Code", color: "#3b82f6" },
@@ -27,6 +28,8 @@ const ITEM_TYPES = [
   { name: "Command", icon: "Terminal", color: "#f97316" },
   { name: "Note", icon: "StickyNote", color: "#fde047" },
   { name: "Link", icon: "Link", color: "#10b981" },
+  { name: "File", icon: "File", color: "#6b7280" },
+  { name: "Image", icon: "Image", color: "#ec4899" },
 ] as const;
 
 const CONTENT_TYPES = ["snippet", "prompt", "command", "note"];
@@ -54,10 +57,17 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
   const [url, setUrl] = useState("");
   const [tagsInput, setTagsInput] = useState("");
 
+  const [fileData, setFileData] = useState<{
+    fileUrl: string;
+    fileName: string;
+    fileSize: number;
+  } | null>(null);
+
   const typeLower = typeName.toLowerCase();
   const showContent = CONTENT_TYPES.includes(typeLower);
   const showLanguage = LANGUAGE_TYPES.includes(typeLower);
   const showUrl = typeLower === "link";
+  const showFileUpload = typeLower === "file" || typeLower === "image";
 
   function resetForm() {
     setTypeName(resolvedDefault);
@@ -67,6 +77,7 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
     setLanguage("");
     setUrl("");
     setTagsInput("");
+    setFileData(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -86,6 +97,9 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
       language: showLanguage ? language || null : null,
       url: showUrl ? url || null : null,
       tags,
+      fileUrl: fileData?.fileUrl || null,
+      fileName: fileData?.fileName || null,
+      fileSize: fileData?.fileSize || null,
     });
 
     setSaving(false);
@@ -242,6 +256,24 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
             </div>
           )}
 
+          {/* File upload (file, image) */}
+          {showFileUpload && (
+            <div className="space-y-1.5">
+              <Label>{typeLower === "image" ? "Image" : "File"}</Label>
+              <FileUpload
+                typeName={typeLower as "file" | "image"}
+                onUploadComplete={(data) => {
+                  if (data.fileUrl) {
+                    setFileData(data);
+                  } else {
+                    setFileData(null);
+                  }
+                }}
+                onError={(msg) => toast.error(msg)}
+              />
+            </div>
+          )}
+
           {/* Tags */}
           <div className="space-y-1.5">
             <Label htmlFor="new-tags">Tags</Label>
@@ -266,7 +298,10 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={saving || !title.trim()}>
+            <Button
+              type="submit"
+              disabled={saving || !title.trim() || (showFileUpload && !fileData)}
+            >
               {saving ? "Creating…" : "Create Item"}
             </Button>
           </div>

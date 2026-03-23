@@ -31,6 +31,9 @@ export const createItemSchema = z.object({
     .or(z.literal("")),
   language: z.string().trim().nullable().optional(),
   tags: z.array(z.string().trim().min(1)).default([]),
+  fileUrl: z.string().url().nullable().optional(),
+  fileName: z.string().nullable().optional(),
+  fileSize: z.number().int().positive().nullable().optional(),
 });
 
 export type CreateItemInput = z.infer<typeof createItemSchema>;
