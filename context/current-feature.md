@@ -1,10 +1,25 @@
-# Current Feature
+# Current Feature: Code Editor
 
 ## Status
 
+In Progress
+
 ## Goals
 
+- Create CodeEditor component using Monaco Editor with dark theme
+- Replace Textarea with CodeEditor for snippets and commands only
+- Keep Textarea for notes, prompts, and other non-code types
+- Add macOS-style window dots (red/yellow/green) at top of editor
+- Add quick copy button in editor header
+- Add the language in editor header next to copy
+- Support both display (readonly) and edit modes
+- Make the height of the editor fluid but a max height of 400px with a themed scrollbar
+
 ## Notes
+
+- Monaco Editor is the editor that powers VS Code — provides syntax highlighting, language support, and a rich editing experience
+- Only snippets and commands get the code editor; notes, prompts, and links keep using Textarea
+- The editor needs two modes: readonly for viewing in the item drawer, and editable for edit mode
 
 ## History
 

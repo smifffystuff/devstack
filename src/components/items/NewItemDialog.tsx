@@ -18,6 +18,7 @@ import { Plus } from "lucide-react";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { createItem } from "@/actions/items";
 import { toast } from "sonner";
+import CodeEditor from "./CodeEditor";
 
 const ITEM_TYPES = [
   { name: "Snippet", icon: "Code", color: "#3b82f6" },
@@ -30,11 +31,20 @@ const ITEM_TYPES = [
 const CONTENT_TYPES = ["snippet", "prompt", "command", "note"];
 const LANGUAGE_TYPES = ["snippet", "command"];
 
-export default function NewItemDialog() {
+interface NewItemDialogProps {
+  defaultType?: string;
+  trigger?: React.ReactElement;
+}
+
+export default function NewItemDialog({ defaultType, trigger }: NewItemDialogProps) {
+  const resolvedDefault = ITEM_TYPES.find(
+    (t) => t.name.toLowerCase() === defaultType?.toLowerCase()
+  )?.name ?? "Snippet";
+
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [typeName, setTypeName] = useState("Snippet");
+  const [typeName, setTypeName] = useState(resolvedDefault);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
@@ -48,7 +58,7 @@ export default function NewItemDialog() {
   const showUrl = typeLower === "link";
 
   function resetForm() {
-    setTypeName("Snippet");
+    setTypeName(resolvedDefault);
     setTitle("");
     setDescription("");
     setContent("");
@@ -101,14 +111,16 @@ export default function NewItemDialog() {
         if (!isOpen) resetForm();
       }}
     >
-      <DialogTrigger
-        render={
-          <Button size="sm" className="gap-1.5 text-xs h-8" />
-        }
-      >
-        <Plus className="size-3.5" />
-        <span className="hidden sm:inline">New Item</span>
-      </DialogTrigger>
+      {trigger ? (
+        <DialogTrigger render={trigger} />
+      ) : (
+        <DialogTrigger
+          render={<Button size="sm" className="gap-1.5 text-xs h-8" />}
+        >
+          <Plus className="size-3.5" />
+          <span className="hidden sm:inline">New Item</span>
+        </DialogTrigger>
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New Item</DialogTitle>
@@ -176,14 +188,22 @@ export default function NewItemDialog() {
           {showContent && (
             <div className="space-y-1.5">
               <Label htmlFor="new-content">Content</Label>
-              <Textarea
-                id="new-content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Content"
-                rows={6}
-                className="font-mono text-sm"
-              />
+              {showLanguage ? (
+                <CodeEditor
+                  value={content}
+                  onChange={setContent}
+                  language={language || undefined}
+                />
+              ) : (
+                <Textarea
+                  id="new-content"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Content"
+                  rows={6}
+                  className="font-mono text-sm"
+                />
+              )}
             </div>
           )}
 

@@ -4,6 +4,9 @@ import { getItemsByType, getItemTypeByName } from "@/lib/db/items";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { capitalize } from "@/lib/utils";
 import ItemCard from "@/components/items/ItemCard";
+import NewItemDialog from "@/components/items/NewItemDialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default async function ItemsTypePage({
   params,
@@ -37,6 +40,16 @@ export default async function ItemsTypePage({
         <span className="text-sm text-muted-foreground">
           {items.length} {items.length === 1 ? "item" : "items"}
         </span>
+        <div className="flex-1" />
+        <NewItemDialog
+          defaultType={type}
+          trigger={
+            <Button size="sm" className="gap-1.5 text-xs h-8">
+              <Plus className="size-3.5" />
+              New {capitalize(type)}
+            </Button>
+          }
+        />
       </div>
 
       {items.length === 0 ? (

@@ -12,6 +12,7 @@ import { Calendar } from "lucide-react";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { updateItem } from "@/actions/items";
 import { toast } from "sonner";
+import CodeEditor from "./CodeEditor";
 import type { ItemDetail } from "@/lib/db/items";
 
 function fullDate(date: Date) {
@@ -141,14 +142,22 @@ export default function ItemDrawerEdit({
         {showContent && (
           <div className="space-y-1.5">
             <Label htmlFor="edit-content">Content</Label>
-            <Textarea
-              id="edit-content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Content"
-              rows={8}
-              className="font-mono text-sm"
-            />
+            {showLanguage ? (
+              <CodeEditor
+                value={content}
+                onChange={setContent}
+                language={language || undefined}
+              />
+            ) : (
+              <Textarea
+                id="edit-content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Content"
+                rows={8}
+                className="font-mono text-sm"
+              />
+            )}
           </div>
         )}
 

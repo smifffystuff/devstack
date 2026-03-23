@@ -37,7 +37,10 @@ import { toast } from "sonner";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { deleteItem } from "@/actions/items";
 import ItemDrawerEdit from "./ItemDrawerEdit";
+import CodeEditor from "./CodeEditor";
 import type { ItemDetail } from "@/lib/db/items";
+
+const CODE_TYPES = ["snippet", "command"];
 
 function fullDate(date: Date) {
   return date.toLocaleDateString("en-US", {
@@ -235,9 +238,17 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                     <h3 className="text-sm font-medium text-foreground mb-2">
                       Content
                     </h3>
-                    <pre className="text-sm bg-accent rounded-lg p-4 overflow-x-auto whitespace-pre-wrap wrap-break-word font-mono">
-                      {item.content}
-                    </pre>
+                    {CODE_TYPES.includes(item.typeName.toLowerCase()) ? (
+                      <CodeEditor
+                        value={item.content}
+                        language={item.language ?? undefined}
+                        readOnly
+                      />
+                    ) : (
+                      <pre className="text-sm bg-accent rounded-lg p-4 overflow-x-auto whitespace-pre-wrap wrap-break-word font-mono">
+                        {item.content}
+                      </pre>
+                    )}
                   </div>
                 )}
 
