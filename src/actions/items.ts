@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
-import { updateItem as updateItemQuery } from "@/lib/db/items";
+import { updateItem as updateItemQuery, deleteItem as deleteItemQuery } from "@/lib/db/items";
 import { updateItemSchema } from "@/lib/validations/items";
 
 export async function updateItem(itemId: string, formData: unknown) {
@@ -27,5 +27,23 @@ export async function updateItem(itemId: string, formData: unknown) {
     return { success: true, data: item };
   } catch {
     return { success: false, error: "Failed to update item" };
+  }
+}
+
+export async function deleteItem(itemId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const deleted = await deleteItemQuery(session.user.id, itemId);
+    if (!deleted) {
+      return { success: false, error: "Item not found" };
+    }
+
+    return { success: true };
+  } catch {
+    return { success: false, error: "Failed to delete item" };
   }
 }

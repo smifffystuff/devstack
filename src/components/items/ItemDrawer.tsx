@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   Sheet,
   SheetContent,
@@ -8,6 +9,17 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -21,7 +33,9 @@ import {
   FolderOpen,
   Calendar,
 } from "lucide-react";
+import { toast } from "sonner";
 import { ICON_MAP } from "@/lib/item-type-icons";
+import { deleteItem } from "@/actions/items";
 import ItemDrawerEdit from "./ItemDrawerEdit";
 import type { ItemDetail } from "@/lib/db/items";
 
@@ -42,6 +56,8 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
   const [item, setItem] = useState<ItemDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [deleting, startDelete] = useTransition();
+  const router = useRouter();
 
   useEffect(() => {
     if (!itemId) {
@@ -67,6 +83,20 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
       .catch(() => setItem(null))
       .finally(() => setLoading(false));
   }, [itemId]);
+
+  function handleDelete() {
+    if (!item) return;
+    startDelete(async () => {
+      const result = await deleteItem(item.id);
+      if (result.success) {
+        toast.success("Item deleted");
+        onClose();
+        router.refresh();
+      } else {
+        toast.error(result.error ?? "Failed to delete item");
+      }
+    });
+  }
 
   const TypeIcon = item ? ICON_MAP[item.typeIcon] : null;
 
@@ -151,14 +181,39 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                   Edit
                 </Button>
                 <div className="flex-1" />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-destructive hover:text-destructive"
-                  aria-label="Delete item"
-                >
-                  <Trash2 className="size-4" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger
+                    render={
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive hover:text-destructive"
+                        aria-label="Delete item"
+                        disabled={deleting}
+                      />
+                    }
+                  >
+                    <Trash2 className="size-4" />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete item</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete &ldquo;{item.title}&rdquo;? This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDelete}
+                        disabled={deleting}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        {deleting ? "Deleting…" : "Delete"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
 
               <Separator className="mx-4" />
