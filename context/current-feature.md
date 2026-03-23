@@ -1,25 +1,10 @@
-# Current Feature: Code Editor
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Create CodeEditor component using Monaco Editor with dark theme
-- Replace Textarea with CodeEditor for snippets and commands only
-- Keep Textarea for notes, prompts, and other non-code types
-- Add macOS-style window dots (red/yellow/green) at top of editor
-- Add quick copy button in editor header
-- Add the language in editor header next to copy
-- Support both display (readonly) and edit modes
-- Make the height of the editor fluid but a max height of 400px with a themed scrollbar
-
 ## Notes
-
-- Monaco Editor is the editor that powers VS Code — provides syntax highlighting, language support, and a rich editing experience
-- Only snippets and commands get the code editor; notes, prompts, and links keep using Textarea
-- The editor needs two modes: readonly for viewing in the item drawer, and editable for edit mode
 
 ## History
 
@@ -60,3 +45,4 @@ In Progress
 - 2026-03-22: Completed Item Drawer Edit Mode — Inline edit mode via pencil button, editable title/description/tags + type-specific fields (content/language/url), Zod validation schema, updateItem server action and query with tag disconnect/reconnect, toast feedback, 13 validation tests
 - 2026-03-22: Completed Delete Item — AlertDialog confirmation in item drawer, deleteItem server action and db query with auth check, success/error toast, drawer close and UI refresh on delete, 5 unit tests
 - 2026-03-23: Completed Item Create — New Item dialog from top bar, type selector (snippet/prompt/command/note/link), dynamic fields per type, createItem server action and db query with Zod validation, toast feedback, 13 unit tests
+- 2026-03-23: Completed Code Editor — Monaco Editor component with macOS window dots, copy button, language label, dark theme, fluid height (max 400px), readonly and edit modes for snippets/commands, type-specific "New {Type}" button on item type pages with pre-selected type in dialog
