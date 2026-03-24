@@ -2,22 +2,11 @@
 
 ## Status
 
-In Progress
+Complete
 
 ## Goals
 
-- Delete unused mock-data.ts
-- Name magic numbers in CodeEditor height calculation
-- Show updatedAt instead of createdAt in ItemCard
-- Add try/catch to delete-account route
-- Add .max() constraints to Zod validation schemas
-- Extract shared collection mapping helper to deduplicate ~80 lines
-- Add sr-only SheetTitle to mobile drawer for accessibility
-- Sanitize filename in Content-Disposition header
-
 ## Notes
-
-All changes are low-risk quick wins identified by code scanner audit
 
 ## History
 
@@ -63,3 +52,5 @@ All changes are low-risk quick wins identified by code scanner audit
 - 2026-03-23: Completed File Upload with Cloudflare R2 — Upload API route with R2 integration, FileUpload component with drag-and-drop and progress indicator, download proxy route, image preview and file info in ItemDrawer, size limits (5MB images, 10MB files), allowed extensions and MIME type validation
 - 2026-03-23: Completed Image Gallery View — ImageCard component with 16:9 thumbnail, object-cover, hover zoom effect, conditionally rendered on /dashboard/items/image page
 - 2026-03-24: Completed File List View — FileRow component with extension-based icons, file name/size/date columns, download button with stopPropagation, single-column list layout on /dashboard/items/file, responsive hiding of size/date on mobile
+- 2026-03-24: Completed Quick Wins — Deleted mock-data.ts, named magic numbers, updatedAt in ItemCard, try/catch on delete-account, .max() on Zod schemas, shared collection mapping helper, sr-only SheetTitle, sanitized Content-Disposition filename
+- 2026-03-24: Completed Create Collection — NewCollectionDialog with name/description fields, Zod validation schema, createCollection server action with auth, db query in lib/db/collections.ts, wired to TopBar button, toast feedback, router.refresh() on success
