@@ -147,8 +147,10 @@ function SidebarContent() {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="w-56">
-            <DropdownMenuItem onClick={() => window.location.href = '/dashboard/profile'}>
-              Profile
+            <DropdownMenuItem>
+              <Link href="/dashboard/profile" className="w-full">
+                Profile
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/sign-in' })}>
               <LogOut className="size-4 mr-2" />

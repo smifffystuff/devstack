@@ -13,6 +13,21 @@ export function formatDate(date: Date) {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
+export function fullDate(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export function formatFileSize(bytes: number | null): string {
+  if (bytes === null || bytes === 0) return "—";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export function relativeDate(date: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();

@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import CodeEditor from "./CodeEditor";
 import MarkdownEditor from "./MarkdownEditor";
 import FileUpload from "./FileUpload";
+import { CONTENT_TYPES, LANGUAGE_TYPES, MARKDOWN_TYPES } from "@/lib/item-type-constants";
 
 const ITEM_TYPES = [
   { name: "Snippet", icon: "Code", color: "#3b82f6" },
@@ -31,10 +32,6 @@ const ITEM_TYPES = [
   { name: "File", icon: "File", color: "#6b7280" },
   { name: "Image", icon: "Image", color: "#ec4899" },
 ] as const;
-
-const CONTENT_TYPES = ["snippet", "prompt", "command", "note"];
-const LANGUAGE_TYPES = ["snippet", "command"];
-const MARKDOWN_TYPES = ["note", "prompt"];
 
 interface NewItemDialogProps {
   defaultType?: string;

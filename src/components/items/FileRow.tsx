@@ -11,7 +11,7 @@ import {
   Pin,
 } from "lucide-react";
 import { useItemDrawer } from "./ItemDrawerProvider";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatFileSize } from "@/lib/utils";
 import type { DashboardItem } from "@/lib/db/items";
 
 const FILE_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -31,13 +31,6 @@ function getFileIcon(fileName: string | null) {
   if (!fileName) return File;
   const ext = fileName.slice(fileName.lastIndexOf(".")).toLowerCase();
   return FILE_ICON_MAP[ext] ?? File;
-}
-
-function formatFileSize(bytes: number | null): string {
-  if (bytes === null || bytes === 0) return "—";
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 interface FileRowProps {

@@ -106,7 +106,7 @@ export default function CodeEditor({
           readOnly,
           minimap: { enabled: false },
           scrollBeyondLastLine: false,
-          lineNumbers: readOnly ? "on" : "on",
+          lineNumbers: "on",
           renderLineHighlight: readOnly ? "none" : "line",
           fontSize: 13,
           fontFamily: "var(--font-mono, monospace)",

@@ -10,23 +10,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar } from "lucide-react";
 import { ICON_MAP } from "@/lib/item-type-icons";
+import { fullDate } from "@/lib/utils";
 import { updateItem } from "@/actions/items";
 import { toast } from "sonner";
 import CodeEditor from "./CodeEditor";
 import MarkdownEditor from "./MarkdownEditor";
+import { CONTENT_TYPES, LANGUAGE_TYPES, MARKDOWN_TYPES } from "@/lib/item-type-constants";
 import type { ItemDetail } from "@/lib/db/items";
-
-function fullDate(date: Date) {
-  return date.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-const CONTENT_TYPES = ["snippet", "prompt", "command", "note"];
-const LANGUAGE_TYPES = ["snippet", "command"];
-const MARKDOWN_TYPES = ["note", "prompt"];
 
 interface ItemDrawerEditProps {
   item: ItemDetail;

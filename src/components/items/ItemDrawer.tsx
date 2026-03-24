@@ -37,23 +37,13 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { ICON_MAP } from "@/lib/item-type-icons";
+import { fullDate } from "@/lib/utils";
 import { deleteItem } from "@/actions/items";
 import ItemDrawerEdit from "./ItemDrawerEdit";
 import CodeEditor from "./CodeEditor";
 import MarkdownEditor from "./MarkdownEditor";
+import { MARKDOWN_TYPES, CODE_TYPES } from "@/lib/item-type-constants";
 import type { ItemDetail } from "@/lib/db/items";
-
-const MARKDOWN_TYPES = ["note", "prompt"];
-
-const CODE_TYPES = ["snippet", "command"];
-
-function fullDate(date: Date) {
-  return date.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-}
 
 interface ItemDrawerProps {
   itemId: string | null;
