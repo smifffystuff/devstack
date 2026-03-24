@@ -45,7 +45,7 @@ describe("deleteItem", () => {
 
   it("returns not found when item does not exist", async () => {
     mockAuth.mockResolvedValue({ user: { id: "user-1" } } as never);
-    mockDeleteItemQuery.mockResolvedValue(false);
+    mockDeleteItemQuery.mockResolvedValue({ deleted: false, fileUrl: null });
 
     const result = await deleteItem("item-1");
 
@@ -55,7 +55,7 @@ describe("deleteItem", () => {
 
   it("returns success when item is deleted", async () => {
     mockAuth.mockResolvedValue({ user: { id: "user-1" } } as never);
-    mockDeleteItemQuery.mockResolvedValue(true);
+    mockDeleteItemQuery.mockResolvedValue({ deleted: true, fileUrl: null });
 
     const result = await deleteItem("item-1");
 

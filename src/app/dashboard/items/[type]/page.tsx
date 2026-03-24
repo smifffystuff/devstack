@@ -5,6 +5,7 @@ import { ICON_MAP } from "@/lib/item-type-icons";
 import { capitalize } from "@/lib/utils";
 import ItemCard from "@/components/items/ItemCard";
 import ImageCard from "@/components/items/ImageCard";
+import FileRow from "@/components/items/FileRow";
 import NewItemDialog from "@/components/items/NewItemDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -57,6 +58,12 @@ export default async function ItemsTypePage({
         <p className="text-muted-foreground text-sm">
           No {type}s yet. Create your first one to get started.
         </p>
+      ) : type === "file" ? (
+        <div className="flex flex-col gap-2">
+          {items.map((item) => (
+            <FileRow key={item.id} item={item} />
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {items.map((item) =>

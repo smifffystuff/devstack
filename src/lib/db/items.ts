@@ -16,6 +16,8 @@ export interface DashboardItem {
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
+  fileName: string | null;
+  fileSize: number | null;
 }
 
 export interface ItemDetail {
@@ -54,6 +56,8 @@ function mapItem(
     description: string | null;
     isFavorite: boolean;
     isPinned: boolean;
+    fileName: string | null;
+    fileSize: number | null;
     createdAt: Date;
     updatedAt: Date;
     type: { name: string; icon: string | null; color: string | null };
@@ -72,10 +76,21 @@ function mapItem(
     tags: item.tags.map((t) => t.tag.name),
     createdAt: item.createdAt,
     updatedAt: item.updatedAt,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
   };
 }
 
-const itemInclude = {
+const itemSelect = {
+  id: true,
+  title: true,
+  description: true,
+  isFavorite: true,
+  isPinned: true,
+  fileName: true,
+  fileSize: true,
+  createdAt: true,
+  updatedAt: true,
   type: { select: { name: true, icon: true, color: true } },
   tags: { select: { tag: { select: { name: true } } } },
 } as const;
@@ -88,7 +103,7 @@ export async function getPinnedItems(
     where: { userId, isPinned: true },
     orderBy: { updatedAt: "desc" },
     take: limit,
-    include: itemInclude,
+    select: itemSelect,
   });
 
   return items.map(mapItem);
@@ -102,7 +117,7 @@ export async function getRecentItems(
     where: { userId },
     orderBy: { updatedAt: "desc" },
     take: limit,
-    include: itemInclude,
+    select: itemSelect,
   });
 
   return items.map(mapItem);
@@ -169,7 +184,7 @@ export async function getItemsByType(
       type: { name: { equals: typeName, mode: "insensitive" } },
     },
     orderBy: { updatedAt: "desc" },
-    include: itemInclude,
+    select: itemSelect,
   });
 
   return items.map(mapItem);
