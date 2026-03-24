@@ -1,11 +1,21 @@
 "use client";
 
-import { Star, Pin } from "lucide-react";
+import { useState } from "react";
+import { Star, Pin, Copy, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { relativeDate } from "@/lib/utils";
 import { useItemDrawer } from "./ItemDrawerProvider";
 import type { DashboardItem } from "@/lib/db/items";
+
+const COPYABLE_TYPES = new Set(["snippet", "prompt", "command", "note", "url"]);
+
+function getCopyText(item: DashboardItem): string | null {
+  const typeName = item.typeName.toLowerCase();
+  if (typeName === "url") return item.url;
+  if (COPYABLE_TYPES.has(typeName)) return item.content;
+  return null;
+}
 
 interface ItemCardProps {
   item: DashboardItem;
@@ -13,7 +23,17 @@ interface ItemCardProps {
 
 export default function ItemCard({ item }: ItemCardProps) {
   const { openItem } = useItemDrawer();
+  const [copied, setCopied] = useState(false);
   const Icon = ICON_MAP[item.typeIcon];
+  const copyText = getCopyText(item);
+
+  async function handleCopy(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!copyText) return;
+    await navigator.clipboard.writeText(copyText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
 
   return (
     <div
@@ -26,7 +46,7 @@ export default function ItemCard({ item }: ItemCardProps) {
           openItem(item.id);
         }
       }}
-      className="flex items-center gap-3 px-4 py-3 rounded-lg border border-border border-l-2 hover:bg-accent transition-colors cursor-pointer"
+      className="relative flex items-center gap-3 px-4 py-3 rounded-lg border border-border border-l-2 hover:bg-accent transition-colors cursor-pointer group"
       style={{ borderLeftColor: item.typeColor || undefined }}
     >
       <div
@@ -67,6 +87,19 @@ export default function ItemCard({ item }: ItemCardProps) {
       <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
         {relativeDate(item.createdAt)}
       </span>
+      {copyText && (
+        <button
+          onClick={handleCopy}
+          className="absolute bottom-1.5 right-1.5 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors opacity-0 group-hover:opacity-100"
+          aria-label={`Copy ${item.typeName.toLowerCase() === "url" ? "URL" : "content"}`}
+        >
+          {copied ? (
+            <Check className="size-3.5 text-green-500" />
+          ) : (
+            <Copy className="size-3.5" />
+          )}
+        </button>
+      )}
     </div>
   );
 }

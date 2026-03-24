@@ -16,6 +16,8 @@ export interface DashboardItem {
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
+  content: string | null;
+  url: string | null;
   fileName: string | null;
   fileSize: number | null;
 }
@@ -54,6 +56,8 @@ function mapItem(
     id: string;
     title: string;
     description: string | null;
+    content: string | null;
+    url: string | null;
     isFavorite: boolean;
     isPinned: boolean;
     fileName: string | null;
@@ -68,6 +72,8 @@ function mapItem(
     id: item.id,
     title: item.title,
     description: item.description,
+    content: item.content,
+    url: item.url,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     typeName: item.type.name,
@@ -85,6 +91,8 @@ const itemSelect = {
   id: true,
   title: true,
   description: true,
+  content: true,
+  url: true,
   isFavorite: true,
   isPinned: true,
   fileName: true,
