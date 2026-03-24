@@ -9,9 +9,16 @@ export async function DELETE() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await prisma.user.delete({
-    where: { id: session.user.id },
-  });
+  try {
+    await prisma.user.delete({
+      where: { id: session.user.id },
+    });
 
-  return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to delete account" },
+      { status: 500 },
+    );
+  }
 }

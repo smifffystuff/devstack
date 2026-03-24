@@ -15,23 +15,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
-import { ICON_MAP } from "@/lib/item-type-icons";
 import { createItem } from "@/actions/items";
 import { toast } from "sonner";
-import CodeEditor from "./CodeEditor";
-import MarkdownEditor from "./MarkdownEditor";
-import FileUpload from "./FileUpload";
-import { CONTENT_TYPES, LANGUAGE_TYPES, MARKDOWN_TYPES } from "@/lib/item-type-constants";
-
-const ITEM_TYPES = [
-  { name: "Snippet", icon: "Code", color: "#3b82f6" },
-  { name: "Prompt", icon: "Sparkles", color: "#8b5cf6" },
-  { name: "Command", icon: "Terminal", color: "#f97316" },
-  { name: "Note", icon: "StickyNote", color: "#fde047" },
-  { name: "Link", icon: "Link", color: "#10b981" },
-  { name: "File", icon: "File", color: "#6b7280" },
-  { name: "Image", icon: "Image", color: "#ec4899" },
-] as const;
+import { CONTENT_TYPES, LANGUAGE_TYPES } from "@/lib/item-type-constants";
+import ItemTypeSelector, { ITEM_TYPES } from "./ItemTypeSelector";
+import ItemTypeFields from "./ItemTypeFields";
 
 interface NewItemDialogProps {
   defaultType?: string;
@@ -46,7 +34,7 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [typeName, setTypeName] = useState(resolvedDefault);
+  const [typeName, setTypeName] = useState<string>(resolvedDefault);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
@@ -68,13 +56,13 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
   const showFileUpload = typeLower === "file" || typeLower === "image";
 
   function cleanupR2() {
-    const url = fileUrlRef.current;
-    if (url) {
+    const fileUrl = fileUrlRef.current;
+    if (fileUrl) {
       fileUrlRef.current = null;
       fetch("/api/items/upload", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileUrl: url }),
+        body: JSON.stringify({ fileUrl }),
       }).catch(() => {});
     }
   }
@@ -156,38 +144,8 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Type selector */}
-          <div className="space-y-1.5">
-            <Label>Type</Label>
-            <div className="flex flex-wrap gap-2">
-              {ITEM_TYPES.map((type) => {
-                const Icon = ICON_MAP[type.icon];
-                const selected = typeName === type.name;
-                return (
-                  <button
-                    key={type.name}
-                    type="button"
-                    onClick={() => setTypeName(type.name)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-sm transition-colors ${
-                      selected
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border text-muted-foreground hover:border-primary/50"
-                    }`}
-                  >
-                    {Icon && (
-                      <Icon
-                        className="size-3.5"
-                        style={{ color: type.color }}
-                      />
-                    )}
-                    {type.name}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <ItemTypeSelector value={typeName} onChange={setTypeName} />
 
-          {/* Title */}
           <div className="space-y-1.5">
             <Label htmlFor="new-title">Title</Label>
             <Input
@@ -199,7 +157,6 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
             />
           </div>
 
-          {/* Description */}
           <div className="space-y-1.5">
             <Label htmlFor="new-description">Description</Label>
             <Textarea
@@ -211,83 +168,33 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
             />
           </div>
 
-          {/* Content (snippet, prompt, command, note) */}
-          {showContent && (
-            <div className="space-y-1.5">
-              <Label htmlFor="new-content">Content</Label>
-              {showLanguage ? (
-                <CodeEditor
-                  value={content}
-                  onChange={setContent}
-                  language={language || undefined}
-                />
-              ) : MARKDOWN_TYPES.includes(typeLower) ? (
-                <MarkdownEditor
-                  value={content}
-                  onChange={setContent}
-                />
-              ) : (
-                <Textarea
-                  id="new-content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Content"
-                  rows={6}
-                  className="font-mono text-sm"
-                />
-              )}
-            </div>
-          )}
-
-          {/* Language (snippet, command) */}
-          {showLanguage && (
-            <div className="space-y-1.5">
-              <Label htmlFor="new-language">Language</Label>
-              <Input
-                id="new-language"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                placeholder="e.g. javascript, python"
-              />
-            </div>
-          )}
-
-          {/* URL (link) */}
-          {showUrl && (
-            <div className="space-y-1.5">
-              <Label htmlFor="new-url">URL</Label>
-              <Input
-                id="new-url"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://..."
-                type="url"
-                required
-              />
-            </div>
-          )}
-
-          {/* File upload (file, image) */}
-          {showFileUpload && (
-            <div className="space-y-1.5">
-              <Label>{typeLower === "image" ? "Image" : "File"}</Label>
-              <FileUpload
-                typeName={typeLower as "file" | "image"}
-                onUploadComplete={(data) => {
-                  if (data.fileUrl) {
-                    setFileData(data);
-                    fileUrlRef.current = data.fileUrl;
-                  } else {
-                    setFileData(null);
-                    fileUrlRef.current = null;
+          <ItemTypeFields
+            typeName={typeName}
+            content={content}
+            onContentChange={setContent}
+            language={language}
+            onLanguageChange={setLanguage}
+            url={url}
+            onUrlChange={setUrl}
+            idPrefix="new"
+            fileUpload={
+              showFileUpload
+                ? {
+                    onUploadComplete: (data) => {
+                      if (data.fileUrl) {
+                        setFileData(data);
+                        fileUrlRef.current = data.fileUrl;
+                      } else {
+                        setFileData(null);
+                        fileUrlRef.current = null;
+                      }
+                    },
+                    onError: (msg) => toast.error(msg),
                   }
-                }}
-                onError={(msg) => toast.error(msg)}
-              />
-            </div>
-          )}
+                : undefined
+            }
+          />
 
-          {/* Tags */}
           <div className="space-y-1.5">
             <Label htmlFor="new-tags">Tags</Label>
             <Input
@@ -301,7 +208,6 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
             </p>
           </div>
 
-          {/* Actions */}
           <div className="flex justify-end gap-2">
             <Button
               type="button"

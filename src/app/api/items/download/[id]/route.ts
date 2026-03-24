@@ -28,11 +28,12 @@ export async function GET(
   }
 
   const fileName = item.fileName || "download";
+  const safeFileName = fileName.replace(/["\\\r\n]/g, "_");
 
   return new Response(file.body, {
     headers: {
       "Content-Type": file.contentType,
-      "Content-Disposition": `attachment; filename="${fileName}"`,
+      "Content-Disposition": `attachment; filename="${safeFileName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`,
     },
   });
 }

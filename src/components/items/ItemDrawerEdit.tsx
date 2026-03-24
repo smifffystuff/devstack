@@ -13,9 +13,8 @@ import { ICON_MAP } from "@/lib/item-type-icons";
 import { fullDate } from "@/lib/utils";
 import { updateItem } from "@/actions/items";
 import { toast } from "sonner";
-import CodeEditor from "./CodeEditor";
-import MarkdownEditor from "./MarkdownEditor";
-import { CONTENT_TYPES, LANGUAGE_TYPES, MARKDOWN_TYPES } from "@/lib/item-type-constants";
+import { CONTENT_TYPES, LANGUAGE_TYPES } from "@/lib/item-type-constants";
+import ItemTypeFields from "./ItemTypeFields";
 import type { ItemDetail } from "@/lib/db/items";
 
 interface ItemDrawerEditProps {
@@ -131,57 +130,16 @@ export default function ItemDrawerEdit({
           />
         </div>
 
-        {showContent && (
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-content">Content</Label>
-            {showLanguage ? (
-              <CodeEditor
-                value={content}
-                onChange={setContent}
-                language={language || undefined}
-              />
-            ) : MARKDOWN_TYPES.includes(typeLower) ? (
-              <MarkdownEditor
-                value={content}
-                onChange={setContent}
-              />
-            ) : (
-              <Textarea
-                id="edit-content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Content"
-                rows={8}
-                className="font-mono text-sm"
-              />
-            )}
-          </div>
-        )}
-
-        {showLanguage && (
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-language">Language</Label>
-            <Input
-              id="edit-language"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              placeholder="e.g. javascript, python"
-            />
-          </div>
-        )}
-
-        {showUrl && (
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-url">URL</Label>
-            <Input
-              id="edit-url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://..."
-              type="url"
-            />
-          </div>
-        )}
+        <ItemTypeFields
+          typeName={item.typeName}
+          content={content}
+          onContentChange={setContent}
+          language={language}
+          onLanguageChange={setLanguage}
+          url={url}
+          onUrlChange={setUrl}
+          idPrefix="edit"
+        />
 
         <div className="space-y-1.5">
           <Label htmlFor="edit-tags">Tags</Label>

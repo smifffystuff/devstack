@@ -3,8 +3,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Copy, Check } from "lucide-react";
-import { toast } from "sonner";
+import MacOSWindowHeader from "@/components/shared/MacOSWindowHeader";
 
 interface MarkdownEditorProps {
   value: string;
@@ -17,71 +16,43 @@ export default function MarkdownEditor({
   onChange,
   readOnly = false,
 }: MarkdownEditorProps) {
-  const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"write" | "preview">(
     readOnly ? "preview" : "write"
   );
 
-  function handleCopy() {
-    navigator.clipboard.writeText(value);
-    setCopied(true);
-    toast.success("Copied to clipboard");
-    setTimeout(() => setCopied(false), 2000);
-  }
-
   return (
     <div className="rounded-lg overflow-hidden border border-border">
-      {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 bg-[#1e1e1e]">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5">
-            <div className="size-3 rounded-full bg-[#ff5f57]" />
-            <div className="size-3 rounded-full bg-[#febc2e]" />
-            <div className="size-3 rounded-full bg-[#28c840]" />
+      <MacOSWindowHeader
+        copyValue={value}
+        label={readOnly ? "Markdown" : undefined}
+      >
+        {!readOnly ? (
+          <div className="flex items-center gap-1 ml-2">
+            <button
+              type="button"
+              onClick={() => setActiveTab("write")}
+              className={`text-xs px-2 py-0.5 rounded transition-colors ${
+                activeTab === "write"
+                  ? "text-zinc-200 bg-[#2d2d2d]"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              Write
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("preview")}
+              className={`text-xs px-2 py-0.5 rounded transition-colors ${
+                activeTab === "preview"
+                  ? "text-zinc-200 bg-[#2d2d2d]"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              Preview
+            </button>
           </div>
-          {!readOnly ? (
-            <div className="flex items-center gap-1 ml-2">
-              <button
-                type="button"
-                onClick={() => setActiveTab("write")}
-                className={`text-xs px-2 py-0.5 rounded transition-colors ${
-                  activeTab === "write"
-                    ? "text-zinc-200 bg-[#2d2d2d]"
-                    : "text-zinc-500 hover:text-zinc-300"
-                }`}
-              >
-                Write
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("preview")}
-                className={`text-xs px-2 py-0.5 rounded transition-colors ${
-                  activeTab === "preview"
-                    ? "text-zinc-200 bg-[#2d2d2d]"
-                    : "text-zinc-500 hover:text-zinc-300"
-                }`}
-              >
-                Preview
-              </button>
-            </div>
-          ) : (
-            <span className="text-xs text-zinc-500 ml-2">Markdown</span>
-          )}
-        </div>
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-          aria-label="Copy content"
-        >
-          {copied ? (
-            <Check className="size-3.5" />
-          ) : (
-            <Copy className="size-3.5" />
-          )}
-          {copied ? "Copied" : "Copy"}
-        </button>
-      </div>
+        ) : undefined}
+      </MacOSWindowHeader>
 
       {/* Content */}
       <div className="bg-[#1e1e1e]">

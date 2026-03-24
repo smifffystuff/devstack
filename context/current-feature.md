@@ -2,15 +2,22 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- goals will be populated when a feature is loaded -->
+- Delete unused mock-data.ts
+- Name magic numbers in CodeEditor height calculation
+- Show updatedAt instead of createdAt in ItemCard
+- Add try/catch to delete-account route
+- Add .max() constraints to Zod validation schemas
+- Extract shared collection mapping helper to deduplicate ~80 lines
+- Add sr-only SheetTitle to mobile drawer for accessibility
+- Sanitize filename in Content-Disposition header
 
 ## Notes
 
-<!-- notes will be populated when a feature is loaded -->
+All changes are low-risk quick wins identified by code scanner audit
 
 ## History
 

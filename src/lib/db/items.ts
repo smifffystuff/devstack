@@ -218,17 +218,30 @@ export async function getItemById(
 ): Promise<ItemDetail | null> {
   const item = await prisma.item.findFirst({
     where: { id: itemId, userId },
-    include: {
-      type: { select: { name: true, icon: true, color: true } },
-      tags: { select: { tag: { select: { name: true } } } },
-      collection: { select: { id: true, name: true } },
-    },
+    include: itemDetailInclude,
   });
 
   if (!item) return null;
 
   return mapItemDetail(item);
 }
+
+function buildTagConnections(tags: string[], userId: string) {
+  return tags.map((name) => ({
+    tag: {
+      connectOrCreate: {
+        where: { userId_name: { name, userId } },
+        create: { name, userId },
+      },
+    },
+  }));
+}
+
+const itemDetailInclude = {
+  type: { select: { name: true, icon: true, color: true } },
+  tags: { select: { tag: { select: { name: true } } } },
+  collection: { select: { id: true, name: true } },
+} as const;
 
 export async function createItem(
   userId: string,
@@ -257,21 +270,10 @@ export async function createItem(
       userId,
       typeId: type.id,
       tags: {
-        create: data.tags.map((name) => ({
-          tag: {
-            connectOrCreate: {
-              where: { userId_name: { name, userId } },
-              create: { name, userId },
-            },
-          },
-        })),
+        create: buildTagConnections(data.tags, userId),
       },
     },
-    include: {
-      type: { select: { name: true, icon: true, color: true } },
-      tags: { select: { tag: { select: { name: true } } } },
-      collection: { select: { id: true, name: true } },
-    },
+    include: itemDetailInclude,
   });
 
   return mapItemDetail(item);
@@ -300,21 +302,10 @@ export async function updateItem(
       url: data.url || null,
       language: data.language ?? null,
       tags: {
-        create: data.tags.map((name) => ({
-          tag: {
-            connectOrCreate: {
-              where: { userId_name: { name, userId } },
-              create: { name, userId },
-            },
-          },
-        })),
+        create: buildTagConnections(data.tags, userId),
       },
     },
-    include: {
-      type: { select: { name: true, icon: true, color: true } },
-      tags: { select: { tag: { select: { name: true } } } },
-      collection: { select: { id: true, name: true } },
-    },
+    include: itemDetailInclude,
   });
 
   return mapItemDetail(item);

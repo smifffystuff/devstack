@@ -85,7 +85,7 @@ export default function ItemCard({ item }: ItemCardProps) {
         </div>
       </div>
       <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
-        {relativeDate(item.createdAt)}
+        {relativeDate(item.updatedAt)}
       </span>
       {copyText && (
         <button

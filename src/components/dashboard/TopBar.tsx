@@ -4,7 +4,7 @@ import { Search, Archive, PanelLeft } from 'lucide-react';
 import NewItemDialog from '@/components/items/NewItemDialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useSidebar } from './SidebarProvider';
 import { SidebarContent } from './Sidebar';
 
@@ -38,6 +38,7 @@ export default function TopBar() {
           <PanelLeft className="size-4" />
         </SheetTrigger>
         <SheetContent side="left" className="w-60 p-0">
+          <SheetTitle className="sr-only">Navigation</SheetTitle>
           <SidebarContent />
         </SheetContent>
       </Sheet>
