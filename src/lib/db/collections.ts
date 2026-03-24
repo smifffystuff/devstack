@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { CreateCollectionInput } from "@/lib/validations/collections";
 
 export interface CollectionType {
   icon: string;
@@ -103,4 +104,20 @@ export async function getRecentCollections(
   });
 
   return collections.map(mapCollection);
+}
+
+export async function createCollection(
+  userId: string,
+  data: CreateCollectionInput,
+): Promise<CollectionSummary> {
+  const collection = await prisma.collection.create({
+    data: {
+      name: data.name,
+      description: data.description ?? null,
+      userId,
+    },
+    include: collectionInclude,
+  });
+
+  return mapCollection(collection);
 }

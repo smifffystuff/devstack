@@ -1,7 +1,8 @@
 'use client';
 
-import { Search, Archive, PanelLeft } from 'lucide-react';
+import { Search, PanelLeft } from 'lucide-react';
 import NewItemDialog from '@/components/items/NewItemDialog';
+import NewCollectionDialog from '@/components/collections/NewCollectionDialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -66,10 +67,7 @@ export default function TopBar() {
 
       {/* Actions */}
       <div className="flex items-center gap-2 ml-auto">
-        <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8">
-          <Archive className="size-3.5" />
-          <span className="hidden sm:inline">New Collection</span>
-        </Button>
+        <NewCollectionDialog />
         <NewItemDialog />
       </div>
     </header>
