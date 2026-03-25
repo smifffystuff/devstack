@@ -1,26 +1,16 @@
-# Current Feature: Favorites Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add star icon button to TopBar linking to /favorites
-- Create protected /favorites route
-- Fetch all user favorited items and collections
-- Compact list view (VS Code/terminal style, not cards)
-- Each row: type icon, title, type badge, date added
-- Separate sections for items and collections with counts
-- Click item opens ItemDrawer, click collection navigates to /collections/[id]
-- Empty state when no favorites
-- Sort by most recently favorited (updatedAt)
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- UI style: monospace or semi-monospace font, minimal padding, high density
-- Subtle hover states, no cards or heavy borders, clean lines only
-- Dev-focused, terminal-inspired aesthetic
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -76,3 +66,4 @@ In Progress
 - 2026-03-25: Completed Pagination — Server-side pagination with skip/take for items-by-type, items-by-collection, and user-collections queries, reusable Pagination component with numbered page links and prev/next, named constants for page sizes and dashboard limits, 12 unit tests
 - 2026-03-25: Completed Settings Page — /dashboard/settings route with change password and delete account actions, Settings link with icon in sidebar user dropdown, profile page simplified to info and stats only
 - 2026-03-25: Completed Editor Preferences Settings — editorPreferences JSON column on User model with migration, EditorPreferencesContext provider, settings page with font size/tab size/theme dropdowns and word wrap/minimap toggles, auto-save with toast, monokai and github-dark Monaco themes, 12 validation tests
+- 2026-03-25: Completed Favorites Page — /dashboard/favorites route with compact terminal-style list view, star button in TopBar, FavoriteItemRow and FavoriteCollectionRow components with monospace font, getFavoriteItems db query, separate sections with counts, empty state, click-to-open drawer/navigate
