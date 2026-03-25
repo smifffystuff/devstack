@@ -6,6 +6,7 @@ import {
   updateCollection as updateCollectionQuery,
   deleteCollection as deleteCollectionQuery,
   getAllCollections as getAllCollectionsQuery,
+  toggleCollectionFavorite as toggleCollectionFavoriteQuery,
 } from "@/lib/db/collections";
 import {
   createCollectionSchema,
@@ -64,6 +65,26 @@ export async function deleteCollection(collectionId: string) {
     return { success: true };
   } catch {
     return { success: false, error: "Failed to delete collection" };
+  }
+}
+
+export async function toggleFavoriteCollection(collectionId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const isFavorite = await toggleCollectionFavoriteQuery(
+      session.user.id,
+      collectionId,
+    );
+    if (isFavorite === null) {
+      return { success: false, error: "Collection not found" };
+    }
+    return { success: true, data: { isFavorite } };
+  } catch {
+    return { success: false, error: "Failed to update favorite" };
   }
 }
 

@@ -68,6 +68,7 @@ export default async function CollectionDetailPage({
             id: collection.id,
             name: collection.name,
             description: collection.description,
+            isFavorite: collection.isFavorite,
           }}
         />
         <div className="flex items-center gap-1.5">

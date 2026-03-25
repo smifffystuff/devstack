@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Favorite Toggle Button
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be populated when a feature is loaded -->
+- Add a favorite toggle button to the Item Drawer action bar (alongside existing pin/copy/edit/delete)
+- Add a favorite toggle button to Collection detail page header actions
+- Add a favorite toggle button to Collection cards (CollectionCard component) on the collections grid
+- Toggling favorite updates `isFavorite` in the database via a server action
+- UI reflects current favorite state (filled star vs outline star) without full page reload
+- Existing `toggleFavorite` / `toggleCollectionFavorite` server actions reused or created as needed
 
 ## Notes
 
-<!-- Notes will be populated when a feature is loaded -->
+- Items already have `isFavorite` on the `Item` model; collections have `isFavorite` on the `Collection` model
+- The Item Drawer already has an action bar — add star button there
+- CollectionCard is a client component — can hold local state for optimistic updates
+- Sidebar already shows favorite collections with a yellow star; toggling should keep that in sync (router.refresh or revalidatePath)
+- Use a filled yellow star (★) for favorited, outline star for unfavorited — consistent with existing sidebar treatment
 
 ## History
 

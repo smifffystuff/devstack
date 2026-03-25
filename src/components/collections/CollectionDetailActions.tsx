@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Pencil, Trash2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { toggleFavoriteCollection } from "@/actions/collections";
 import EditCollectionDialog from "./EditCollectionDialog";
 import DeleteCollectionDialog from "./DeleteCollectionDialog";
 
@@ -11,6 +14,7 @@ interface CollectionDetailActionsProps {
     id: string;
     name: string;
     description: string | null;
+    isFavorite: boolean;
   };
 }
 
@@ -19,6 +23,22 @@ export default function CollectionDetailActions({
 }: CollectionDetailActionsProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(collection.isFavorite);
+  const [favoriting, startFavorite] = useTransition();
+  const router = useRouter();
+
+  function handleFavorite() {
+    startFavorite(async () => {
+      setIsFavorite((prev) => !prev);
+      const result = await toggleFavoriteCollection(collection.id);
+      if (result.success) {
+        router.refresh();
+      } else {
+        setIsFavorite((prev) => !prev);
+        toast.error(result.error ?? "Failed to update favorite");
+      }
+    });
+  }
 
   return (
     <>
@@ -35,11 +55,12 @@ export default function CollectionDetailActions({
         <Button
           variant="ghost"
           size="icon"
-          className="size-8"
-          disabled
-          aria-label="Favorite collection"
+          className={`size-8 ${isFavorite ? "text-yellow-500 hover:text-yellow-500" : ""}`}
+          onClick={handleFavorite}
+          disabled={favoriting}
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
-          <Star className="size-4" />
+          <Star className={`size-4 ${isFavorite ? "fill-yellow-500" : ""}`} />
         </Button>
         <Button
           variant="ghost"

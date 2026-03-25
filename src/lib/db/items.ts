@@ -369,6 +369,26 @@ export async function updateItem(
   return mapItemDetail(item);
 }
 
+export async function toggleItemFavorite(
+  userId: string,
+  itemId: string,
+): Promise<boolean | null> {
+  const existing = await prisma.item.findFirst({
+    where: { id: itemId, userId },
+    select: { isFavorite: true },
+  });
+
+  if (!existing) return null;
+
+  const updated = await prisma.item.update({
+    where: { id: itemId },
+    data: { isFavorite: !existing.isFavorite },
+    select: { isFavorite: true },
+  });
+
+  return updated.isFavorite;
+}
+
 export async function deleteItem(
   userId: string,
   itemId: string,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   AlertDialog,
@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Star, Pin, Copy, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { deleteItem } from "@/actions/items";
+import { deleteItem, toggleFavoriteItem } from "@/actions/items";
 import type { ItemDetail } from "@/lib/db/items";
 
 interface ItemDrawerActionBarProps {
@@ -30,8 +30,23 @@ export default function ItemDrawerActionBar({
   onEdit,
   onClose,
 }: ItemDrawerActionBarProps) {
+  const [isFavorite, setIsFavorite] = useState(item.isFavorite);
   const [deleting, startDelete] = useTransition();
+  const [favoriting, startFavorite] = useTransition();
   const router = useRouter();
+
+  function handleFavorite() {
+    startFavorite(async () => {
+      setIsFavorite((prev) => !prev);
+      const result = await toggleFavoriteItem(item.id);
+      if (result.success) {
+        router.refresh();
+      } else {
+        setIsFavorite((prev) => !prev);
+        toast.error(result.error ?? "Failed to update favorite");
+      }
+    });
+  }
 
   function handleDelete() {
     startDelete(async () => {
@@ -51,16 +66,12 @@ export default function ItemDrawerActionBar({
       <Button
         variant="ghost"
         size="sm"
-        className={
-          item.isFavorite ? "text-yellow-500 hover:text-yellow-500" : ""
-        }
-        aria-label={
-          item.isFavorite ? "Remove from favorites" : "Add to favorites"
-        }
+        className={isFavorite ? "text-yellow-500 hover:text-yellow-500" : ""}
+        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        onClick={handleFavorite}
+        disabled={favoriting}
       >
-        <Star
-          className={`size-4 ${item.isFavorite ? "fill-yellow-500" : ""}`}
-        />
+        <Star className={`size-4 ${isFavorite ? "fill-yellow-500" : ""}`} />
         Favorite
       </Button>
       <Button variant="ghost" size="sm" aria-label="Toggle pin">

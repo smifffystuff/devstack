@@ -5,6 +5,7 @@ import {
   createItem as createItemQuery,
   updateItem as updateItemQuery,
   deleteItem as deleteItemQuery,
+  toggleItemFavorite as toggleItemFavoriteQuery,
 } from "@/lib/db/items";
 import { createItemSchema, updateItemSchema } from "@/lib/validations/items";
 import { deleteFromR2 } from "@/lib/r2";
@@ -58,6 +59,23 @@ export async function updateItem(itemId: string, formData: unknown) {
     return { success: true, data: item };
   } catch {
     return { success: false, error: "Failed to update item" };
+  }
+}
+
+export async function toggleFavoriteItem(itemId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const isFavorite = await toggleItemFavoriteQuery(session.user.id, itemId);
+    if (isFavorite === null) {
+      return { success: false, error: "Item not found" };
+    }
+    return { success: true, data: { isFavorite } };
+  } catch {
+    return { success: false, error: "Failed to update favorite" };
   }
 }
 
