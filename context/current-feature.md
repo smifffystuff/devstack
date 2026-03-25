@@ -1,22 +1,16 @@
-# Current Feature: Add Item to Collections
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a collection selector input to the New Item dialog so users can assign an item to one or more collections on creation
-- Add a collection selector input to the Item Drawer edit mode so users can change collection assignments on existing items
-- Support selecting multiple collections per item
-- Use existing collections data (no new collection creation inline)
-- Wire up to createItem and updateItem server actions and db queries
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- The Prisma schema already supports item ↔ collection via `collectionId` on Item (single collection). May need to check if multi-collection requires a join table or if the current schema only supports one collection per item.
-- Don't worry about collection detail pages yet — just the assignment UI
-- Should fetch user's collections for the selector dropdown
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -64,3 +58,4 @@ In Progress
 - 2026-03-24: Completed File List View — FileRow component with extension-based icons, file name/size/date columns, download button with stopPropagation, single-column list layout on /dashboard/items/file, responsive hiding of size/date on mobile
 - 2026-03-24: Completed Quick Wins — Deleted mock-data.ts, named magic numbers, updatedAt in ItemCard, try/catch on delete-account, .max() on Zod schemas, shared collection mapping helper, sr-only SheetTitle, sanitized Content-Disposition filename
 - 2026-03-24: Completed Create Collection — NewCollectionDialog with name/description fields, Zod validation schema, createCollection server action with auth, db query in lib/db/collections.ts, wired to TopBar button, toast feedback, router.refresh() on success
+- 2026-03-25: Completed Add Item to Collections — Migrated from single collectionId FK to many-to-many via ItemCollection join table, CollectionSelect component with multi-select badges, wired to NewItemDialog and ItemDrawerEdit, updated server actions/db queries/validation schemas, 49 tests passing
