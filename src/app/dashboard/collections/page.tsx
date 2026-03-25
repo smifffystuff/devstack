@@ -1,16 +1,8 @@
-import Link from "next/link";
 import { auth } from "@/auth";
 import { getUserCollections } from "@/lib/db/collections";
-import { ICON_MAP } from "@/lib/item-type-icons";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { Star, FolderOpen } from "lucide-react";
+import { FolderOpen } from "lucide-react";
 import NewCollectionDialog from "@/components/collections/NewCollectionDialog";
+import CollectionCard from "@/components/collections/CollectionCard";
 
 export default async function CollectionsPage() {
   const session = await auth();
@@ -40,45 +32,7 @@ export default async function CollectionsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {collections.map((col) => (
-            <Link key={col.id} href={`/dashboard/collections/${col.id}`}>
-              <Card
-                size="sm"
-                className="border-l-2 hover:ring-foreground/20 transition-all cursor-pointer h-full"
-                style={{
-                  borderLeftColor: col.dominantColor || undefined,
-                }}
-              >
-                <CardHeader>
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="truncate">{col.name}</CardTitle>
-                    {col.isFavorite && (
-                      <Star className="size-3.5 text-yellow-500 fill-yellow-500 shrink-0" />
-                    )}
-                  </div>
-                  <CardDescription>{col.itemCount} items</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {col.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-1">
-                      {col.description}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-1.5">
-                    {col.types.map((type) => {
-                      const Icon = ICON_MAP[type.icon];
-                      if (!Icon) return null;
-                      return (
-                        <Icon
-                          key={type.icon}
-                          className="size-3.5"
-                          style={{ color: type.color }}
-                        />
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+            <CollectionCard key={col.id} collection={col} />
           ))}
         </div>
       )}

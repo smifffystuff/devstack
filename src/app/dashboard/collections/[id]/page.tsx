@@ -7,6 +7,7 @@ import ItemCard from "@/components/items/ItemCard";
 import ImageCard from "@/components/items/ImageCard";
 import FileRow from "@/components/items/FileRow";
 import { FolderOpen, Star } from "lucide-react";
+import CollectionDetailActions from "@/components/collections/CollectionDetailActions";
 
 export default async function CollectionDetailPage({
   params,
@@ -50,6 +51,13 @@ export default async function CollectionDetailPage({
           {items.length} {items.length === 1 ? "item" : "items"}
         </span>
         <div className="flex-1" />
+        <CollectionDetailActions
+          collection={{
+            id: collection.id,
+            name: collection.name,
+            description: collection.description,
+          }}
+        />
         <div className="flex items-center gap-1.5">
           {collection.types.map((type) => {
             const Icon = ICON_MAP[type.icon];

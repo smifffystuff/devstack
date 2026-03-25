@@ -3,9 +3,14 @@
 import { auth } from "@/auth";
 import {
   createCollection as createCollectionQuery,
+  updateCollection as updateCollectionQuery,
+  deleteCollection as deleteCollectionQuery,
   getAllCollections as getAllCollectionsQuery,
 } from "@/lib/db/collections";
-import { createCollectionSchema } from "@/lib/validations/collections";
+import {
+  createCollectionSchema,
+  updateCollectionSchema,
+} from "@/lib/validations/collections";
 
 export async function getCollections() {
   const session = await auth();
@@ -14,6 +19,52 @@ export async function getCollections() {
   }
 
   return getAllCollectionsQuery(session.user.id);
+}
+
+export async function updateCollection(collectionId: string, formData: unknown) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  const parsed = updateCollectionSchema.safeParse(formData);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    const collection = await updateCollectionQuery(
+      session.user.id,
+      collectionId,
+      parsed.data,
+    );
+    if (!collection) {
+      return { success: false, error: "Collection not found" };
+    }
+    return { success: true, data: collection };
+  } catch {
+    return { success: false, error: "Failed to update collection" };
+  }
+}
+
+export async function deleteCollection(collectionId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const deleted = await deleteCollectionQuery(session.user.id, collectionId);
+    if (!deleted) {
+      return { success: false, error: "Collection not found" };
+    }
+    return { success: true };
+  } catch {
+    return { success: false, error: "Failed to delete collection" };
+  }
 }
 
 export async function createCollection(formData: unknown) {

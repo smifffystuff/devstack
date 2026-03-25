@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import type { CreateCollectionInput } from "@/lib/validations/collections";
+import type {
+  CreateCollectionInput,
+  UpdateCollectionInput,
+} from "@/lib/validations/collections";
 
 export interface CollectionType {
   icon: string;
@@ -159,6 +162,45 @@ export async function getCollectionById(
   if (!collection) return null;
 
   return mapCollection(collection);
+}
+
+export async function updateCollection(
+  userId: string,
+  collectionId: string,
+  data: UpdateCollectionInput,
+): Promise<CollectionSummary | null> {
+  const existing = await prisma.collection.findFirst({
+    where: { id: collectionId, userId },
+    select: { id: true },
+  });
+
+  if (!existing) return null;
+
+  const collection = await prisma.collection.update({
+    where: { id: collectionId },
+    data: {
+      name: data.name,
+      description: data.description ?? null,
+    },
+    include: collectionInclude,
+  });
+
+  return mapCollection(collection);
+}
+
+export async function deleteCollection(
+  userId: string,
+  collectionId: string,
+): Promise<boolean> {
+  const existing = await prisma.collection.findFirst({
+    where: { id: collectionId, userId },
+    select: { id: true },
+  });
+
+  if (!existing) return false;
+
+  await prisma.collection.delete({ where: { id: collectionId } });
+  return true;
 }
 
 export async function createCollection(
