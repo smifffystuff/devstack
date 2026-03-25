@@ -1,21 +1,16 @@
-# Current Feature: Collections Pages
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create `/dashboard/collections` page showing all user collections using existing collection cards
-- Create `/dashboard/collections/[id]` page showing items within a specific collection using existing item cards
-- Link "View all collections" in sidebar to `/dashboard/collections`
-- Link all collection cards to their specific `/dashboard/collections/[id]` page
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- Reuse existing card components (CollectionCard, ItemCard, ImageCard, FileRow)
-- Follow existing patterns from `/dashboard/items/[type]` for the collection detail page
-- Collections data fetching already exists in `src/lib/db/collections.ts`
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -64,3 +59,4 @@ In Progress
 - 2026-03-24: Completed Quick Wins — Deleted mock-data.ts, named magic numbers, updatedAt in ItemCard, try/catch on delete-account, .max() on Zod schemas, shared collection mapping helper, sr-only SheetTitle, sanitized Content-Disposition filename
 - 2026-03-24: Completed Create Collection — NewCollectionDialog with name/description fields, Zod validation schema, createCollection server action with auth, db query in lib/db/collections.ts, wired to TopBar button, toast feedback, router.refresh() on success
 - 2026-03-25: Completed Add Item to Collections — Migrated from single collectionId FK to many-to-many via ItemCollection join table, CollectionSelect component with multi-select badges, wired to NewItemDialog and ItemDrawerEdit, updated server actions/db queries/validation schemas, 49 tests passing
+- 2026-03-25: Completed Collections Pages — /dashboard/collections page with all collections grid, /dashboard/collections/[id] detail page with items grouped by type, sidebar and dashboard collection links fixed to /dashboard/collections paths
