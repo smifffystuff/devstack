@@ -1,16 +1,22 @@
-# Current Feature
+# Current Feature: Settings Page
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be populated when a feature is loaded -->
+- Create a `/settings` route that is protected (requires authentication)
+- Add a "Settings" link in the user icon dropdown at the bottom of the sidebar
+- Move the "Delete Account" and "Change Password" actions from the profile page to the settings page
+- Profile page should retain user info and usage stats only
 
 ## Notes
 
-<!-- Notes will be populated when a feature is loaded -->
+- The settings page URL should be `/settings` (not under `/dashboard`)
+- Must be protected — redirect unauthenticated users to sign-in
+- Reuse existing ChangePasswordDialog and DeleteAccountDialog components
+- Keep the profile page focused on display (user info + usage stats)
 
 ## History
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,8 +35,15 @@ export default function SidebarUserMenu({ user }: SidebarUserMenuProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent side="top" align="start" className="w-56">
           <DropdownMenuItem>
-            <Link href="/dashboard/profile" className="w-full">
+            <Link href="/dashboard/profile" className="flex items-center gap-2 w-full">
+              <User className="size-4" />
               Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/dashboard/settings" className="flex items-center gap-2 w-full">
+              <Settings className="size-4" />
+              Settings
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/sign-in" })}>

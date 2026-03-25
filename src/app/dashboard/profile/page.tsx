@@ -5,8 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { capitalize, formatDate } from "@/lib/utils";
 import UserAvatar from "@/components/shared/UserAvatar";
-import ChangePasswordButton from "@/components/profile/ChangePasswordButton";
-import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -27,7 +25,7 @@ export default async function ProfilePage() {
       <div>
         <h1 className="text-2xl font-bold text-foreground">Profile</h1>
         <p className="text-sm text-muted-foreground">
-          Manage your account settings
+          Your account overview and usage stats
         </p>
       </div>
 
@@ -58,10 +56,6 @@ export default async function ProfilePage() {
               </p>
             )}
           </div>
-        </CardContent>
-        <CardContent className="flex items-center gap-3 border-t border-border pt-4">
-          {user.hasPassword && <ChangePasswordButton />}
-          <DeleteAccountButton />
         </CardContent>
       </Card>
 
