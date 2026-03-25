@@ -4,14 +4,15 @@ import Link from 'next/link';
 import { Search, PanelLeft } from 'lucide-react';
 import NewItemDialog from '@/components/items/NewItemDialog';
 import NewCollectionDialog from '@/components/collections/NewCollectionDialog';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useSidebar } from './SidebarProvider';
 import { SidebarContent } from './Sidebar';
+import { useCommandPalette } from '@/components/search/CommandPaletteProvider';
 
 export default function TopBar() {
   const { toggle, mobileOpen, setMobileOpen } = useSidebar();
+  const { openPalette } = useCommandPalette();
 
   return (
     <header className="flex items-center gap-4 border-b border-border px-4 h-12 shrink-0 bg-background">
@@ -53,18 +54,17 @@ export default function TopBar() {
         <span className="font-semibold text-sm text-foreground">DevStash</span>
       </Link>
 
-      {/* Search */}
-      <div className="relative flex-1 max-w-sm mx-auto">
-        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-        <Input
-          placeholder="Search items..."
-          className="pl-8 pr-12 h-8 bg-muted border-0 text-sm rounded-md"
-          aria-label="Search items"
-        />
-        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-          ⌘ K
-        </span>
-      </div>
+      {/* Search — opens command palette */}
+      <button
+        type="button"
+        onClick={openPalette}
+        className="relative flex-1 max-w-sm mx-auto flex items-center gap-2 h-8 px-3 bg-muted rounded-md text-sm text-muted-foreground cursor-pointer hover:bg-muted/80 transition-colors"
+        aria-label="Search items"
+      >
+        <Search className="size-3.5 shrink-0" />
+        <span className="flex-1 text-left">Search items...</span>
+        <kbd className="text-xs">⌘K</kbd>
+      </button>
 
       {/* Actions */}
       <div className="flex items-center gap-2 ml-auto">
