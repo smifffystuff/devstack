@@ -1,26 +1,16 @@
-# Current Feature: Collection Management Actions
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add edit, delete, and favorite buttons on /dashboard/collections/[id] detail page
-- Edit button opens a modal to edit collection name and description
-- Delete button shows confirmation dialog, deletes collection but NOT its items
-- Favorite button is visible but non-functional (placeholder for future)
-- Add 3-dot dropdown menu on collection cards at /dashboard/collections and dashboard
-- Dropdown contains edit, delete, and favorite options
-- Clicking anywhere else on the card navigates to the collection detail page
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- Items should NOT be deleted when a collection is deleted — they just lose their association
-- Favorite functionality is UI-only for now (icon/button present, no backend logic)
-- Reuse existing ShadCN components (DropdownMenu, AlertDialog, Dialog)
-- Need server actions: updateCollection, deleteCollection
-- Need db queries for update and delete operations
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -71,3 +61,4 @@ In Progress
 - 2026-03-25: Completed Add Item to Collections — Migrated from single collectionId FK to many-to-many via ItemCollection join table, CollectionSelect component with multi-select badges, wired to NewItemDialog and ItemDrawerEdit, updated server actions/db queries/validation schemas, 49 tests passing
 - 2026-03-25: Completed Collections Pages — /dashboard/collections page with all collections grid, /dashboard/collections/[id] detail page with items grouped by type, sidebar and dashboard collection links fixed to /dashboard/collections paths
 - 2026-03-25: Completed Clickable Logo Navigation — Logo in TopBar wrapped with Next.js Link to /dashboard, hover opacity transition, works on desktop and mobile
+- 2026-03-25: Completed Collection Management Actions — Edit/delete/favorite buttons on detail page, 3-dot dropdown on collection cards, EditCollectionDialog and DeleteCollectionDialog, CollectionCard client component replacing Link wrapper, updateCollection/deleteCollection server actions and db queries, 10 validation tests
