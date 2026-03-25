@@ -1,26 +1,16 @@
-# Current Feature: Editor Preferences Settings
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add editor preferences section to the settings page
-- Font size dropdown, tab size dropdown, word wrap toggle, minimap toggle, theme dropdown
-- Store preferences in a JSON column `editorPreferences` on the User model
-- Create and run a Prisma migration for the new column
-- Create server action to update preferences
-- Apply saved settings to the Monaco editor component
-- Auto-save on change with success toast (no save button)
-- Create EditorPreferencesContext for client components
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- Default values: word wrap on, minimap off, theme vs-dark
-- Theme options: vs-dark, monokai, github-dark
-- Font size and tab size via dropdowns
-- Never use `db push` — must use `prisma migrate dev`
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -75,3 +65,4 @@ In Progress
 - 2026-03-25: Completed Global Search / Command Palette — Cmd+K/Ctrl+K shortcut, shadcn cmdk component, grouped results (Items/Collections), type icons and item counts, TopBar search button opens palette, substring filtering, pre-fetched search data via /api/search route
 - 2026-03-25: Completed Pagination — Server-side pagination with skip/take for items-by-type, items-by-collection, and user-collections queries, reusable Pagination component with numbered page links and prev/next, named constants for page sizes and dashboard limits, 12 unit tests
 - 2026-03-25: Completed Settings Page — /dashboard/settings route with change password and delete account actions, Settings link with icon in sidebar user dropdown, profile page simplified to info and stats only
+- 2026-03-25: Completed Editor Preferences Settings — editorPreferences JSON column on User model with migration, EditorPreferencesContext provider, settings page with font size/tab size/theme dropdowns and word wrap/minimap toggles, auto-save with toast, monokai and github-dark Monaco themes, 12 validation tests
