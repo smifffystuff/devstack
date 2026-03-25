@@ -1,27 +1,16 @@
-# Current Feature: Global Search / Command Palette
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Open command palette with Cmd+K (Mac) / Ctrl+K (Windows)
-- Fuzzy search across all items and collections
-- Grouped results: Items section, Collections section
-- Keyboard navigation (arrow keys, Enter to select)
-- Show item type icon and collection item count in results
-- Navigate to item drawer or collection page on select
-- TopBar search input opens palette on click
-- Show ⌘K hint in search input placeholder
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- Use shadcn `cmdk` component (Command)
-- Client-side fuzzy search (no server round-trips)
-- Pre-fetch searchable data on app load
-- Search data: items (id, title, type, content preview), collections (id, name, itemCount)
-- Reuse existing data fetching functions
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -73,3 +62,4 @@ In Progress
 - 2026-03-25: Completed Collections Pages — /dashboard/collections page with all collections grid, /dashboard/collections/[id] detail page with items grouped by type, sidebar and dashboard collection links fixed to /dashboard/collections paths
 - 2026-03-25: Completed Clickable Logo Navigation — Logo in TopBar wrapped with Next.js Link to /dashboard, hover opacity transition, works on desktop and mobile
 - 2026-03-25: Completed Collection Management Actions — Edit/delete/favorite buttons on detail page, 3-dot dropdown on collection cards, EditCollectionDialog and DeleteCollectionDialog, CollectionCard client component replacing Link wrapper, updateCollection/deleteCollection server actions and db queries, 10 validation tests
+- 2026-03-25: Completed Global Search / Command Palette — Cmd+K/Ctrl+K shortcut, shadcn cmdk component, grouped results (Items/Collections), type icons and item counts, TopBar search button opens palette, substring filtering, pre-fetched search data via /api/search route
