@@ -1,16 +1,19 @@
-# Current Feature
+# Current Feature: Clickable Logo Navigation
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be populated when a feature is loaded -->
+- Make the logo/app name in the top-left corner of the sidebar/top bar a clickable link
+- Clicking the logo navigates the user to /dashboard
+- Works on both desktop sidebar and mobile drawer
 
 ## Notes
 
-<!-- Notes will be populated when a feature is loaded -->
+- Currently there is no way to navigate back to the dashboard from sub-pages
+- The logo should use Next.js Link component for client-side navigation
 
 ## History
 

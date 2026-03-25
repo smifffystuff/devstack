@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Search, PanelLeft } from 'lucide-react';
 import NewItemDialog from '@/components/items/NewItemDialog';
 import NewCollectionDialog from '@/components/collections/NewCollectionDialog';
@@ -45,12 +46,12 @@ export default function TopBar() {
       </Sheet>
 
       {/* Logo */}
-      <div className="flex items-center gap-2 shrink-0">
+      <Link href="/dashboard" className="flex items-center gap-2 shrink-0 hover:opacity-80 transition-opacity">
         <div className="flex items-center justify-center size-7 rounded-md bg-indigo-500 text-white font-bold text-xs">
           DS
         </div>
         <span className="font-semibold text-sm text-foreground">DevStash</span>
-      </div>
+      </Link>
 
       {/* Search */}
       <div className="relative flex-1 max-w-sm mx-auto">
