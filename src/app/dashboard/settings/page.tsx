@@ -4,6 +4,7 @@ import { getProfileUser } from "@/lib/db/profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ChangePasswordButton from "@/components/profile/ChangePasswordButton";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
+import EditorPreferencesCard from "@/components/settings/EditorPreferencesCard";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -37,6 +38,9 @@ export default async function SettingsPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Editor Preferences */}
+      <EditorPreferencesCard />
 
       {/* Danger Zone */}
       <Card className="border-destructive/50">

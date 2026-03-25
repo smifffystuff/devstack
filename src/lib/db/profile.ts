@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import type { EditorPreferences } from "@/lib/validations/editor-preferences";
+import { DEFAULT_EDITOR_PREFERENCES } from "@/lib/validations/editor-preferences";
 
 export interface ProfileUser {
   id: string;
@@ -40,6 +42,34 @@ export async function getProfileUser(userId: string): Promise<ProfileUser> {
     hasPassword: !!user.password,
     isOAuth: user._count.accounts > 0,
   };
+}
+
+export async function getEditorPreferences(
+  userId: string,
+): Promise<EditorPreferences> {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id: userId },
+    select: { editorPreferences: true },
+  });
+
+  if (!user.editorPreferences || typeof user.editorPreferences !== "object") {
+    return DEFAULT_EDITOR_PREFERENCES;
+  }
+
+  return {
+    ...DEFAULT_EDITOR_PREFERENCES,
+    ...(user.editorPreferences as Partial<EditorPreferences>),
+  };
+}
+
+export async function updateEditorPreferences(
+  userId: string,
+  preferences: EditorPreferences,
+): Promise<void> {
+  await prisma.user.update({
+    where: { id: userId },
+    data: { editorPreferences: preferences },
+  });
 }
 
 export async function getProfileStats(

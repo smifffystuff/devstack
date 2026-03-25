@@ -5,8 +5,10 @@ import Sidebar from '@/components/dashboard/Sidebar';
 import SidebarProvider from '@/components/dashboard/SidebarProvider';
 import ItemDrawerProvider from '@/components/items/ItemDrawerProvider';
 import CommandPaletteProvider from '@/components/search/CommandPaletteProvider';
+import EditorPreferencesProvider from '@/components/editor/EditorPreferencesProvider';
 import { getFavoriteCollections, getRecentCollections } from '@/lib/db/collections';
 import { getItemTypesWithCounts } from '@/lib/db/items';
+import { getEditorPreferences } from '@/lib/db/profile';
 
 export default async function DashboardLayout({
   children,
@@ -21,10 +23,11 @@ export default async function DashboardLayout({
 
   const userId = session.user.id;
 
-  const [itemTypes, favoriteCollections, recentCollections] = await Promise.all([
+  const [itemTypes, favoriteCollections, recentCollections, editorPreferences] = await Promise.all([
     getItemTypesWithCounts(userId),
     getFavoriteCollections(userId),
     getRecentCollections(userId, 5),
+    getEditorPreferences(userId),
   ]);
 
   const sidebarData = {
@@ -40,19 +43,21 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider data={sidebarData}>
-      <ItemDrawerProvider>
-        <CommandPaletteProvider>
-          <div className="flex flex-col h-screen bg-background">
-            <TopBar />
-            <div className="flex flex-1 overflow-hidden">
-              <Sidebar />
-              <main className="flex-1 overflow-y-auto p-6">
-                {children}
-              </main>
+      <EditorPreferencesProvider initialPreferences={editorPreferences}>
+        <ItemDrawerProvider>
+          <CommandPaletteProvider>
+            <div className="flex flex-col h-screen bg-background">
+              <TopBar />
+              <div className="flex flex-1 overflow-hidden">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto p-6">
+                  {children}
+                </main>
+              </div>
             </div>
-          </div>
-        </CommandPaletteProvider>
-      </ItemDrawerProvider>
+          </CommandPaletteProvider>
+        </ItemDrawerProvider>
+      </EditorPreferencesProvider>
     </SidebarProvider>
   );
 }
