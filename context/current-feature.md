@@ -1,25 +1,16 @@
-# Current Feature: Favorite Toggle Button
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a favorite toggle button to the Item Drawer action bar (alongside existing pin/copy/edit/delete)
-- Add a favorite toggle button to Collection detail page header actions
-- Add a favorite toggle button to Collection cards (CollectionCard component) on the collections grid
-- Toggling favorite updates `isFavorite` in the database via a server action
-- UI reflects current favorite state (filled star vs outline star) without full page reload
-- Existing `toggleFavorite` / `toggleCollectionFavorite` server actions reused or created as needed
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- Items already have `isFavorite` on the `Item` model; collections have `isFavorite` on the `Collection` model
-- The Item Drawer already has an action bar — add star button there
-- CollectionCard is a client component — can hold local state for optimistic updates
-- Sidebar already shows favorite collections with a yellow star; toggling should keep that in sync (router.refresh or revalidatePath)
-- Use a filled yellow star (★) for favorited, outline star for unfavorited — consistent with existing sidebar treatment
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -76,3 +67,4 @@ In Progress
 - 2026-03-25: Completed Settings Page — /dashboard/settings route with change password and delete account actions, Settings link with icon in sidebar user dropdown, profile page simplified to info and stats only
 - 2026-03-25: Completed Editor Preferences Settings — editorPreferences JSON column on User model with migration, EditorPreferencesContext provider, settings page with font size/tab size/theme dropdowns and word wrap/minimap toggles, auto-save with toast, monokai and github-dark Monaco themes, 12 validation tests
 - 2026-03-25: Completed Favorites Page — /dashboard/favorites route with compact terminal-style list view, star button in TopBar, FavoriteItemRow and FavoriteCollectionRow components with monospace font, getFavoriteItems db query, separate sections with counts, empty state, click-to-open drawer/navigate
+- 2026-03-25: Completed Favorite Toggle Button — toggleFavoriteItem and toggleFavoriteCollection server actions with db queries, wired Item Drawer action bar, Collection detail page star button, and CollectionCard dropdown with optimistic state and router.refresh(), 12 unit tests
