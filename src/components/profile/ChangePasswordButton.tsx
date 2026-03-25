@@ -77,7 +77,7 @@ export default function ChangePasswordButton() {
     >
       <DialogTrigger
         render={
-          <Button variant="outline" className="w-full justify-start gap-2" />
+          <Button variant="outline" className="gap-2" />
         }
       >
         <KeyRound className="size-4" />

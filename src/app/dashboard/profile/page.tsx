@@ -59,6 +59,10 @@ export default async function ProfilePage() {
             )}
           </div>
         </CardContent>
+        <CardContent className="flex items-center gap-3 border-t border-border pt-4">
+          {user.hasPassword && <ChangePasswordButton />}
+          <DeleteAccountButton />
+        </CardContent>
       </Card>
 
       {/* Usage Stats */}
@@ -119,17 +123,6 @@ export default async function ProfilePage() {
               })}
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Account Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Account Actions</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {user.hasPassword && <ChangePasswordButton />}
-          <DeleteAccountButton />
         </CardContent>
       </Card>
     </div>

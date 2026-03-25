@@ -52,7 +52,7 @@ export default function DeleteAccountButton() {
         render={
           <Button
             variant="outline"
-            className="w-full justify-start gap-2 text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+            className="gap-2 text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
           />
         }
       >
