@@ -1,16 +1,21 @@
-# Current Feature
+# Current Feature: Collections Pages
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be populated when a feature is loaded -->
+- Create `/dashboard/collections` page showing all user collections using existing collection cards
+- Create `/dashboard/collections/[id]` page showing items within a specific collection using existing item cards
+- Link "View all collections" in sidebar to `/dashboard/collections`
+- Link all collection cards to their specific `/dashboard/collections/[id]` page
 
 ## Notes
 
-<!-- Notes will be populated when a feature is loaded -->
+- Reuse existing card components (CollectionCard, ItemCard, ImageCard, FileRow)
+- Follow existing patterns from `/dashboard/items/[type]` for the collection detail page
+- Collections data fetching already exists in `src/lib/db/collections.ts`
 
 ## History
 

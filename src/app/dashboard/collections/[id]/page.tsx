@@ -1,0 +1,121 @@
+import { notFound } from "next/navigation";
+import { auth } from "@/auth";
+import { getCollectionById } from "@/lib/db/collections";
+import { getItemsByCollectionId } from "@/lib/db/items";
+import { ICON_MAP } from "@/lib/item-type-icons";
+import ItemCard from "@/components/items/ItemCard";
+import ImageCard from "@/components/items/ImageCard";
+import FileRow from "@/components/items/FileRow";
+import { FolderOpen, Star } from "lucide-react";
+
+export default async function CollectionDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  const session = await auth();
+  if (!session?.user?.id) {
+    return null;
+  }
+
+  const collection = await getCollectionById(session.user.id, id);
+  if (!collection) {
+    notFound();
+  }
+
+  const items = await getItemsByCollectionId(session.user.id, id);
+
+  const fileItems = items.filter((i) => i.typeName.toLowerCase() === "file");
+  const imageItems = items.filter((i) => i.typeName.toLowerCase() === "image");
+  const otherItems = items.filter(
+    (i) => !["file", "image"].includes(i.typeName.toLowerCase()),
+  );
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 mb-6">
+        <FolderOpen
+          className="size-6"
+          style={{ color: collection.dominantColor || undefined }}
+        />
+        <h1 className="text-2xl font-bold text-foreground">
+          {collection.name}
+        </h1>
+        {collection.isFavorite && (
+          <Star className="size-4 text-yellow-500 fill-yellow-500" />
+        )}
+        <span className="text-sm text-muted-foreground">
+          {items.length} {items.length === 1 ? "item" : "items"}
+        </span>
+        <div className="flex-1" />
+        <div className="flex items-center gap-1.5">
+          {collection.types.map((type) => {
+            const Icon = ICON_MAP[type.icon];
+            if (!Icon) return null;
+            return (
+              <Icon
+                key={type.icon}
+                className="size-4"
+                style={{ color: type.color }}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {collection.description && (
+        <p className="text-sm text-muted-foreground mb-6">
+          {collection.description}
+        </p>
+      )}
+
+      {items.length === 0 ? (
+        <p className="text-muted-foreground text-sm">
+          No items in this collection yet.
+        </p>
+      ) : (
+        <div className="space-y-6">
+          {otherItems.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {otherItems.map((item) => (
+                <ItemCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+
+          {imageItems.length > 0 && (
+            <div>
+              {otherItems.length > 0 && (
+                <h2 className="text-sm font-medium text-muted-foreground mb-3">
+                  Images
+                </h2>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {imageItems.map((item) => (
+                  <ImageCard key={item.id} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {fileItems.length > 0 && (
+            <div>
+              {(otherItems.length > 0 || imageItems.length > 0) && (
+                <h2 className="text-sm font-medium text-muted-foreground mb-3">
+                  Files
+                </h2>
+              )}
+              <div className="flex flex-col gap-2">
+                {fileItems.map((item) => (
+                  <FileRow key={item.id} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

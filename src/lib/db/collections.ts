@@ -125,6 +125,42 @@ export async function getAllCollections(
   });
 }
 
+export async function getUserCollections(
+  userId: string,
+): Promise<CollectionSummary[]> {
+  const collections = await prisma.collection.findMany({
+    where: { userId },
+    orderBy: { updatedAt: "desc" },
+    include: collectionInclude,
+  });
+
+  return collections.map(mapCollection);
+}
+
+export interface CollectionDetail {
+  id: string;
+  name: string;
+  description: string | null;
+  isFavorite: boolean;
+  itemCount: number;
+  dominantColor: string;
+  types: CollectionType[];
+}
+
+export async function getCollectionById(
+  userId: string,
+  collectionId: string,
+): Promise<CollectionDetail | null> {
+  const collection = await prisma.collection.findFirst({
+    where: { id: collectionId, userId },
+    include: collectionInclude,
+  });
+
+  if (!collection) return null;
+
+  return mapCollection(collection);
+}
+
 export async function createCollection(
   userId: string,
   data: CreateCollectionInput,

@@ -32,7 +32,7 @@ export default function SidebarCollectionsList({
               {favoriteCollections.map((col) => (
                 <Link
                   key={col.id}
-                  href={`/collections/${col.id}`}
+                  href={`/dashboard/collections/${col.id}`}
                   className="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
                   <Star className="size-4 text-yellow-500 fill-yellow-500 shrink-0" />
@@ -51,7 +51,7 @@ export default function SidebarCollectionsList({
             {recentCollections.map((col) => (
               <Link
                 key={col.id}
-                href={`/collections/${col.id}`}
+                href={`/dashboard/collections/${col.id}`}
                 className="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
               >
                 <span
@@ -65,7 +65,7 @@ export default function SidebarCollectionsList({
           </nav>
 
           <Link
-            href="/collections"
+            href="/dashboard/collections"
             className="flex items-center gap-2.5 px-2 py-1.5 mt-1 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           >
             <span className="flex-1">View all collections</span>
