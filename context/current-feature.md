@@ -1,19 +1,16 @@
-# Current Feature: Clickable Logo Navigation
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Make the logo/app name in the top-left corner of the sidebar/top bar a clickable link
-- Clicking the logo navigates the user to /dashboard
-- Works on both desktop sidebar and mobile drawer
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- Currently there is no way to navigate back to the dashboard from sub-pages
-- The logo should use Next.js Link component for client-side navigation
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -63,3 +60,4 @@ In Progress
 - 2026-03-24: Completed Create Collection — NewCollectionDialog with name/description fields, Zod validation schema, createCollection server action with auth, db query in lib/db/collections.ts, wired to TopBar button, toast feedback, router.refresh() on success
 - 2026-03-25: Completed Add Item to Collections — Migrated from single collectionId FK to many-to-many via ItemCollection join table, CollectionSelect component with multi-select badges, wired to NewItemDialog and ItemDrawerEdit, updated server actions/db queries/validation schemas, 49 tests passing
 - 2026-03-25: Completed Collections Pages — /dashboard/collections page with all collections grid, /dashboard/collections/[id] detail page with items grouped by type, sidebar and dashboard collection links fixed to /dashboard/collections paths
+- 2026-03-25: Completed Clickable Logo Navigation — Logo in TopBar wrapped with Next.js Link to /dashboard, hover opacity transition, works on desktop and mobile
