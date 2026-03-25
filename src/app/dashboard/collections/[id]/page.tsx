@@ -2,19 +2,24 @@ import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { getCollectionById } from "@/lib/db/collections";
 import { getItemsByCollectionId } from "@/lib/db/items";
+import { ITEMS_PER_PAGE } from "@/lib/constants";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import ItemCard from "@/components/items/ItemCard";
 import ImageCard from "@/components/items/ImageCard";
 import FileRow from "@/components/items/FileRow";
+import Pagination from "@/components/Pagination";
 import { FolderOpen, Star } from "lucide-react";
 import CollectionDetailActions from "@/components/collections/CollectionDetailActions";
 
 export default async function CollectionDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { id } = await params;
+  const { page: pageParam } = await searchParams;
 
   const session = await auth();
   if (!session?.user?.id) {
@@ -26,7 +31,14 @@ export default async function CollectionDetailPage({
     notFound();
   }
 
-  const items = await getItemsByCollectionId(session.user.id, id);
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const { items, total } = await getItemsByCollectionId(
+    session.user.id,
+    id,
+    currentPage,
+    ITEMS_PER_PAGE,
+  );
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
   const fileItems = items.filter((i) => i.typeName.toLowerCase() === "file");
   const imageItems = items.filter((i) => i.typeName.toLowerCase() === "image");
@@ -48,7 +60,7 @@ export default async function CollectionDetailPage({
           <Star className="size-4 text-yellow-500 fill-yellow-500" />
         )}
         <span className="text-sm text-muted-foreground">
-          {items.length} {items.length === 1 ? "item" : "items"}
+          {total} {total === 1 ? "item" : "items"}
         </span>
         <div className="flex-1" />
         <CollectionDetailActions
@@ -124,6 +136,12 @@ export default async function CollectionDetailPage({
           )}
         </div>
       )}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={`/dashboard/collections/${id}`}
+      />
     </div>
   );
 }

@@ -1,16 +1,30 @@
 import { auth } from "@/auth";
 import { getUserCollections } from "@/lib/db/collections";
+import { COLLECTIONS_PER_PAGE } from "@/lib/constants";
 import { FolderOpen } from "lucide-react";
 import NewCollectionDialog from "@/components/collections/NewCollectionDialog";
 import CollectionCard from "@/components/collections/CollectionCard";
+import Pagination from "@/components/Pagination";
 
-export default async function CollectionsPage() {
+export default async function CollectionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+
   const session = await auth();
   if (!session?.user?.id) {
     return null;
   }
 
-  const collections = await getUserCollections(session.user.id);
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const { collections, total } = await getUserCollections(
+    session.user.id,
+    currentPage,
+    COLLECTIONS_PER_PAGE,
+  );
+  const totalPages = Math.ceil(total / COLLECTIONS_PER_PAGE);
 
   return (
     <div>
@@ -18,8 +32,7 @@ export default async function CollectionsPage() {
         <FolderOpen className="size-6 text-muted-foreground" />
         <h1 className="text-2xl font-bold text-foreground">Collections</h1>
         <span className="text-sm text-muted-foreground">
-          {collections.length}{" "}
-          {collections.length === 1 ? "collection" : "collections"}
+          {total} {total === 1 ? "collection" : "collections"}
         </span>
         <div className="flex-1" />
         <NewCollectionDialog />
@@ -36,6 +49,12 @@ export default async function CollectionsPage() {
           ))}
         </div>
       )}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath="/dashboard/collections"
+      />
     </div>
   );
 }

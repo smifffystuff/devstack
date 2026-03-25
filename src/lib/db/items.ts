@@ -182,36 +182,57 @@ export async function getItemTypeByName(
   return { name: type.name, icon: type.icon ?? "", color: type.color ?? "" };
 }
 
+export interface PaginatedItems {
+  items: DashboardItem[];
+  total: number;
+}
+
 export async function getItemsByType(
   userId: string,
   typeName: string,
-): Promise<DashboardItem[]> {
-  const items = await prisma.item.findMany({
-    where: {
-      userId,
-      type: { name: { equals: typeName, mode: "insensitive" } },
-    },
-    orderBy: { updatedAt: "desc" },
-    select: itemSelect,
-  });
+  page = 1,
+  perPage?: number,
+): Promise<PaginatedItems> {
+  const where = {
+    userId,
+    type: { name: { equals: typeName, mode: "insensitive" as const } },
+  };
 
-  return items.map(mapItem);
+  const [items, total] = await Promise.all([
+    prisma.item.findMany({
+      where,
+      orderBy: { updatedAt: "desc" },
+      select: itemSelect,
+      ...(perPage ? { skip: (page - 1) * perPage, take: perPage } : {}),
+    }),
+    prisma.item.count({ where }),
+  ]);
+
+  return { items: items.map(mapItem), total };
 }
 
 export async function getItemsByCollectionId(
   userId: string,
   collectionId: string,
-): Promise<DashboardItem[]> {
-  const items = await prisma.item.findMany({
-    where: {
-      userId,
-      collections: { some: { collectionId } },
-    },
-    orderBy: { updatedAt: "desc" },
-    select: itemSelect,
-  });
+  page = 1,
+  perPage?: number,
+): Promise<PaginatedItems> {
+  const where = {
+    userId,
+    collections: { some: { collectionId } },
+  };
 
-  return items.map(mapItem);
+  const [items, total] = await Promise.all([
+    prisma.item.findMany({
+      where,
+      orderBy: { updatedAt: "desc" },
+      select: itemSelect,
+      ...(perPage ? { skip: (page - 1) * perPage, take: perPage } : {}),
+    }),
+    prisma.item.count({ where }),
+  ]);
+
+  return { items: items.map(mapItem), total };
 }
 
 export async function getDashboardStats(

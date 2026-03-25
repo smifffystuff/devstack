@@ -1,21 +1,26 @@
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { getItemsByType, getItemTypeByName } from "@/lib/db/items";
+import { ITEMS_PER_PAGE } from "@/lib/constants";
 import { ICON_MAP } from "@/lib/item-type-icons";
 import { capitalize } from "@/lib/utils";
 import ItemCard from "@/components/items/ItemCard";
 import ImageCard from "@/components/items/ImageCard";
 import FileRow from "@/components/items/FileRow";
 import NewItemDialog from "@/components/items/NewItemDialog";
+import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default async function ItemsTypePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ type: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { type } = await params;
+  const { page: pageParam } = await searchParams;
 
   const session = await auth();
   if (!session?.user?.id) {
@@ -27,7 +32,9 @@ export default async function ItemsTypePage({
     notFound();
   }
 
-  const items = await getItemsByType(session.user.id, type);
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const { items, total } = await getItemsByType(session.user.id, type, currentPage, ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
   const Icon = ICON_MAP[typeInfo.icon];
 
   return (
@@ -40,7 +47,7 @@ export default async function ItemsTypePage({
           {capitalize(type)}s
         </h1>
         <span className="text-sm text-muted-foreground">
-          {items.length} {items.length === 1 ? "item" : "items"}
+          {total} {total === 1 ? "item" : "items"}
         </span>
         <div className="flex-1" />
         <NewItemDialog
@@ -75,6 +82,12 @@ export default async function ItemsTypePage({
           )}
         </div>
       )}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={`/dashboard/items/${type}`}
+      />
     </div>
   );
 }

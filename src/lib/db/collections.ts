@@ -128,16 +128,29 @@ export async function getAllCollections(
   });
 }
 
+export interface PaginatedCollections {
+  collections: CollectionSummary[];
+  total: number;
+}
+
 export async function getUserCollections(
   userId: string,
-): Promise<CollectionSummary[]> {
-  const collections = await prisma.collection.findMany({
-    where: { userId },
-    orderBy: { updatedAt: "desc" },
-    include: collectionInclude,
-  });
+  page = 1,
+  perPage?: number,
+): Promise<PaginatedCollections> {
+  const where = { userId };
 
-  return collections.map(mapCollection);
+  const [collections, total] = await Promise.all([
+    prisma.collection.findMany({
+      where,
+      orderBy: { updatedAt: "desc" },
+      include: collectionInclude,
+      ...(perPage ? { skip: (page - 1) * perPage, take: perPage } : {}),
+    }),
+    prisma.collection.count({ where }),
+  ]);
+
+  return { collections: collections.map(mapCollection), total };
 }
 
 export interface CollectionDetail {
