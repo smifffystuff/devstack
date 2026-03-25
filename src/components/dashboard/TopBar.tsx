@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, PanelLeft } from 'lucide-react';
+import { Search, PanelLeft, Star } from 'lucide-react';
 import NewItemDialog from '@/components/items/NewItemDialog';
 import NewCollectionDialog from '@/components/collections/NewCollectionDialog';
 import { Button } from '@/components/ui/button';
@@ -68,6 +68,16 @@ export default function TopBar() {
 
       {/* Actions */}
       <div className="flex items-center gap-2 ml-auto">
+        <Link href="/dashboard/favorites">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7"
+            aria-label="Favorites"
+          >
+            <Star className="size-4" />
+          </Button>
+        </Link>
         <NewCollectionDialog />
         <NewItemDialog />
       </div>
