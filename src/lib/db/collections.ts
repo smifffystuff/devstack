@@ -21,15 +21,19 @@ interface CollectionRow {
   name: string;
   description: string | null;
   isFavorite: boolean;
-  items: { type: { id: string; icon: string | null; color: string | null } }[];
+  items: { item: { type: { id: string; icon: string | null; color: string | null } } }[];
   _count: { items: number };
 }
 
 const collectionInclude = {
   items: {
     select: {
-      type: {
-        select: { id: true, icon: true, color: true },
+      item: {
+        select: {
+          type: {
+            select: { id: true, icon: true, color: true },
+          },
+        },
       },
     },
   },
@@ -42,7 +46,7 @@ function mapCollection(col: CollectionRow): CollectionSummary {
     { count: number; icon: string; color: string }
   >();
 
-  for (const item of col.items) {
+  for (const { item } of col.items) {
     const existing = typeCounts.get(item.type.id);
     if (existing) {
       existing.count++;
@@ -104,6 +108,21 @@ export async function getRecentCollections(
   });
 
   return collections.map(mapCollection);
+}
+
+export interface CollectionOption {
+  id: string;
+  name: string;
+}
+
+export async function getAllCollections(
+  userId: string,
+): Promise<CollectionOption[]> {
+  return prisma.collection.findMany({
+    where: { userId },
+    orderBy: { name: "asc" },
+    select: { id: true, name: true },
+  });
 }
 
 export async function createCollection(

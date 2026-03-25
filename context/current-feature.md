@@ -1,12 +1,22 @@
-# Current Feature
+# Current Feature: Add Item to Collections
 
 ## Status
 
-Complete
+In Progress
 
 ## Goals
 
+- Add a collection selector input to the New Item dialog so users can assign an item to one or more collections on creation
+- Add a collection selector input to the Item Drawer edit mode so users can change collection assignments on existing items
+- Support selecting multiple collections per item
+- Use existing collections data (no new collection creation inline)
+- Wire up to createItem and updateItem server actions and db queries
+
 ## Notes
+
+- The Prisma schema already supports item ↔ collection via `collectionId` on Item (single collection). May need to check if multi-collection requires a join table or if the current schema only supports one collection per item.
+- Don't worry about collection detail pages yet — just the assignment UI
+- Should fetch user's collections for the selector dropdown
 
 ## History
 

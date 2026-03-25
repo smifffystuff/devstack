@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { CONTENT_TYPES, LANGUAGE_TYPES } from "@/lib/item-type-constants";
 import ItemTypeSelector, { ITEM_TYPES } from "./ItemTypeSelector";
 import ItemTypeFields from "./ItemTypeFields";
+import CollectionSelect from "./CollectionSelect";
 
 interface NewItemDialogProps {
   defaultType?: string;
@@ -41,6 +42,7 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
   const [language, setLanguage] = useState("");
   const [url, setUrl] = useState("");
   const [tagsInput, setTagsInput] = useState("");
+  const [collectionIds, setCollectionIds] = useState<string[]>([]);
 
   const [fileData, setFileData] = useState<{
     fileUrl: string;
@@ -76,6 +78,7 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
     setLanguage("");
     setUrl("");
     setTagsInput("");
+    setCollectionIds([]);
     setFileData(null);
   }
 
@@ -96,6 +99,7 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
       language: showLanguage ? language || null : null,
       url: showUrl ? url || null : null,
       tags,
+      collectionIds,
       fileUrl: fileData?.fileUrl || null,
       fileName: fileData?.fileName || null,
       fileSize: fileData?.fileSize || null,
@@ -207,6 +211,12 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
               Separate tags with commas
             </p>
           </div>
+
+          <CollectionSelect
+            value={collectionIds}
+            onChange={setCollectionIds}
+            id="new-collection"
+          />
 
           <div className="flex justify-end gap-2">
             <Button

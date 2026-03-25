@@ -14,6 +14,7 @@ export const updateItemSchema = z.object({
     .or(z.literal("")),
   language: z.string().trim().max(50).nullable().optional(),
   tags: z.array(z.string().trim().min(1).max(100)).max(50).default([]),
+  collectionIds: z.array(z.string().cuid()).default([]),
 });
 
 export type UpdateItemInput = z.infer<typeof updateItemSchema>;
@@ -33,6 +34,7 @@ export const createItemSchema = z.object({
     .or(z.literal("")),
   language: z.string().trim().max(50).nullable().optional(),
   tags: z.array(z.string().trim().min(1).max(100)).max(50).default([]),
+  collectionIds: z.array(z.string().cuid()).default([]),
   fileUrl: z.string().url().max(2048).nullable().optional(),
   fileName: z.string().max(255).nullable().optional(),
   fileSize: z.number().int().positive().nullable().optional(),

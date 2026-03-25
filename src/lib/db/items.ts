@@ -240,7 +240,7 @@ function buildTagConnections(tags: string[], userId: string) {
 const itemDetailInclude = {
   type: { select: { name: true, icon: true, color: true } },
   tags: { select: { tag: { select: { name: true } } } },
-  collection: { select: { id: true, name: true } },
+  collections: { select: { collection: { select: { id: true, name: true } } } },
 } as const;
 
 export async function createItem(
@@ -269,6 +269,9 @@ export async function createItem(
       fileSize: isFileType ? (data.fileSize ?? null) : null,
       userId,
       typeId: type.id,
+      collections: data.collectionIds?.length
+        ? { create: data.collectionIds.map((id) => ({ collectionId: id })) }
+        : undefined,
       tags: {
         create: buildTagConnections(data.tags, userId),
       },
@@ -291,7 +294,10 @@ export async function updateItem(
 
   if (!existing) return null;
 
-  await prisma.itemTag.deleteMany({ where: { itemId } });
+  await Promise.all([
+    prisma.itemTag.deleteMany({ where: { itemId } }),
+    prisma.itemCollection.deleteMany({ where: { itemId } }),
+  ]);
 
   const item = await prisma.item.update({
     where: { id: itemId },
@@ -301,6 +307,9 @@ export async function updateItem(
       content: data.content ?? null,
       url: data.url || null,
       language: data.language ?? null,
+      collections: data.collectionIds.length
+        ? { create: data.collectionIds.map((id) => ({ collectionId: id })) }
+        : undefined,
       tags: {
         create: buildTagConnections(data.tags, userId),
       },
@@ -343,7 +352,7 @@ function mapItemDetail(item: {
   updatedAt: Date;
   type: { name: string; icon: string | null; color: string | null };
   tags: { tag: { name: string } }[];
-  collection: { id: string; name: string } | null;
+  collections: { collection: { id: string; name: string } }[];
 }): ItemDetail {
   return {
     id: item.id,
@@ -362,9 +371,10 @@ function mapItemDetail(item: {
     typeIcon: item.type.icon ?? "",
     typeColor: item.type.color ?? "",
     tags: item.tags.map((t) => t.tag.name),
-    collections: item.collection
-      ? [{ id: item.collection.id, name: item.collection.name }]
-      : [],
+    collections: item.collections.map((c) => ({
+      id: c.collection.id,
+      name: c.collection.name,
+    })),
     createdAt: item.createdAt,
     updatedAt: item.updatedAt,
   };

@@ -8,6 +8,7 @@ describe("updateItemSchema", () => {
     expect(result.data).toEqual({
       title: "My Item",
       tags: [],
+      collectionIds: [],
     });
   });
 
@@ -105,6 +106,32 @@ describe("updateItemSchema", () => {
     expect(result.success).toBe(true);
     expect(result.data?.description).toBeNull();
   });
+
+  it("accepts valid collectionIds array", () => {
+    const result = updateItemSchema.safeParse({
+      title: "Test",
+      collectionIds: ["cmmw0azeb000820d2ijergty1", "cmmw0azf2000a20d242xf09fd"],
+    });
+    expect(result.success).toBe(true);
+    expect(result.data?.collectionIds).toEqual([
+      "cmmw0azeb000820d2ijergty1",
+      "cmmw0azf2000a20d242xf09fd",
+    ]);
+  });
+
+  it("defaults collectionIds to empty array", () => {
+    const result = updateItemSchema.safeParse({ title: "Test" });
+    expect(result.success).toBe(true);
+    expect(result.data?.collectionIds).toEqual([]);
+  });
+
+  it("rejects invalid cuid in collectionIds", () => {
+    const result = updateItemSchema.safeParse({
+      title: "Test",
+      collectionIds: ["not-a-cuid"],
+    });
+    expect(result.success).toBe(false);
+  });
 });
 
 describe("createItemSchema", () => {
@@ -118,6 +145,7 @@ describe("createItemSchema", () => {
       title: "My Item",
       typeName: "Snippet",
       tags: [],
+      collectionIds: [],
     });
   });
 
@@ -166,5 +194,33 @@ describe("createItemSchema", () => {
     });
     expect(result.success).toBe(true);
     expect(result.data?.url).toBe("https://example.com");
+  });
+
+  it("accepts valid collectionIds array", () => {
+    const result = createItemSchema.safeParse({
+      title: "Test",
+      typeName: "Snippet",
+      collectionIds: ["cmmw0azeb000820d2ijergty1"],
+    });
+    expect(result.success).toBe(true);
+    expect(result.data?.collectionIds).toEqual(["cmmw0azeb000820d2ijergty1"]);
+  });
+
+  it("defaults collectionIds to empty array", () => {
+    const result = createItemSchema.safeParse({
+      title: "Test",
+      typeName: "Snippet",
+    });
+    expect(result.success).toBe(true);
+    expect(result.data?.collectionIds).toEqual([]);
+  });
+
+  it("rejects invalid cuid in collectionIds", () => {
+    const result = createItemSchema.safeParse({
+      title: "Test",
+      typeName: "Snippet",
+      collectionIds: ["not-a-cuid"],
+    });
+    expect(result.success).toBe(false);
   });
 });

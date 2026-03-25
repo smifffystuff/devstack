@@ -113,11 +113,14 @@ async function main() {
     isPinned?: boolean;
     tagNames: string[];
   }) {
-    const { tagNames: itemTags, ...itemData } = data;
+    const { tagNames: itemTags, collectionId, ...itemData } = data;
     await prisma.item.create({
       data: {
         ...itemData,
         userId: user.id,
+        collections: {
+          create: { collectionId },
+        },
         tags: {
           create: itemTags.map((name) => ({
             tag: { connect: { id: tags[name] } },

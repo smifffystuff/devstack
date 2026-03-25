@@ -15,6 +15,7 @@ import { updateItem } from "@/actions/items";
 import { toast } from "sonner";
 import { CONTENT_TYPES, LANGUAGE_TYPES } from "@/lib/item-type-constants";
 import ItemTypeFields from "./ItemTypeFields";
+import CollectionSelect from "./CollectionSelect";
 import type { ItemDetail } from "@/lib/db/items";
 
 interface ItemDrawerEditProps {
@@ -36,6 +37,9 @@ export default function ItemDrawerEdit({
   const [language, setLanguage] = useState(item.language ?? "");
   const [url, setUrl] = useState(item.url ?? "");
   const [tagsInput, setTagsInput] = useState(item.tags.join(", "));
+  const [collectionIds, setCollectionIds] = useState<string[]>(
+    item.collections.map((c) => c.id),
+  );
 
   const typeLower = item.typeName.toLowerCase();
   const showContent = CONTENT_TYPES.includes(typeLower);
@@ -59,6 +63,7 @@ export default function ItemDrawerEdit({
       language: showLanguage ? language || null : item.language,
       url: showUrl ? url || null : item.url,
       tags,
+      collectionIds,
     });
 
     setSaving(false);
@@ -153,6 +158,12 @@ export default function ItemDrawerEdit({
             Separate tags with commas
           </p>
         </div>
+
+        <CollectionSelect
+          value={collectionIds}
+          onChange={setCollectionIds}
+          id="edit-collection"
+        />
 
         {/* Non-editable details */}
         <div>

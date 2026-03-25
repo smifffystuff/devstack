@@ -126,6 +126,7 @@ describe("createItem", () => {
       title: "Test",
       typeName: "Snippet",
       tags: [],
+      collectionIds: [],
     });
   });
 
