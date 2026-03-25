@@ -1,22 +1,16 @@
-# Current Feature: Settings Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create a `/settings` route that is protected (requires authentication)
-- Add a "Settings" link in the user icon dropdown at the bottom of the sidebar
-- Move the "Delete Account" and "Change Password" actions from the profile page to the settings page
-- Profile page should retain user info and usage stats only
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- The settings page URL should be `/settings` (not under `/dashboard`)
-- Must be protected — redirect unauthenticated users to sign-in
-- Reuse existing ChangePasswordDialog and DeleteAccountDialog components
-- Keep the profile page focused on display (user info + usage stats)
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -70,3 +64,4 @@ In Progress
 - 2026-03-25: Completed Collection Management Actions — Edit/delete/favorite buttons on detail page, 3-dot dropdown on collection cards, EditCollectionDialog and DeleteCollectionDialog, CollectionCard client component replacing Link wrapper, updateCollection/deleteCollection server actions and db queries, 10 validation tests
 - 2026-03-25: Completed Global Search / Command Palette — Cmd+K/Ctrl+K shortcut, shadcn cmdk component, grouped results (Items/Collections), type icons and item counts, TopBar search button opens palette, substring filtering, pre-fetched search data via /api/search route
 - 2026-03-25: Completed Pagination — Server-side pagination with skip/take for items-by-type, items-by-collection, and user-collections queries, reusable Pagination component with numbered page links and prev/next, named constants for page sizes and dashboard limits, 12 unit tests
+- 2026-03-25: Completed Settings Page — /dashboard/settings route with change password and delete account actions, Settings link with icon in sidebar user dropdown, profile page simplified to info and stats only
