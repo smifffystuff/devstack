@@ -1,24 +1,16 @@
-# Current Feature: Pagination
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add pagination to /dashboard/items/[type] pages with numbered page links
-- Add pagination to /dashboard/collections/[id] pages with numbered page links
-- Pagination controls at bottom with page numbers and prev/next links
-- Disable (grey out) prev/next when not available
-- Use constants: ITEMS_PER_PAGE = 21, COLLECTIONS_PER_PAGE = 21
-- Dashboard limits: DASHBOARD_COLLECTIONS_LIMIT = 6, DASHBOARD_RECENT_ITEMS_LIMIT = 10
-- Only fetch the amount that a page requires (no fetching all resources at once)
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- Spec file: context/features/pagination-spec.md
-- Affects item type listing pages and collection detail pages
-- Dashboard pages get their own separate limits (not paginated, just capped)
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -71,3 +63,4 @@ In Progress
 - 2026-03-25: Completed Clickable Logo Navigation — Logo in TopBar wrapped with Next.js Link to /dashboard, hover opacity transition, works on desktop and mobile
 - 2026-03-25: Completed Collection Management Actions — Edit/delete/favorite buttons on detail page, 3-dot dropdown on collection cards, EditCollectionDialog and DeleteCollectionDialog, CollectionCard client component replacing Link wrapper, updateCollection/deleteCollection server actions and db queries, 10 validation tests
 - 2026-03-25: Completed Global Search / Command Palette — Cmd+K/Ctrl+K shortcut, shadcn cmdk component, grouped results (Items/Collections), type icons and item counts, TopBar search button opens palette, substring filtering, pre-fetched search data via /api/search route
+- 2026-03-25: Completed Pagination — Server-side pagination with skip/take for items-by-type, items-by-collection, and user-collections queries, reusable Pagination component with numbered page links and prev/next, named constants for page sizes and dashboard limits, 12 unit tests
