@@ -17,12 +17,16 @@ export default function MacOSWindowHeader({
 }: MacOSWindowHeaderProps) {
   const [copied, setCopied] = useState(false);
 
-  function handleCopy() {
+  async function handleCopy() {
     if (!copyValue) return;
-    navigator.clipboard.writeText(copyValue);
-    setCopied(true);
-    toast.success("Copied to clipboard");
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(copyValue);
+      setCopied(true);
+      toast.success("Copied to clipboard");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy");
+    }
   }
 
   return (

@@ -5,6 +5,11 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import MacOSWindowHeader from "@/components/shared/MacOSWindowHeader";
 
+const LINE_HEIGHT_PX = 20;
+const VERTICAL_PADDING_PX = 16;
+const MIN_EDITOR_HEIGHT_PX = 100;
+const MAX_CONTENT_HEIGHT_PX = 362;
+
 interface MarkdownEditorProps {
   value: string;
   onChange?: (value: string) => void;
@@ -63,7 +68,7 @@ export default function MarkdownEditor({
             className="w-full bg-transparent text-sm text-zinc-200 font-mono p-4 resize-none focus:outline-none min-h-[100px] max-h-[362px] overflow-y-auto"
             placeholder="Write markdown content..."
             style={{
-              height: Math.min(Math.max(value.split("\n").length * 20 + 16, 100), 362),
+              height: Math.min(Math.max(value.split("\n").length * LINE_HEIGHT_PX + VERTICAL_PADDING_PX, MIN_EDITOR_HEIGHT_PX), MAX_CONTENT_HEIGHT_PX),
             }}
           />
         ) : (

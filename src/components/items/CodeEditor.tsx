@@ -34,6 +34,11 @@ function displayLanguage(lang?: string): string {
   return lang.charAt(0).toUpperCase() + lang.slice(1).toLowerCase();
 }
 
+const LINE_HEIGHT_PX = 19;
+const HEADER_HEIGHT_PX = 38;
+const VERTICAL_PADDING_PX = 16;
+const MAX_EDITOR_HEIGHT_PX = 400;
+
 export default function CodeEditor({
   value,
   onChange,
@@ -45,11 +50,6 @@ export default function CodeEditor({
   const handleMount: OnMount = useCallback((editor) => {
     editorRef.current = editor;
   }, []);
-
-  const LINE_HEIGHT_PX = 19;
-  const HEADER_HEIGHT_PX = 38;
-  const VERTICAL_PADDING_PX = 16;
-  const MAX_EDITOR_HEIGHT_PX = 400;
 
   const lineCount = value.split("\n").length;
   const calculatedHeight = Math.min(

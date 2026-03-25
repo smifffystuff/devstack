@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Star, Pin } from "lucide-react";
 import { useItemDrawer } from "./ItemDrawerProvider";
 import type { DashboardItem } from "@/lib/db/items";
@@ -24,11 +25,13 @@ export default function ImageCard({ item }: ImageCardProps) {
       }}
       className="group rounded-lg border border-border overflow-hidden cursor-pointer hover:border-foreground/20 transition-colors"
     >
-      <div className="aspect-video overflow-hidden bg-accent">
-        <img
+      <div className="relative aspect-video overflow-hidden bg-accent">
+        <Image
           src={`/api/items/download/${item.id}`}
           alt={item.title}
-          className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          unoptimized
         />
       </div>
       <div className="px-3 py-2">

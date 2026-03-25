@@ -1,6 +1,7 @@
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Tag, FolderOpen, Calendar, Download, File } from "lucide-react";
-import { fullDate } from "@/lib/utils";
+import { fullDate, formatFileSize } from "@/lib/utils";
 import CodeEditor from "./CodeEditor";
 import MarkdownEditor from "./MarkdownEditor";
 import { MARKDOWN_TYPES, CODE_TYPES } from "@/lib/item-type-constants";
@@ -43,10 +44,13 @@ function FileDisplay({ item }: { item: ItemDetail }) {
         {isImage ? "Image" : "File"}
       </h3>
       {isImage ? (
-        <img
+        <Image
           src={item.fileUrl!}
           alt={item.fileName || item.title}
-          className="max-w-full rounded-lg border border-border"
+          width={600}
+          height={400}
+          className="max-w-full h-auto rounded-lg border border-border"
+          unoptimized
         />
       ) : (
         <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3">
@@ -59,11 +63,7 @@ function FileDisplay({ item }: { item: ItemDetail }) {
             </p>
             {item.fileSize && (
               <p className="text-xs text-muted-foreground">
-                {item.fileSize < 1024
-                  ? `${item.fileSize} B`
-                  : item.fileSize < 1024 * 1024
-                    ? `${(item.fileSize / 1024).toFixed(1)} KB`
-                    : `${(item.fileSize / (1024 * 1024)).toFixed(1)} MB`}
+                {formatFileSize(item.fileSize)}
               </p>
             )}
           </div>
