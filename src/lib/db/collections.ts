@@ -17,6 +17,7 @@ export interface CollectionSummary {
   itemCount: number;
   dominantColor: string;
   types: CollectionType[];
+  updatedAt: Date;
 }
 
 interface CollectionRow {
@@ -24,6 +25,7 @@ interface CollectionRow {
   name: string;
   description: string | null;
   isFavorite: boolean;
+  updatedAt: Date;
   items: { item: { type: { id: string; icon: string | null; color: string | null } } }[];
   _count: { items: number };
 }
@@ -84,6 +86,7 @@ function mapCollection(col: CollectionRow): CollectionSummary {
     itemCount: col._count.items,
     dominantColor,
     types,
+    updatedAt: col.updatedAt,
   };
 }
 
