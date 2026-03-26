@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Star, Pin, Copy, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { deleteItem, toggleFavoriteItem } from "@/actions/items";
+import { deleteItem, toggleFavoriteItem, togglePinItem } from "@/actions/items";
 import type { ItemDetail } from "@/lib/db/items";
 
 interface ItemDrawerActionBarProps {
@@ -31,9 +31,24 @@ export default function ItemDrawerActionBar({
   onClose,
 }: ItemDrawerActionBarProps) {
   const [isFavorite, setIsFavorite] = useState(item.isFavorite);
+  const [isPinned, setIsPinned] = useState(item.isPinned);
   const [deleting, startDelete] = useTransition();
   const [favoriting, startFavorite] = useTransition();
+  const [pinning, startPin] = useTransition();
   const router = useRouter();
+
+  function handlePin() {
+    startPin(async () => {
+      setIsPinned((prev) => !prev);
+      const result = await togglePinItem(item.id);
+      if (result.success) {
+        router.refresh();
+      } else {
+        setIsPinned((prev) => !prev);
+        toast.error(result.error ?? "Failed to update pin");
+      }
+    });
+  }
 
   function handleFavorite() {
     startFavorite(async () => {
@@ -74,10 +89,15 @@ export default function ItemDrawerActionBar({
         <Star className={`size-4 ${isFavorite ? "fill-yellow-500" : ""}`} />
         Favorite
       </Button>
-      <Button variant="ghost" size="sm" aria-label="Toggle pin">
-        <Pin
-          className={`size-4 ${item.isPinned ? "fill-current" : ""}`}
-        />
+      <Button
+        variant="ghost"
+        size="sm"
+        className={isPinned ? "text-blue-500 hover:text-blue-500" : ""}
+        aria-label={isPinned ? "Unpin item" : "Pin item"}
+        onClick={handlePin}
+        disabled={pinning}
+      >
+        <Pin className={`size-4 ${isPinned ? "fill-blue-500" : ""}`} />
         Pin
       </Button>
       <Button variant="ghost" size="sm" aria-label="Copy content">

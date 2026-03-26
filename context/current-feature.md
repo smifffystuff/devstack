@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Pinned Items
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be populated when a feature is loaded -->
+- Create `toggleItemPin` server action with db query and auth check
+- Wire Pin button in ItemDrawer with onClick handler and optimistic state
+- Toast notification on pin/unpin success or error
+- Pinned items sort to the top of item type listings
+- Pinned items appear in the dashboard pinned section (already exists, just needs real data)
+- Follow the Favorite Toggle Button pattern for consistency
+- Pin icon on ItemCard remains a static visual indicator (no interaction)
 
 ## Notes
 
-<!-- Notes will be populated when a feature is loaded -->
+- Items only — collections do not have a pin feature
+- Follow the same optimistic UI + router.refresh() pattern used for favorites
+- The Pin button already exists in ItemDrawer but has no onClick
+- The dashboard pinned section is already implemented; ensure pinned items show there correctly
 
 ## History
 
