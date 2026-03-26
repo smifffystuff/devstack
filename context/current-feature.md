@@ -1,25 +1,16 @@
-# Current Feature: Pinned Items
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create `toggleItemPin` server action with db query and auth check
-- Wire Pin button in ItemDrawer with onClick handler and optimistic state
-- Toast notification on pin/unpin success or error
-- Pinned items sort to the top of item type listings
-- Pinned items appear in the dashboard pinned section (already exists, just needs real data)
-- Follow the Favorite Toggle Button pattern for consistency
-- Pin icon on ItemCard remains a static visual indicator (no interaction)
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- Items only — collections do not have a pin feature
-- Follow the same optimistic UI + router.refresh() pattern used for favorites
-- The Pin button already exists in ItemDrawer but has no onClick
-- The dashboard pinned section is already implemented; ensure pinned items show there correctly
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -78,3 +69,4 @@ In Progress
 - 2026-03-25: Completed Favorites Page — /dashboard/favorites route with compact terminal-style list view, star button in TopBar, FavoriteItemRow and FavoriteCollectionRow components with monospace font, getFavoriteItems db query, separate sections with counts, empty state, click-to-open drawer/navigate
 - 2026-03-25: Completed Favorite Toggle Button — toggleFavoriteItem and toggleFavoriteCollection server actions with db queries, wired Item Drawer action bar, Collection detail page star button, and CollectionCard dropdown with optimistic state and router.refresh(), 12 unit tests
 - 2026-03-26: Completed Favorites Page Sorting — FavoritesList client component with per-section sort dropdowns (Newest, Oldest, Name A–Z, Name Z–A, Type for items; Newest, Oldest, Name A–Z, Name Z–A for collections), updatedAt added to CollectionSummary, server component passes data down to client for client-side sorting
+- 2026-03-26: Completed Pinned Items — toggleItemPin db query, togglePinItem server action with auth check, Pin button in ItemDrawer wired with optimistic state and toast, pinned items sort to top of item type and collection listings, 6 unit tests
