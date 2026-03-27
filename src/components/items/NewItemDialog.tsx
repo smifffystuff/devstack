@@ -25,15 +25,24 @@ import CollectionSelect from "./CollectionSelect";
 interface NewItemDialogProps {
   defaultType?: string;
   trigger?: React.ReactElement;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export default function NewItemDialog({ defaultType, trigger }: NewItemDialogProps) {
+export default function NewItemDialog({ defaultType, trigger, open: controlledOpen, onOpenChange: controlledOnOpenChange }: NewItemDialogProps) {
   const resolvedDefault = ITEM_TYPES.find(
     (t) => t.name.toLowerCase() === defaultType?.toLowerCase()
   )?.name ?? "Snippet";
 
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isControlled ? controlledOpen! : internalOpen;
+
+  function setOpen(value: boolean) {
+    if (!isControlled) setInternalOpen(value);
+    controlledOnOpenChange?.(value);
+  }
   const [saving, setSaving] = useState(false);
   const [typeName, setTypeName] = useState<string>(resolvedDefault);
   const [title, setTitle] = useState("");
@@ -130,7 +139,7 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
         if (!isOpen) resetForm();
       }}
     >
-      {trigger ? (
+      {!isControlled && (trigger ? (
         <DialogTrigger render={trigger} />
       ) : (
         <DialogTrigger
@@ -139,7 +148,7 @@ export default function NewItemDialog({ defaultType, trigger }: NewItemDialogPro
           <Plus className="size-3.5" />
           <span className="hidden sm:inline">New Item</span>
         </DialogTrigger>
-      )}
+      ))}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New Item</DialogTitle>

@@ -18,9 +18,21 @@ import {
 import { createCollection } from "@/actions/collections";
 import { toast } from "sonner";
 
-export default function NewCollectionDialog() {
+interface NewCollectionDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export default function NewCollectionDialog({ open: controlledOpen, onOpenChange: controlledOnOpenChange }: NewCollectionDialogProps = {}) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isControlled ? controlledOpen! : internalOpen;
+
+  function setOpen(value: boolean) {
+    if (!isControlled) setInternalOpen(value);
+    controlledOnOpenChange?.(value);
+  }
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -64,14 +76,16 @@ export default function NewCollectionDialog() {
         if (!isOpen) resetForm();
       }}
     >
-      <DialogTrigger
-        render={
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" />
-        }
-      >
-        <Archive className="size-3.5" />
-        <span className="hidden sm:inline">New Collection</span>
-      </DialogTrigger>
+      {!isControlled && (
+        <DialogTrigger
+          render={
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" />
+          }
+        >
+          <Archive className="size-3.5" />
+          <span className="hidden sm:inline">New Collection</span>
+        </DialogTrigger>
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New Collection</DialogTitle>
