@@ -1,16 +1,31 @@
-# Current Feature
+# Current Feature: Homepage
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be populated when a feature is loaded -->
+- Build marketing homepage at `/` for unauthenticated users; authenticated users redirect to `/dashboard`
+- Implement NavBar with sticky scroll behavior, mobile hamburger menu, Sign In / Get Started links
+- Build Hero section with animated chaos canvas (floating icons + mouse repel) and static mini dashboard preview
+- Build Features section with 6-card responsive grid
+- Build AI Section with two-column layout, checklist, and static code mockup
+- Build Pricing section with monthly/yearly toggle, Free and Pro cards
+- Build Final CTA section
+- Build Footer with brand, link columns, and copyright
+- All components split server/client correctly per spec, fully responsive, Tailwind v4 only
 
 ## Notes
 
-<!-- Notes will be populated when a feature is loaded -->
+- Spec: `context/features/homepage-spec.md`
+- Prototype reference: `prototypes/homepage/` (index.html, styles.css, script.js)
+- Route files: `src/app/page.tsx` + `src/components/home/` directory
+- Client components: NavBar (mobile menu), HeroChaosCanvas (rAF animation), PricingToggle (monthly/yearly state)
+- HeroChaosCanvas replicates floating icon + mouse repel from `prototypes/homepage/script.js`
+- Scroll animations via CSS `@keyframes` + `IntersectionObserver` or CSS `animation-timeline: view()`
+- Use ShadCN Button, Card, Badge where applicable
+- Footer dead links (About, Blog, Privacy, Terms) use `#` as placeholder
 
 ## History
 
