@@ -61,9 +61,16 @@ export default function TopBar() {
 
       {/* Logo */}
       <Link href="/dashboard" className="flex items-center gap-2 shrink-0 hover:opacity-80 transition-opacity">
-        <div className="flex items-center justify-center size-7 rounded-md bg-indigo-500 text-white font-bold text-xs">
-          DS
-        </div>
+        <svg
+          className="w-5 h-5 text-blue-400"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M4 7h16M4 12h16M4 17h10" />
+          <circle cx="19" cy="17" r="3" />
+        </svg>
         <span className="font-semibold text-sm text-foreground">DevStash</span>
       </Link>
 

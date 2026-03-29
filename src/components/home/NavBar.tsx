@@ -43,12 +43,12 @@ export default function NavBar() {
         {/* Desktop nav links */}
         <ul className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
           <li>
-            <a href="#features" className="hover:text-foreground transition-colors">
+            <a href="/#features" className="hover:text-foreground transition-colors">
               Features
             </a>
           </li>
           <li>
-            <a href="#pricing" className="hover:text-foreground transition-colors">
+            <a href="/#pricing" className="hover:text-foreground transition-colors">
               Pricing
             </a>
           </li>
@@ -78,14 +78,14 @@ export default function NavBar() {
       {mobileOpen && (
         <div className="md:hidden bg-background/98 backdrop-blur border-b border-border px-4 py-4 flex flex-col gap-3">
           <a
-            href="#features"
+            href="/#features"
             className="text-sm text-muted-foreground hover:text-foreground py-1"
             onClick={() => setMobileOpen(false)}
           >
             Features
           </a>
           <a
-            href="#pricing"
+            href="/#pricing"
             className="text-sm text-muted-foreground hover:text-foreground py-1"
             onClick={() => setMobileOpen(false)}
           >
