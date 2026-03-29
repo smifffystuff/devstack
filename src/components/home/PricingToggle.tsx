@@ -35,8 +35,8 @@ const PRO_FEATURES = [
 export default function PricingToggle() {
   const [isYearly, setIsYearly] = useState(false);
 
-  const proPrice = isYearly ? "$6" : "$8";
-  const ctaPrice = isYearly ? "$72/yr" : "$8/mo";
+  const proPrice = isYearly ? "£6" : "£8";
+  const ctaPrice = isYearly ? "£72/yr" : "£8/mo";
 
   return (
     <>
@@ -81,7 +81,7 @@ export default function PricingToggle() {
           <CardHeader className="pb-4">
             <div className="text-sm font-medium text-muted-foreground mb-1">Free</div>
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold">$0</span>
+              <span className="text-4xl font-bold">£0</span>
               <span className="text-muted-foreground">/month</span>
             </div>
           </CardHeader>
@@ -121,7 +121,7 @@ export default function PricingToggle() {
               <span className="text-muted-foreground">/month</span>
             </div>
             {isYearly && (
-              <p className="text-xs text-muted-foreground mt-1">Billed as $72/year</p>
+              <p className="text-xs text-muted-foreground mt-1">Billed as £72/year</p>
             )}
           </CardHeader>
           <CardContent className="space-y-4">
