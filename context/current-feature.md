@@ -1,24 +1,16 @@
-# Current Feature: Stripe Integration — Phase 1: Core Infrastructure
+# Current Feature
 
 ## Status
 
-Complete
+Not Started
 
 ## Goals
 
-- Install `stripe` npm package and wire env vars
-- Expose `isPro` on the NextAuth session (synced from DB on every JWT validation)
-- Add plan-limit constants to `src/lib/constants.ts`
-- Create `src/lib/plan-limits.ts` with `checkItemLimit` / `checkCollectionLimit`
-- Unit tests covering both limit helpers
-- Update `.env.example` with all five Stripe variables
+<!-- Goals will be populated when a feature is loaded -->
 
 ## Notes
 
-- **One DB query per session validation** — `isPro` is fetched on every JWT callback so session is always accurate after a webhook update
-- **`plan-limits.ts` imports constants** — keeps magic numbers in one place (`constants.ts`) and makes helpers testable
-- **No Stripe Dashboard setup required** — Phase 1 makes no real Stripe API calls; env vars can be empty strings locally until Phase 2
-- Implementation order: install dep → env vars → `stripe.ts` → `next-auth.d.ts` → `auth.ts` callbacks → `constants.ts` → `plan-limits.ts` → unit tests
+<!-- Notes will be populated when a feature is loaded -->
 
 ## History
 
@@ -82,3 +74,4 @@ Complete
 - 2026-03-27: Completed Homepage — marketing page at / with auth redirect, NavBar (sticky scroll, mobile hamburger), HeroChaosCanvas (rAF + mouse repel), Hero (chaos canvas + static mini dashboard), FeaturesSection (6-card grid), AiSection (two-column + code mockup), PricingToggle (monthly/yearly client toggle), PricingSection, FinalCta, Footer (server-rendered year), ScrollReveal (IntersectionObserver fade-in), buttonVariants extracted to button-variants.ts for server component use, smooth scroll in globals.css
 - 2026-03-27: Completed TopBar Mobile Responsiveness — search collapses to icon-only on mobile, desktop action buttons hidden on mobile, mobile overflow + dropdown with New Item/New Collection/Favorites, controlled open/onOpenChange props added to NewItemDialog and NewCollectionDialog, gap-2 md:gap-4 on header
 - 2026-03-29: Completed Auth Pages NavBar & Logo Update — homepage NavBar added to (auth) layout with pt-20 spacing, DS indigo box replaced with SVG icon in dashboard TopBar, NavBar anchor links updated to /#features and /#pricing for cross-page navigation
+- 2026-03-29: Completed Stripe Phase 1 — stripe package installed, isPro synced from DB on every JWT validation, FREE_ITEM_LIMIT/FREE_COLLECTION_LIMIT constants, checkItemLimit/checkCollectionLimit helpers in plan-limits.ts, 8 unit tests, .env.example updated with 5 Stripe vars
