@@ -1,132 +1,173 @@
-# Stripe Integration - Phase 1: Core Infrastructure
+# Stripe Integration — Phase 1: Core Infrastructure
 
-## Overview
+Sets up the Stripe client, session `isPro` sync, plan-limit constants, and unit-tested limit helpers. No live Stripe calls are made in this phase — everything is testable in isolation.
 
-Set up Stripe SDK, usage limit utilities, session/auth changes for `isPro`, checkout flow API, and customer portal API. This phase builds all server-side infrastructure needed before wiring up webhooks and UI.
+---
 
-## Prerequisites
+## Goals
 
-- Stripe Dashboard configured with DevStash Pro product, monthly ($8) and yearly ($72) prices
-- Environment variables set: `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_ID_MONTHLY`, `STRIPE_PRICE_ID_YEARLY`
-- Database already has `isPro`, `stripeCustomerId`, `stripeSubscriptionId` fields on User model
+- Install `stripe` npm package and wire env vars
+- Expose `isPro` on the NextAuth session (synced from DB on every JWT validation)
+- Add plan-limit constants to `src/lib/constants.ts`
+- Create `src/lib/plan-limits.ts` with `checkItemLimit` / `checkCollectionLimit`
+- Unit tests covering both limit helpers
+- Update `.env.example` with all five Stripe variables
 
-## Requirements
+---
 
-- Install `stripe` npm package
-- Initialize Stripe SDK in `src/lib/stripe.ts`
-- Create usage limit utilities in `src/lib/usage.ts` with unit tests
-- Add `isPro` to NextAuth session and JWT types
-- Update auth callbacks to sync `isPro` from database
-- Create checkout session API route
-- Create customer portal API route
+## Implementation Order
 
-## Implementation
+1. Install dependency
+2. Add env vars to `.env.example` and `.env`
+3. Create `src/lib/stripe.ts`
+4. Update `src/types/next-auth.d.ts`
+5. Update `src/auth.ts` callbacks
+6. Update `src/lib/constants.ts`
+7. Create `src/lib/plan-limits.ts`
+8. Write unit tests
 
-### 1. Install Stripe SDK
+---
 
-```bash
-npm install stripe
-```
+## Files to Create
 
-### 2. Create `src/lib/stripe.ts`
+### `src/lib/stripe.ts`
 
-Initialize the Stripe Node SDK with the secret key.
+Stripe client singleton — import this everywhere instead of calling `new Stripe(...)` inline.
 
 ```typescript
-import Stripe from 'stripe';
+import Stripe from "stripe";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  typescript: true,
+  apiVersion: "2025-04-30.basil",
 });
 ```
 
-### 3. Create `src/lib/usage.ts`
+### `src/lib/plan-limits.ts`
 
-Free tier limits and utility functions for checking user usage.
+Helpers that check whether a free user is at their limit. Return `true` when the action is allowed, `false` when blocked.
 
-| Constant | Value |
-|----------|-------|
-| `MAX_ITEMS` | 50 |
-| `MAX_COLLECTIONS` | 3 |
+```typescript
+import { prisma } from "@/lib/prisma";
+import { FREE_ITEM_LIMIT, FREE_COLLECTION_LIMIT } from "@/lib/constants";
 
-Functions:
-- `getUserUsage(userId, isPro)` - Returns item/collection counts and whether user can create more
-- `canCreateItem(userId, isPro)` - Quick boolean check for item creation
-- `canCreateCollection(userId, isPro)` - Quick boolean check for collection creation
+export async function checkItemLimit(userId: string): Promise<boolean> {
+  const count = await prisma.item.count({ where: { userId } });
+  return count < FREE_ITEM_LIMIT;
+}
 
-Pro users bypass all limits (return `true` immediately).
+export async function checkCollectionLimit(userId: string): Promise<boolean> {
+  const count = await prisma.collection.count({ where: { userId } });
+  return count < FREE_COLLECTION_LIMIT;
+}
+```
 
-### 4. Unit Tests for `src/lib/usage.test.ts`
+### `src/lib/plan-limits.test.ts`
+
+Unit tests using Vitest with a mocked Prisma client.
 
 Test cases:
-- `getUserUsage` returns correct counts and `canCreate` booleans
-- `canCreateItem` returns `true` when under limit
-- `canCreateItem` returns `false` when at limit (50 items)
-- `canCreateCollection` returns `true` when under limit
-- `canCreateCollection` returns `false` when at limit (3 collections)
-- Pro users bypass all item limits
-- Pro users bypass all collection limits
-- `getUserUsage` sets `canCreateItem: false` at exactly 50 items
-- `getUserUsage` sets `canCreateCollection: false` at exactly 3 collections
 
-Mock `prisma.item.count` and `prisma.collection.count` for all tests.
+**`checkItemLimit`**
+- returns `true` when count is 0 (well under limit)
+- returns `true` when count is 49 (one below limit)
+- returns `false` when count is 50 (at limit)
+- returns `false` when count is 60 (over limit)
 
-### 5. Modify `src/types/next-auth.d.ts`
+**`checkCollectionLimit`**
+- returns `true` when count is 0
+- returns `true` when count is 2 (one below limit)
+- returns `false` when count is 3 (at limit)
+- returns `false` when count is 5 (over limit)
 
-Add `isPro: boolean` to `Session.user` and `isPro?: boolean` to `JWT`.
+---
 
-### 6. Modify `src/auth.ts`
+## Files to Modify
 
-- Make `jwt` callback `async`
-- Query `isPro` from database on every JWT creation (indexed primary key lookup, single boolean field)
-- Pass `isPro` from token to `session.user` in session callback
+### `src/types/next-auth.d.ts`
 
-Trade-off: One small DB query per session validation (`SELECT isPro FROM users WHERE id = ?`). Fast because it's indexed on PK and returns a single boolean. Ensures `session.user.isPro` is always accurate after webhook updates.
+Extend `Session` and `JWT` to include `isPro`:
 
-### 7. Create `src/app/api/stripe/checkout/route.ts`
+```typescript
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      isPro: boolean;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+}
 
-POST endpoint that:
-1. Authenticates user via `auth()`
-2. Accepts `{ plan: 'monthly' | 'yearly' }` in request body (NOT raw priceId from client)
-3. Maps plan to server-side price ID env var
-4. Finds or creates Stripe customer (stores `stripeCustomerId` in DB)
-5. Creates Stripe Checkout Session with `mode: 'subscription'`
-6. Sets `metadata.userId` on checkout session for webhook processing
-7. Returns `{ url }` for client redirect
-8. Success URL: `/settings?upgraded=true`, Cancel URL: `/settings`
+declare module "next-auth/jwt" {
+  interface JWT {
+    isPro?: boolean;
+  }
+}
+```
 
-### 8. Create `src/app/api/stripe/portal/route.ts`
+### `src/auth.ts` — callbacks
 
-POST endpoint that:
-1. Authenticates user via `auth()`
-2. Looks up user's `stripeCustomerId` from database
-3. Returns 400 if no billing account found
-4. Creates Stripe Billing Portal session
-5. Returns `{ url }` for client redirect
-6. Return URL: `/settings`
+Replace the existing `callbacks` block. The JWT callback now fetches `isPro` from the DB on every validation so webhook-driven status changes are reflected without requiring a sign-out.
 
-## New Files
+```typescript
+callbacks: {
+  async jwt({ token, user }) {
+    if (user?.id) {
+      token.sub = user.id;
+    }
 
-| File | Purpose |
-|------|---------|
-| `src/lib/stripe.ts` | Stripe SDK initialization |
-| `src/lib/usage.ts` | Free tier usage limit checks |
-| `src/lib/usage.test.ts` | Unit tests for usage utilities |
-| `src/app/api/stripe/checkout/route.ts` | Create Stripe Checkout sessions |
-| `src/app/api/stripe/portal/route.ts` | Create Stripe Customer Portal sessions |
+    // Always sync isPro from DB — catches webhook-driven updates
+    if (token.sub) {
+      const dbUser = await prisma.user.findUnique({
+        where: { id: token.sub },
+        select: { isPro: true },
+      });
+      token.isPro = dbUser?.isPro ?? false;
+    }
 
-## Modified Files
+    return token;
+  },
+  session({ session, token }) {
+    if (token.sub) {
+      session.user.id = token.sub;
+    }
+    if (typeof token.isPro === "boolean") {
+      session.user.isPro = token.isPro;
+    }
+    return session;
+  },
+},
+```
 
-| File | Changes |
-|------|---------|
-| `src/types/next-auth.d.ts` | Add `isPro` to Session and JWT types |
-| `src/auth.ts` | Async JWT callback with `isPro` DB sync, session callback passes `isPro` |
+### `src/lib/constants.ts`
 
-## Notes
+Append plan-limit constants below the existing pagination constants:
 
-- Price IDs stay server-side only (Option B from plan) - client sends `plan: 'monthly' | 'yearly'`, API maps to env var
-- Checkout route validates plan value against allowed strings, not raw price IDs
-- Customer portal requires prior Stripe customer creation (happens during first checkout)
-- No UI changes in this phase - all API routes can be tested with curl/Postman
-- Run `npm run test` to verify usage limit tests pass
-- Run `npm run build` to verify no type errors
+```typescript
+// Free plan limits
+export const FREE_ITEM_LIMIT = 50;
+export const FREE_COLLECTION_LIMIT = 3;
+```
+
+### `.env.example`
+
+Add Stripe variables:
+
+```bash
+# Stripe
+STRIPE_SECRET_KEY=""
+STRIPE_PUBLISHABLE_KEY=""
+STRIPE_WEBHOOK_SECRET=""
+STRIPE_MONTHLY_PRICE_ID=""
+STRIPE_YEARLY_PRICE_ID=""
+```
+
+---
+
+## Notes & Decisions
+
+- **One DB query per session validation** — `isPro` is fetched on every JWT callback. This adds a single `SELECT` but means the session is always accurate after a webhook update. Without this, a user would need to sign out and back in after upgrading.
+- **`plan-limits.ts` imports constants** — keeps the magic numbers in one place (`constants.ts`) and makes the helpers testable without touching the DB values.
+- **No Stripe Dashboard setup required** — Phase 1 does not make any real Stripe API calls. Env vars can be empty strings locally until Phase 2.
