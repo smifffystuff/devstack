@@ -15,7 +15,7 @@ import {
 import { useSidebar } from './SidebarProvider';
 import { SidebarContent } from './Sidebar';
 import { useCommandPalette } from '@/components/search/CommandPaletteProvider';
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function TopBar() {
@@ -24,6 +24,7 @@ export default function TopBar() {
   const router = useRouter();
   const [newItemOpen, setNewItemOpen] = useState(false);
   const [newCollectionOpen, setNewCollectionOpen] = useState(false);
+  const sheetTriggerId = useId();
 
   return (
     <header className="flex items-center gap-2 md:gap-4 border-b border-border px-4 h-12 shrink-0 bg-background">
@@ -43,6 +44,7 @@ export default function TopBar() {
         <SheetTrigger
           render={
             <Button
+              id={sheetTriggerId}
               variant="ghost"
               size="icon"
               className="md:hidden size-7"
