@@ -1,16 +1,24 @@
-# Current Feature
+# Current Feature: Stripe Integration — Phase 1: Core Infrastructure
 
 ## Status
 
-Not Started
+Complete
 
 ## Goals
 
-<!-- Goals will be populated when a feature is loaded -->
+- Install `stripe` npm package and wire env vars
+- Expose `isPro` on the NextAuth session (synced from DB on every JWT validation)
+- Add plan-limit constants to `src/lib/constants.ts`
+- Create `src/lib/plan-limits.ts` with `checkItemLimit` / `checkCollectionLimit`
+- Unit tests covering both limit helpers
+- Update `.env.example` with all five Stripe variables
 
 ## Notes
 
-<!-- Notes will be populated when a feature is loaded -->
+- **One DB query per session validation** — `isPro` is fetched on every JWT callback so session is always accurate after a webhook update
+- **`plan-limits.ts` imports constants** — keeps magic numbers in one place (`constants.ts`) and makes helpers testable
+- **No Stripe Dashboard setup required** — Phase 1 makes no real Stripe API calls; env vars can be empty strings locally until Phase 2
+- Implementation order: install dep → env vars → `stripe.ts` → `next-auth.d.ts` → `auth.ts` callbacks → `constants.ts` → `plan-limits.ts` → unit tests
 
 ## History
 
