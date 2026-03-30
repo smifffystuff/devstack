@@ -11,6 +11,7 @@ import FileRow from "@/components/items/FileRow";
 import NewItemDialog from "@/components/items/NewItemDialog";
 import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Lock, Plus } from "lucide-react";
 
 export default async function ItemsTypePage({
@@ -43,9 +44,7 @@ export default async function ItemsTypePage({
         <p className="text-muted-foreground mb-6 max-w-md">
           Upgrade to Pro to upload and manage {type}s, along with unlimited items, collections, and AI features.
         </p>
-        <Button asChild>
-          <Link href="/dashboard/settings">Upgrade to Pro</Link>
-        </Button>
+        <Link href="/dashboard/settings" className={buttonVariants()}>Upgrade to Pro</Link>
       </div>
     );
   }

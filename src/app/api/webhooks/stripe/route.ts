@@ -58,6 +58,29 @@ export async function POST(request: Request) {
         );
         break;
       }
+
+      case "invoice.payment_succeeded": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const subscriptionId =
+          invoice.parent?.subscription_details?.subscription;
+        if (subscriptionId) {
+          await handlePaymentSucceeded(
+            invoice.customer as string,
+            subscriptionId as string
+          );
+        }
+        break;
+      }
+
+      case "invoice.payment_failed": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const hasSubscription =
+          invoice.parent?.subscription_details?.subscription;
+        if (hasSubscription) {
+          await handlePaymentFailed(invoice.customer as string);
+        }
+        break;
+      }
     }
   } catch {
     return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
@@ -87,5 +110,22 @@ async function handleSubscriptionStatusChange(
       isPro: isActive,
       stripeSubscriptionId: isActive ? subscriptionId : null,
     },
+  });
+}
+
+async function handlePaymentSucceeded(
+  customerId: string,
+  subscriptionId: string
+) {
+  await prisma.user.update({
+    where: { stripeCustomerId: customerId },
+    data: { isPro: true, stripeSubscriptionId: subscriptionId },
+  });
+}
+
+async function handlePaymentFailed(customerId: string) {
+  await prisma.user.update({
+    where: { stripeCustomerId: customerId },
+    data: { isPro: false, stripeSubscriptionId: null },
   });
 }
