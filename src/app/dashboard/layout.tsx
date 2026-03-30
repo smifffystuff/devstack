@@ -47,7 +47,7 @@ export default async function DashboardLayout({
         <ItemDrawerProvider>
           <CommandPaletteProvider>
             <div className="flex flex-col h-screen bg-background">
-              <TopBar />
+              <TopBar isPro={session.user.isPro ?? false} />
               <div className="flex flex-1 overflow-hidden">
                 <Sidebar />
                 <main className="flex-1 overflow-y-auto p-6">

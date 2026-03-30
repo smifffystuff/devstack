@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { auth } from "@/auth";
 import { getItemsByType, getItemTypeByName } from "@/lib/db/items";
 import { ITEMS_PER_PAGE } from "@/lib/constants";
@@ -10,9 +9,9 @@ import ImageCard from "@/components/items/ImageCard";
 import FileRow from "@/components/items/FileRow";
 import NewItemDialog from "@/components/items/NewItemDialog";
 import Pagination from "@/components/Pagination";
+import { UpgradePricing } from "@/components/dashboard/UpgradePricing";
 import { Button } from "@/components/ui/button";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { Lock, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export default async function ItemsTypePage({
   params,
@@ -34,17 +33,19 @@ export default async function ItemsTypePage({
 
   if (!isPro && PRO_ONLY_TYPES.includes(type)) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <div className="rounded-full bg-muted p-4 mb-4">
-          <Lock className="size-8 text-muted-foreground" />
+      <div className="max-w-3xl mx-auto py-8">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            {capitalize(type)}s are a Pro feature
+          </h1>
+          <p className="text-muted-foreground">
+            Upgrade to Pro to upload and manage {type}s, along with unlimited items, collections, and AI features.
+          </p>
         </div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          {capitalize(type)}s are a Pro feature
-        </h1>
-        <p className="text-muted-foreground mb-6 max-w-md">
-          Upgrade to Pro to upload and manage {type}s, along with unlimited items, collections, and AI features.
-        </p>
-        <Link href="/dashboard/settings" className={buttonVariants()}>Upgrade to Pro</Link>
+        <UpgradePricing
+          monthlyPriceId={process.env.STRIPE_PRICE_ID_MONTHLY!}
+          yearlyPriceId={process.env.STRIPE_PRICE_ID_YEARLY!}
+        />
       </div>
     );
   }

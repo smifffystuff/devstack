@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, PanelLeft, Star, Plus, FolderPlus } from 'lucide-react';
+import { Search, PanelLeft, Star, Plus, FolderPlus, Sparkles } from 'lucide-react';
 import NewItemDialog from '@/components/items/NewItemDialog';
 import NewCollectionDialog from '@/components/collections/NewCollectionDialog';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,11 @@ import { useCommandPalette } from '@/components/search/CommandPaletteProvider';
 import { useState, useId } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function TopBar() {
+interface TopBarProps {
+  isPro: boolean;
+}
+
+export default function TopBar({ isPro }: TopBarProps) {
   const { toggle, mobileOpen, setMobileOpen } = useSidebar();
   const { openPalette } = useCommandPalette();
   const router = useRouter();
@@ -97,6 +101,14 @@ export default function TopBar() {
 
       {/* Desktop actions */}
       <div className="hidden md:flex items-center gap-2 ml-auto">
+        {!isPro && (
+          <Link href="/dashboard/upgrade">
+            <Button variant="ghost" size="sm" className="text-muted-foreground gap-1.5">
+              <Sparkles className="size-3.5" />
+              Upgrade
+            </Button>
+          </Link>
+        )}
         <Link href="/dashboard/favorites">
           <Button
             variant="ghost"
@@ -133,6 +145,12 @@ export default function TopBar() {
               <Star className="size-4 mr-2" />
               Favorites
             </DropdownMenuItem>
+            {!isPro && (
+              <DropdownMenuItem onClick={() => router.push('/dashboard/upgrade')}>
+                <Sparkles className="size-4 mr-2" />
+                Upgrade
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 
