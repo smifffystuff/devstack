@@ -12,6 +12,16 @@ vi.mock("@/lib/db/items", () => ({
   toggleItemPin: vi.fn(),
 }));
 
+vi.mock("@/lib/prisma", () => ({
+  prisma: {
+    item: { count: vi.fn() },
+  },
+}));
+
+vi.mock("@/lib/constants", () => ({
+  FREE_ITEM_LIMIT: 50,
+}));
+
 import { auth } from "@/auth";
 import {
   createItem as createItemQuery,

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ChangePasswordButton from "@/components/profile/ChangePasswordButton";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import EditorPreferencesCard from "@/components/settings/EditorPreferencesCard";
+import { BillingCard } from "@/components/dashboard/BillingCard";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -14,6 +15,7 @@ export default async function SettingsPage() {
   }
 
   const user = await getProfileUser(session.user.id);
+  const isPro = session.user.isPro ?? false;
 
   return (
     <div className="space-y-8 max-w-4xl">
@@ -23,6 +25,13 @@ export default async function SettingsPage() {
           Manage your account settings
         </p>
       </div>
+
+      {/* Billing */}
+      <BillingCard
+        isPro={isPro}
+        monthlyPriceId={process.env.STRIPE_PRICE_ID_MONTHLY!}
+        yearlyPriceId={process.env.STRIPE_PRICE_ID_YEARLY!}
+      />
 
       {/* Change Password */}
       {user.hasPassword && (

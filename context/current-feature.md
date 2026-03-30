@@ -1,16 +1,30 @@
-# Current Feature
+# Current Feature — Stripe Phase 2: Webhooks, Feature Gating & Billing UI
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be populated when a feature is loaded -->
+- Create checkout session API route (`/api/stripe/checkout`)
+- Create customer portal API route (`/api/stripe/portal`)
+- Create webhook handler (`/api/webhooks/stripe`)
+- Enforce item limit in `createItem` server action
+- Enforce collection limit in `createCollection` server action
+- Enforce file upload restriction in `/api/items/upload`
+- Add `BillingCard` component
+- Wire `BillingCard` into the settings page
 
 ## Notes
 
-<!-- Notes will be populated when a feature is loaded -->
+- **Implementation order:** checkout route → portal route → webhook handler → plan limits in items/collections actions → file upload restriction → BillingCard → settings page
+- **Raw body for webhook:** must use `request.text()` (not `.json()`); Stripe signature verification requires exact raw bytes
+- **`export const dynamic = "force-dynamic"` on webhook route** — required so Next.js doesn't cache or pre-render it
+- **File upload check must be in the upload route**, not just the server action — the file hits R2 before the action runs
+- **`stripeSubscriptionId` set to `null` on cancellation** — keeps `stripeCustomerId` intact so re-subscribing reuses the same Stripe customer
+- **Limit error messages are intentionally descriptive** — a follow-up task can add an "Upgrade" link to the toast
+- **Stripe Dashboard setup required** (manual steps): product "DevStash Pro", monthly £8/mo and yearly £72/yr prices, Customer Portal enabled, webhook forwarding via `stripe listen`
+- Webhook events to handle: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
 
 ## History
 

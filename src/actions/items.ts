@@ -10,11 +10,23 @@ import {
 } from "@/lib/db/items";
 import { createItemSchema, updateItemSchema } from "@/lib/validations/items";
 import { deleteFromR2 } from "@/lib/r2";
+import { prisma } from "@/lib/prisma";
+import { FREE_ITEM_LIMIT } from "@/lib/constants";
 
 export async function createItem(formData: unknown) {
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" };
+  }
+
+  if (!session.user.isPro) {
+    const count = await prisma.item.count({ where: { userId: session.user.id } });
+    if (count >= FREE_ITEM_LIMIT) {
+      return {
+        success: false,
+        error: `Free plan is limited to ${FREE_ITEM_LIMIT} items. Upgrade to Pro for unlimited items.`,
+      };
+    }
   }
 
   const parsed = createItemSchema.safeParse(formData);
