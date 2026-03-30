@@ -12,6 +12,16 @@ vi.mock("@/lib/db/collections", () => ({
   toggleCollectionFavorite: vi.fn(),
 }));
 
+vi.mock("@/lib/prisma", () => ({
+  prisma: {
+    collection: { count: vi.fn() },
+  },
+}));
+
+vi.mock("@/lib/constants", () => ({
+  FREE_COLLECTION_LIMIT: 3,
+}));
+
 import { auth } from "@/auth";
 import { toggleCollectionFavorite as toggleCollectionFavoriteQuery } from "@/lib/db/collections";
 import { toggleFavoriteCollection } from "./collections";

@@ -12,6 +12,8 @@ import {
   createCollectionSchema,
   updateCollectionSchema,
 } from "@/lib/validations/collections";
+import { prisma } from "@/lib/prisma";
+import { FREE_COLLECTION_LIMIT } from "@/lib/constants";
 
 export async function getCollections() {
   const session = await auth();
@@ -92,6 +94,16 @@ export async function createCollection(formData: unknown) {
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" };
+  }
+
+  if (!session.user.isPro) {
+    const count = await prisma.collection.count({ where: { userId: session.user.id } });
+    if (count >= FREE_COLLECTION_LIMIT) {
+      return {
+        success: false,
+        error: `Free plan is limited to ${FREE_COLLECTION_LIMIT} collections. Upgrade to Pro for unlimited collections.`,
+      };
+    }
   }
 
   const parsed = createCollectionSchema.safeParse(formData);

@@ -27,6 +27,13 @@ export async function POST(request: Request) {
     );
   }
 
+  if (!session.user.isPro && uploadType === "file") {
+    return NextResponse.json(
+      { error: "File uploads require a Pro subscription" },
+      { status: 403 },
+    );
+  }
+
   const validationError = validateFile(file, uploadType);
   if (validationError) {
     return NextResponse.json({ error: validationError }, { status: 400 });
