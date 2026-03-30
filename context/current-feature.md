@@ -1,30 +1,16 @@
-# Current Feature — Stripe Phase 2: Webhooks, Feature Gating & Billing UI
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create checkout session API route (`/api/stripe/checkout`)
-- Create customer portal API route (`/api/stripe/portal`)
-- Create webhook handler (`/api/webhooks/stripe`)
-- Enforce item limit in `createItem` server action
-- Enforce collection limit in `createCollection` server action
-- Enforce file upload restriction in `/api/items/upload`
-- Add `BillingCard` component
-- Wire `BillingCard` into the settings page
+<!-- Goals will be populated by /feature load -->
 
 ## Notes
 
-- **Implementation order:** checkout route → portal route → webhook handler → plan limits in items/collections actions → file upload restriction → BillingCard → settings page
-- **Raw body for webhook:** must use `request.text()` (not `.json()`); Stripe signature verification requires exact raw bytes
-- **`export const dynamic = "force-dynamic"` on webhook route** — required so Next.js doesn't cache or pre-render it
-- **File upload check must be in the upload route**, not just the server action — the file hits R2 before the action runs
-- **`stripeSubscriptionId` set to `null` on cancellation** — keeps `stripeCustomerId` intact so re-subscribing reuses the same Stripe customer
-- **Limit error messages are intentionally descriptive** — a follow-up task can add an "Upgrade" link to the toast
-- **Stripe Dashboard setup required** (manual steps): product "DevStash Pro", monthly £8/mo and yearly £72/yr prices, Customer Portal enabled, webhook forwarding via `stripe listen`
-- Webhook events to handle: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
+<!-- Notes will be populated by /feature load -->
 
 ## History
 
@@ -89,3 +75,4 @@ In Progress
 - 2026-03-27: Completed TopBar Mobile Responsiveness — search collapses to icon-only on mobile, desktop action buttons hidden on mobile, mobile overflow + dropdown with New Item/New Collection/Favorites, controlled open/onOpenChange props added to NewItemDialog and NewCollectionDialog, gap-2 md:gap-4 on header
 - 2026-03-29: Completed Auth Pages NavBar & Logo Update — homepage NavBar added to (auth) layout with pt-20 spacing, DS indigo box replaced with SVG icon in dashboard TopBar, NavBar anchor links updated to /#features and /#pricing for cross-page navigation
 - 2026-03-29: Completed Stripe Phase 1 — stripe package installed, isPro synced from DB on every JWT validation, FREE_ITEM_LIMIT/FREE_COLLECTION_LIMIT constants, checkItemLimit/checkCollectionLimit helpers in plan-limits.ts, 8 unit tests, .env.example updated with 5 Stripe vars
+- 2026-03-30: Completed Stripe Phase 2 — checkout session and customer portal API routes, webhook handler for checkout.session.completed/subscription.updated/subscription.deleted, free plan limits enforced in createItem/createCollection server actions and file upload route, BillingCard component with upgrade and manage billing buttons wired into settings page
