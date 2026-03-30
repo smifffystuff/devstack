@@ -65,9 +65,7 @@ async function main() {
   const collectionsData = [
     { name: "React Patterns", description: "Reusable React patterns and hooks", isFavorite: true },
     { name: "AI Workflows", description: "AI prompts and workflow automations" },
-    { name: "DevOps", description: "Infrastructure and deployment resources" },
     { name: "Terminal Commands", description: "Useful shell commands for everyday development" },
-    { name: "Design Resources", description: "UI/UX resources and references" },
   ];
 
   const collections: Record<string, string> = {};
@@ -84,9 +82,7 @@ async function main() {
   const tagNames = [
     "react", "hooks", "typescript", "state", "context",
     "ai", "code-review", "documentation", "refactoring",
-    "docker", "ci-cd", "deployment", "kubernetes",
-    "git", "shell", "npm", "process",
-    "css", "tailwind", "design", "ui", "icons",
+    "docker", "git", "shell", "npm", "process",
   ];
 
   const tags: Record<string, string> = {};
@@ -284,76 +280,6 @@ Keep the public API unchanged unless explicitly asked.
 
   console.log("  ✓ Created AI Workflows items");
 
-  // ── DevOps (1 snippet, 1 command, 2 links) ──────────────────────
-
-  await createItem({
-    title: "Multi-stage Dockerfile",
-    description: "Production-ready multi-stage Docker build for Node.js",
-    contentType: "text",
-    language: "dockerfile",
-    typeId: types["snippet"],
-    collectionId: collections["DevOps"],
-    isFavorite: true,
-    tagNames: ["docker", "deployment"],
-    content: `FROM node:20-alpine AS base
-WORKDIR /app
-COPY package*.json ./
-
-FROM base AS deps
-RUN npm ci --omit=dev
-
-FROM base AS build
-RUN npm ci
-COPY . .
-RUN npm run build
-
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/package.json ./
-EXPOSE 3000
-CMD ["npm", "start"]`,
-  });
-
-  await createItem({
-    title: "Deploy with Health Check",
-    description: "Docker compose deploy with health check and auto-restart",
-    contentType: "text",
-    language: "bash",
-    typeId: types["command"],
-    collectionId: collections["DevOps"],
-    tagNames: ["docker", "deployment", "ci-cd"],
-    content: `docker compose up -d --build --wait && \\
-  docker compose ps && \\
-  curl -sf http://localhost:3000/api/health || \\
-  (echo "Health check failed!" && docker compose logs --tail=50 && exit 1)`,
-  });
-
-  await createItem({
-    title: "Kubernetes Documentation",
-    description: "Official Kubernetes concepts and reference documentation",
-    contentType: "text",
-    typeId: types["link"],
-    collectionId: collections["DevOps"],
-    url: "https://kubernetes.io/docs/concepts/",
-    tagNames: ["kubernetes", "deployment"],
-  });
-
-  await createItem({
-    title: "GitHub Actions Docs",
-    description: "GitHub Actions workflow syntax and reference",
-    contentType: "text",
-    typeId: types["link"],
-    collectionId: collections["DevOps"],
-    url: "https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions",
-    tagNames: ["ci-cd", "deployment"],
-  });
-
-  console.log("  ✓ Created DevOps items");
-
   // ── Terminal Commands (4 commands) ───────────────────────────────
 
   await createItem({
@@ -403,51 +329,6 @@ CMD ["npm", "start"]`,
   });
 
   console.log("  ✓ Created Terminal Commands items");
-
-  // ── Design Resources (4 links) ──────────────────────────────────
-
-  await createItem({
-    title: "Tailwind CSS Documentation",
-    description: "Official Tailwind CSS utility class reference",
-    contentType: "text",
-    typeId: types["link"],
-    collectionId: collections["Design Resources"],
-    isFavorite: true,
-    url: "https://tailwindcss.com/docs",
-    tagNames: ["tailwind", "css"],
-  });
-
-  await createItem({
-    title: "shadcn/ui Components",
-    description: "Beautifully designed components built with Radix and Tailwind",
-    contentType: "text",
-    typeId: types["link"],
-    collectionId: collections["Design Resources"],
-    url: "https://ui.shadcn.com/docs/components",
-    tagNames: ["ui", "design"],
-  });
-
-  await createItem({
-    title: "Radix UI Primitives",
-    description: "Unstyled, accessible UI primitives for React",
-    contentType: "text",
-    typeId: types["link"],
-    collectionId: collections["Design Resources"],
-    url: "https://www.radix-ui.com/primitives/docs/overview/introduction",
-    tagNames: ["ui", "design"],
-  });
-
-  await createItem({
-    title: "Lucide Icons",
-    description: "Beautiful and consistent open-source icon library",
-    contentType: "text",
-    typeId: types["link"],
-    collectionId: collections["Design Resources"],
-    url: "https://lucide.dev/icons",
-    tagNames: ["icons", "design"],
-  });
-
-  console.log("  ✓ Created Design Resources items");
 
   console.log("\n✅ Seeding complete!");
 }

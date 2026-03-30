@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { auth } from "@/auth";
 import { getItemsByType, getItemTypeByName } from "@/lib/db/items";
 import { ITEMS_PER_PAGE } from "@/lib/constants";
@@ -10,7 +11,7 @@ import FileRow from "@/components/items/FileRow";
 import NewItemDialog from "@/components/items/NewItemDialog";
 import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Lock, Plus } from "lucide-react";
 
 export default async function ItemsTypePage({
   params,
@@ -25,6 +26,28 @@ export default async function ItemsTypePage({
   const session = await auth();
   if (!session?.user?.id) {
     return null;
+  }
+
+  const PRO_ONLY_TYPES = ["file", "image"];
+  const isPro = session.user.isPro ?? false;
+
+  if (!isPro && PRO_ONLY_TYPES.includes(type)) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <div className="rounded-full bg-muted p-4 mb-4">
+          <Lock className="size-8 text-muted-foreground" />
+        </div>
+        <h1 className="text-2xl font-bold text-foreground mb-2">
+          {capitalize(type)}s are a Pro feature
+        </h1>
+        <p className="text-muted-foreground mb-6 max-w-md">
+          Upgrade to Pro to upload and manage {type}s, along with unlimited items, collections, and AI features.
+        </p>
+        <Button asChild>
+          <Link href="/dashboard/settings">Upgrade to Pro</Link>
+        </Button>
+      </div>
+    );
   }
 
   const typeInfo = await getItemTypeByName(type);
