@@ -17,8 +17,10 @@ export function useItemDrawer() {
 
 export default function ItemDrawerProvider({
   children,
+  isPro = false,
 }: {
   children: React.ReactNode;
+  isPro?: boolean;
 }) {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
@@ -28,7 +30,7 @@ export default function ItemDrawerProvider({
   return (
     <ItemDrawerContext value={{ openItem }}>
       {children}
-      <ItemDrawer itemId={selectedItemId} onClose={closeItem} />
+      <ItemDrawer itemId={selectedItemId} onClose={closeItem} isPro={isPro} />
     </ItemDrawerContext>
   );
 }

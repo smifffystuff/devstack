@@ -16,18 +16,21 @@ import { toast } from "sonner";
 import { CONTENT_TYPES, LANGUAGE_TYPES } from "@/lib/item-type-constants";
 import ItemTypeFields from "./ItemTypeFields";
 import CollectionSelect from "./CollectionSelect";
+import SuggestTagsButton from "@/components/ai/SuggestTagsButton";
 import type { ItemDetail } from "@/lib/db/items";
 
 interface ItemDrawerEditProps {
   item: ItemDetail;
   onCancel: () => void;
   onSaved: (updated: ItemDetail) => void;
+  isPro?: boolean;
 }
 
 export default function ItemDrawerEdit({
   item,
   onCancel,
   onSaved,
+  isPro = false,
 }: ItemDrawerEditProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -147,7 +150,23 @@ export default function ItemDrawerEdit({
         />
 
         <div className="space-y-1.5">
-          <Label htmlFor="edit-tags">Tags</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="edit-tags">Tags</Label>
+            {isPro && (
+              <SuggestTagsButton
+                title={title}
+                content={content}
+                onAccept={(suggested) => {
+                  const existing = tagsInput
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter(Boolean);
+                  const merged = [...new Set([...existing, ...suggested])];
+                  setTagsInput(merged.join(", "));
+                }}
+              />
+            )}
+          </div>
           <Input
             id="edit-tags"
             value={tagsInput}

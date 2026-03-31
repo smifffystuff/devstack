@@ -75,6 +75,7 @@ export default async function ItemsTypePage({
         <div className="flex-1" />
         <NewItemDialog
           defaultType={type}
+          isPro={isPro}
           trigger={
             <Button size="sm" className="gap-1.5 text-xs h-8">
               <Plus className="size-3.5" />

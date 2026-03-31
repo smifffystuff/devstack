@@ -120,7 +120,7 @@ export default function TopBar({ isPro }: TopBarProps) {
           </Button>
         </Link>
         <NewCollectionDialog />
-        <NewItemDialog />
+        <NewItemDialog isPro={isPro} />
       </div>
 
       {/* Mobile overflow menu */}
@@ -156,7 +156,7 @@ export default function TopBar({ isPro }: TopBarProps) {
 
         {/* Dialogs controlled by mobile overflow menu */}
         <NewCollectionDialog open={newCollectionOpen} onOpenChange={setNewCollectionOpen} />
-        <NewItemDialog open={newItemOpen} onOpenChange={setNewItemOpen} />
+        <NewItemDialog isPro={isPro} open={newItemOpen} onOpenChange={setNewItemOpen} />
       </div>
     </header>
   );

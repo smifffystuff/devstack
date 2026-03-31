@@ -20,9 +20,10 @@ import type { ItemDetail } from "@/lib/db/items";
 interface ItemDrawerProps {
   itemId: string | null;
   onClose: () => void;
+  isPro?: boolean;
 }
 
-export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
+export default function ItemDrawer({ itemId, onClose, isPro = false }: ItemDrawerProps) {
   const [item, setItem] = useState<ItemDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -64,6 +65,7 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
           editing ? (
             <ItemDrawerEdit
               item={item}
+              isPro={isPro}
               onCancel={() => setEditing(false)}
               onSaved={(updated) => {
                 setItem({

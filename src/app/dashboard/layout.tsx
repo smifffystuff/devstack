@@ -44,7 +44,7 @@ export default async function DashboardLayout({
   return (
     <SidebarProvider data={sidebarData}>
       <EditorPreferencesProvider initialPreferences={editorPreferences}>
-        <ItemDrawerProvider>
+        <ItemDrawerProvider isPro={session.user.isPro ?? false}>
           <CommandPaletteProvider>
             <div className="flex flex-col h-screen bg-background">
               <TopBar isPro={session.user.isPro ?? false} />

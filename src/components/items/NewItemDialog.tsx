@@ -21,15 +21,17 @@ import { CONTENT_TYPES, LANGUAGE_TYPES } from "@/lib/item-type-constants";
 import ItemTypeSelector, { ITEM_TYPES } from "./ItemTypeSelector";
 import ItemTypeFields from "./ItemTypeFields";
 import CollectionSelect from "./CollectionSelect";
+import SuggestTagsButton from "@/components/ai/SuggestTagsButton";
 
 interface NewItemDialogProps {
   defaultType?: string;
   trigger?: React.ReactElement;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  isPro?: boolean;
 }
 
-export default function NewItemDialog({ defaultType, trigger, open: controlledOpen, onOpenChange: controlledOnOpenChange }: NewItemDialogProps) {
+export default function NewItemDialog({ defaultType, trigger, open: controlledOpen, onOpenChange: controlledOnOpenChange, isPro = false }: NewItemDialogProps) {
   const resolvedDefault = ITEM_TYPES.find(
     (t) => t.name.toLowerCase() === defaultType?.toLowerCase()
   )?.name ?? "Snippet";
@@ -209,7 +211,23 @@ export default function NewItemDialog({ defaultType, trigger, open: controlledOp
           />
 
           <div className="space-y-1.5">
-            <Label htmlFor="new-tags">Tags</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="new-tags">Tags</Label>
+              {isPro && (
+                <SuggestTagsButton
+                  title={title}
+                  content={content}
+                  onAccept={(suggested) => {
+                    const existing = tagsInput
+                      .split(",")
+                      .map((t) => t.trim())
+                      .filter(Boolean);
+                    const merged = [...new Set([...existing, ...suggested])];
+                    setTagsInput(merged.join(", "));
+                  }}
+                />
+              )}
+            </div>
             <Input
               id="new-tags"
               value={tagsInput}
