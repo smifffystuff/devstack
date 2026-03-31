@@ -30,6 +30,7 @@ const limiters = {
   forgotPassword: () => createLimiter("forgot-password", 3, "1 h"),
   resetPassword: () => createLimiter("reset-password", 5, "15 m"),
   resendVerification: () => createLimiter("resend-verification", 3, "15 m"),
+  ai: () => createLimiter("ai", 20, "1 h"),
 } as const
 
 export type RateLimitEndpoint = keyof typeof limiters

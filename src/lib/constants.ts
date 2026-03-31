@@ -6,3 +6,6 @@ export const DASHBOARD_RECENT_ITEMS_LIMIT = 10;
 // Free plan limits
 export const FREE_ITEM_LIMIT = 50;
 export const FREE_COLLECTION_LIMIT = 3;
+
+// AI
+export const AI_CONTENT_TRUNCATE_CHARS = 2000;

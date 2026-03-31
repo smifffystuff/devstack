@@ -1,16 +1,31 @@
-# Current Feature
+# Current Feature: AI Auto-Tagging
 
 ## Status
 
-Not Started
+Complete
 
 ## Goals
 
-<!-- Goals will be populated by /feature load -->
+- Create OpenAI client utility with `AI_MODEL` constant (establish AI foundation if first AI feature)
+- Create `generateAutoTags` server action with auth, Pro gating, Zod validation, rate limiting
+- Add AI rate limit config (20 req/hr per user) to existing rate limit utility
+- Add "Suggest Tags" button (Sparkles icon, ghost variant) near tags input in create dialog and edit drawer
+- Display suggested tags as badges with accept/reject controls
+- Accepted tags added to item's tag list (freeform, not limited to existing DB tags)
+- Truncate content to 2000 chars before API call
+- Hide Suggest Tags button for free users (Pro-only)
+- Error handling via toast (Pro gating, rate limit, AI errors)
+- Unit tests for server action
 
 ## Notes
 
-<!-- Notes will be populated by /feature load -->
+- MUST use OpenAI **Responses API** (`client.responses.create()`), NOT Chat Completions — gpt-5-nano returns empty content with Chat Completions
+- Use `text: { format: { type: 'json_object' } }` for structured output, parse manually (zodResponseFormat hits token limits)
+- Handle both `{"tags": [...]}` and `[...]` response formats, normalize to lowercase
+- `OPENAI_API_KEY` already in `.env`
+- `isPro` available server-side via session but not in create/edit UI — needs prop passing or client-side fetch for UI gating
+- See `docs/ai-integration-plan.md` for architectural context
+- Use raw openai SDK, not Vercel AI SDK
 
 ## History
 
