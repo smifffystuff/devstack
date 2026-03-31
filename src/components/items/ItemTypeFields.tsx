@@ -1,10 +1,17 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import CodeEditor from "./CodeEditor";
 import MarkdownEditor from "./MarkdownEditor";
 import FileUpload from "./FileUpload";
-import { CONTENT_TYPES, LANGUAGE_TYPES, MARKDOWN_TYPES } from "@/lib/item-type-constants";
+import { CONTENT_TYPES, LANGUAGE_TYPES, LANGUAGES, MARKDOWN_TYPES } from "@/lib/item-type-constants";
 
 interface ItemTypeFieldsProps {
   typeName: string;
@@ -40,6 +47,27 @@ export default function ItemTypeFields({
 
   return (
     <>
+      {showLanguage && (
+        <div className="space-y-1.5">
+          <Label htmlFor={`${idPrefix}-language`}>Language</Label>
+          <Select
+            value={language}
+            onValueChange={(v) => onLanguageChange(v ?? "")}
+          >
+            <SelectTrigger id={`${idPrefix}-language`} className="w-full">
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent>
+              {LANGUAGES.map((lang) => (
+                <SelectItem key={lang} value={lang.toLowerCase()}>
+                  {lang}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
       {showContent && (
         <div className="space-y-1.5">
           <Label htmlFor={`${idPrefix}-content`}>Content</Label>
@@ -64,18 +92,6 @@ export default function ItemTypeFields({
               className="font-mono text-sm"
             />
           )}
-        </div>
-      )}
-
-      {showLanguage && (
-        <div className="space-y-1.5">
-          <Label htmlFor={`${idPrefix}-language`}>Language</Label>
-          <Input
-            id={`${idPrefix}-language`}
-            value={language}
-            onChange={(e) => onLanguageChange(e.target.value)}
-            placeholder="e.g. javascript, python"
-          />
         </div>
       )}
 

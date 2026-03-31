@@ -2,11 +2,13 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be populated by /feature load -->
+- Add a language selector dropdown above the code editor for snippets and commands
+- Language selection enables syntax highlighting as the user types
+- Works in both the New Item dialog and the Item Drawer edit mode
 
 ## Notes
 
