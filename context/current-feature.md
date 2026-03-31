@@ -1,31 +1,16 @@
-# Current Feature: AI Auto-Tagging
+# Current Feature
 
 ## Status
 
-Complete
+Not Started
 
 ## Goals
 
-- Create OpenAI client utility with `AI_MODEL` constant (establish AI foundation if first AI feature)
-- Create `generateAutoTags` server action with auth, Pro gating, Zod validation, rate limiting
-- Add AI rate limit config (20 req/hr per user) to existing rate limit utility
-- Add "Suggest Tags" button (Sparkles icon, ghost variant) near tags input in create dialog and edit drawer
-- Display suggested tags as badges with accept/reject controls
-- Accepted tags added to item's tag list (freeform, not limited to existing DB tags)
-- Truncate content to 2000 chars before API call
-- Hide Suggest Tags button for free users (Pro-only)
-- Error handling via toast (Pro gating, rate limit, AI errors)
-- Unit tests for server action
+<!-- Goals will be populated by /feature load -->
 
 ## Notes
 
-- MUST use OpenAI **Responses API** (`client.responses.create()`), NOT Chat Completions — gpt-5-nano returns empty content with Chat Completions
-- Use `text: { format: { type: 'json_object' } }` for structured output, parse manually (zodResponseFormat hits token limits)
-- Handle both `{"tags": [...]}` and `[...]` response formats, normalize to lowercase
-- `OPENAI_API_KEY` already in `.env`
-- `isPro` available server-side via session but not in create/edit UI — needs prop passing or client-side fetch for UI gating
-- See `docs/ai-integration-plan.md` for architectural context
-- Use raw openai SDK, not Vercel AI SDK
+<!-- Notes will be populated by /feature load -->
 
 ## History
 
@@ -92,3 +77,4 @@ Complete
 - 2026-03-29: Completed Stripe Phase 1 — stripe package installed, isPro synced from DB on every JWT validation, FREE_ITEM_LIMIT/FREE_COLLECTION_LIMIT constants, checkItemLimit/checkCollectionLimit helpers in plan-limits.ts, 8 unit tests, .env.example updated with 5 Stripe vars
 - 2026-03-30: Completed Stripe Phase 2 — checkout session and customer portal API routes, webhook handler for checkout.session.completed/subscription.updated/subscription.deleted, free plan limits enforced in createItem/createCollection server actions and file upload route, BillingCard component with upgrade and manage billing buttons wired into settings page
 - 2026-03-31: Completed Language Selector — Replaced free-text language input with Select dropdown for snippets/commands, moved above code editor for immediate syntax highlighting, LANGUAGES constant with 34 languages, works in New Item dialog and Item Drawer edit mode
+- 2026-03-31: Completed AI Auto-Tagging — OpenAI client (src/lib/ai.ts) with Responses API and gpt-5-nano, generateAutoTags server action with auth/Pro gating/rate limiting (20 req/hr), SuggestTagsButton component with accept/reject badge UI, isPro threaded through ItemDrawerProvider→ItemDrawer→ItemDrawerEdit and TopBar→NewItemDialog, AI_CONTENT_TRUNCATE_CHARS constant, 11 unit tests
