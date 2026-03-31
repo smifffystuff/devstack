@@ -2,13 +2,11 @@
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a language selector dropdown above the code editor for snippets and commands
-- Language selection enables syntax highlighting as the user types
-- Works in both the New Item dialog and the Item Drawer edit mode
+<!-- Goals will be populated by /feature load -->
 
 ## Notes
 
@@ -78,3 +76,4 @@ In Progress
 - 2026-03-29: Completed Auth Pages NavBar & Logo Update — homepage NavBar added to (auth) layout with pt-20 spacing, DS indigo box replaced with SVG icon in dashboard TopBar, NavBar anchor links updated to /#features and /#pricing for cross-page navigation
 - 2026-03-29: Completed Stripe Phase 1 — stripe package installed, isPro synced from DB on every JWT validation, FREE_ITEM_LIMIT/FREE_COLLECTION_LIMIT constants, checkItemLimit/checkCollectionLimit helpers in plan-limits.ts, 8 unit tests, .env.example updated with 5 Stripe vars
 - 2026-03-30: Completed Stripe Phase 2 — checkout session and customer portal API routes, webhook handler for checkout.session.completed/subscription.updated/subscription.deleted, free plan limits enforced in createItem/createCollection server actions and file upload route, BillingCard component with upgrade and manage billing buttons wired into settings page
+- 2026-03-31: Completed Language Selector — Replaced free-text language input with Select dropdown for snippets/commands, moved above code editor for immediate syntax highlighting, LANGUAGES constant with 34 languages, works in New Item dialog and Item Drawer edit mode
