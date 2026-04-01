@@ -1,27 +1,16 @@
-# Current Feature: AI Description Generator
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add an icon button (sparkle/wand) next to the description field in both NewItemDialog and ItemDrawerEdit
-- Clicking the button calls an AI action that reads the current title + content/url/language inputs (whatever is available for that item type) and generates a 1–2 sentence description
-- The generated description is written into the description field immediately — no save required
-- Works for all item types: snippet, prompt, note, command, link, file, image
-- Pro-gated with rate limiting (consistent with existing AI features)
-- Button shows a loading spinner while generating; disables during request
-- Toast on error; no toast on success (field update is the feedback)
+<!-- Goals will be populated by /feature load -->
 
 ## Notes
 
-- Follow the same pattern as `generateAutoTags` / `SuggestTagsButton` for Pro gating and rate limiting
-- Use OpenAI gpt-5-nano via `src/lib/ai.ts`
-- Truncate content before sending (use `AI_CONTENT_TRUNCATE_CHARS` constant)
-- Server action: `generateDescription` in `src/actions/ai.ts`
-- New component: `GenerateDescriptionButton` — small icon-only button placed inline with the description label
-- No new Zod validation tests needed beyond the action's input guard; do add unit tests for the action logic
+<!-- Notes will be populated by /feature load -->
 
 ## History
 
@@ -89,3 +78,4 @@ In Progress
 - 2026-03-30: Completed Stripe Phase 2 — checkout session and customer portal API routes, webhook handler for checkout.session.completed/subscription.updated/subscription.deleted, free plan limits enforced in createItem/createCollection server actions and file upload route, BillingCard component with upgrade and manage billing buttons wired into settings page
 - 2026-03-31: Completed Language Selector — Replaced free-text language input with Select dropdown for snippets/commands, moved above code editor for immediate syntax highlighting, LANGUAGES constant with 34 languages, works in New Item dialog and Item Drawer edit mode
 - 2026-03-31: Completed AI Auto-Tagging — OpenAI client (src/lib/ai.ts) with Responses API and gpt-5-nano, generateAutoTags server action with auth/Pro gating/rate limiting (20 req/hr), SuggestTagsButton component with accept/reject badge UI, isPro threaded through ItemDrawerProvider→ItemDrawer→ItemDrawerEdit and TopBar→NewItemDialog, AI_CONTENT_TRUNCATE_CHARS constant, 11 unit tests
+- 2026-03-31: Completed AI Description Generator — generateDescription server action with auth/Pro gating/rate limiting, GenerateDescriptionButton component (sparkle icon, "Generate Description" label, spinner on load), wired into NewItemDialog and ItemDrawerEdit description fields for all item types, 9 unit tests
