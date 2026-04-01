@@ -112,7 +112,7 @@ export default function ItemDrawer({ itemId, onClose, isPro = false }: ItemDrawe
 
               <Separator className="mx-4" />
 
-              <ItemDrawerContent item={item} />
+              <ItemDrawerContent item={item} isPro={isPro} />
             </>
           )
         ) : (

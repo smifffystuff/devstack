@@ -8,12 +8,14 @@ interface MacOSWindowHeaderProps {
   label?: string;
   copyValue?: string;
   children?: React.ReactNode;
+  extraActions?: React.ReactNode;
 }
 
 export default function MacOSWindowHeader({
   label,
   copyValue,
   children,
+  extraActions,
 }: MacOSWindowHeaderProps) {
   const [copied, setCopied] = useState(false);
 
@@ -41,21 +43,24 @@ export default function MacOSWindowHeader({
           label && <span className="text-xs text-zinc-500 ml-2">{label}</span>
         )}
       </div>
-      {copyValue !== undefined && (
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-          aria-label="Copy content"
-        >
-          {copied ? (
-            <Check className="size-3.5" />
-          ) : (
-            <Copy className="size-3.5" />
-          )}
-          {copied ? "Copied" : "Copy"}
-        </button>
-      )}
+      <div className="flex items-center gap-2">
+        {extraActions}
+        {copyValue !== undefined && (
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+            aria-label="Copy content"
+          >
+            {copied ? (
+              <Check className="size-3.5" />
+            ) : (
+              <Copy className="size-3.5" />
+            )}
+            {copied ? "Copied" : "Copy"}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

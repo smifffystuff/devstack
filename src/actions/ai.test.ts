@@ -24,7 +24,7 @@ vi.mock("@/lib/constants", () => ({
 import { auth } from "@/auth";
 import { openai } from "@/lib/ai";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { generateAutoTags, generateDescription } from "./ai";
+import { generateAutoTags, generateDescription, explainCode } from "./ai";
 
 const mockAuth = vi.mocked(auth);
 const mockResponsesCreate = vi.mocked(openai.responses.create);
@@ -268,5 +268,112 @@ describe("generateDescription", () => {
 
     const callArg = mockResponsesCreate.mock.calls[0][0] as { input: string };
     expect(callArg.input.length).toBeLessThan(longContent.length + 100);
+  });
+});
+
+describe("explainCode", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockCheckRateLimit.mockResolvedValue({ success: true, remaining: 19, reset: 0 });
+  });
+
+  it("returns unauthorized when not authenticated", async () => {
+    mockAuth.mockResolvedValue(null as never);
+
+    const result = await explainCode({ title: "My snippet", content: "console.log('hi')" });
+
+    expect(result).toEqual({ success: false, error: "Unauthorized" });
+  });
+
+  it("returns error for free users", async () => {
+    mockAuth.mockResolvedValue(freeSession as never);
+
+    const result = await explainCode({ title: "My snippet", content: "console.log('hi')" });
+
+    expect(result).toEqual({ success: false, error: "AI features require a Pro plan." });
+  });
+
+  it("returns error when rate limit exceeded", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockCheckRateLimit.mockResolvedValue({ success: false, remaining: 0, reset: Date.now() + 3600000 });
+
+    const result = await explainCode({ title: "My snippet", content: "console.log('hi')" });
+
+    expect(result).toEqual({
+      success: false,
+      error: "You've reached the AI usage limit. Please try again later.",
+    });
+  });
+
+  it("returns error for invalid input (empty title)", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+
+    const result = await explainCode({ title: "", content: "console.log('hi')" });
+
+    expect(result).toEqual({ success: false, error: "Invalid input." });
+  });
+
+  it("returns error for invalid input (empty content)", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+
+    const result = await explainCode({ title: "My snippet", content: "" });
+
+    expect(result).toEqual({ success: false, error: "Invalid input." });
+  });
+
+  it("returns explanation on success", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({
+      output_text: "This snippet logs a greeting to the console.",
+    } as never);
+
+    const result = await explainCode({ title: "Hello world", content: "console.log('hi')", language: "JavaScript" });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data).toBe("This snippet logs a greeting to the console.");
+    }
+  });
+
+  it("includes language in context when provided", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({ output_text: "An explanation." } as never);
+
+    await explainCode({ title: "My snippet", content: "let x = 1", language: "TypeScript" });
+
+    const callArg = mockResponsesCreate.mock.calls[0][0] as { input: string };
+    expect(callArg.input).toContain("TypeScript");
+  });
+
+  it("returns error when AI returns empty text", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({ output_text: "   " } as never);
+
+    const result = await explainCode({ title: "My snippet", content: "let x = 1" });
+
+    expect(result).toEqual({ success: false, error: "No explanation generated." });
+  });
+
+  it("returns error when openai throws", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockRejectedValue(new Error("Network error"));
+
+    const result = await explainCode({ title: "My snippet", content: "let x = 1" });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Failed to explain code. Please try again.",
+    });
+  });
+
+  it("truncates long content before sending", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({ output_text: "An explanation." } as never);
+
+    const longContent = "a".repeat(5000);
+    await explainCode({ title: "My snippet", content: longContent });
+
+    const callArg = mockResponsesCreate.mock.calls[0][0] as { input: string };
+    expect(callArg.input.length).toBeLessThan(longContent.length + 50);
   });
 });

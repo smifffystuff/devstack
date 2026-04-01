@@ -6,6 +6,69 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { AI_CONTENT_TRUNCATE_CHARS } from "@/lib/constants";
 import { z } from "zod";
 
+const explainCodeInputSchema = z.object({
+  title: z.string().min(1).max(500),
+  content: z.string().min(1).max(10000),
+  language: z.string().max(100).optional(),
+});
+
+export async function explainCode(input: unknown) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false as const, error: "Unauthorized" };
+  }
+
+  if (!session.user.isPro) {
+    return { success: false as const, error: "AI features require a Pro plan." };
+  }
+
+  const rateLimit = await checkRateLimit("ai", session.user.id);
+  if (!rateLimit.success) {
+    return {
+      success: false as const,
+      error: "You've reached the AI usage limit. Please try again later.",
+    };
+  }
+
+  const parsed = explainCodeInputSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false as const, error: "Invalid input." };
+  }
+
+  const { title, content, language } = parsed.data;
+  const truncatedContent = content.slice(0, AI_CONTENT_TRUNCATE_CHARS);
+
+  const contextLines = [
+    `Title: ${title}`,
+    language ? `Language: ${language}` : null,
+    `Code:\n${truncatedContent}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  try {
+    const response = await openai.responses.create({
+      model: AI_MODEL,
+      instructions:
+        "You are a developer tool assistant. Explain the following code clearly and concisely in 200–300 words. Cover what the code does, how it works, and any key concepts or patterns used. Write in plain markdown with short paragraphs or bullet points. Do not include a title or code fences.",
+      input: contextLines,
+    });
+
+    const explanation = response.output_text.trim();
+    if (!explanation) {
+      return { success: false as const, error: "No explanation generated." };
+    }
+
+    return { success: true as const, data: explanation };
+  } catch (error) {
+    console.error("AI code explanation failed:", error);
+    return {
+      success: false as const,
+      error: "Failed to explain code. Please try again.",
+    };
+  }
+}
+
 const generateDescriptionInputSchema = z.object({
   title: z.string().min(1).max(500),
   typeName: z.string().max(100).optional(),

@@ -1,15 +1,28 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import Editor, { type OnMount, type BeforeMount } from "@monaco-editor/react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Sparkles, Loader2, Crown } from "lucide-react";
+import { toast } from "sonner";
 import MacOSWindowHeader from "@/components/shared/MacOSWindowHeader";
 import { useEditorPreferences } from "@/components/editor/EditorPreferencesProvider";
+import { explainCode } from "@/actions/ai";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface CodeEditorProps {
   value: string;
   onChange?: (value: string) => void;
   language?: string;
   readOnly?: boolean;
+  isPro?: boolean;
+  title?: string;
+  showExplain?: boolean;
 }
 
 const LANGUAGE_MAP: Record<string, string> = {
@@ -46,9 +59,15 @@ export default function CodeEditor({
   onChange,
   language,
   readOnly = false,
+  isPro = false,
+  title,
+  showExplain = false,
 }: CodeEditorProps) {
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const { preferences } = useEditorPreferences();
+  const [explanation, setExplanation] = useState<string | null>(null);
+  const [loadingExplain, setLoadingExplain] = useState(false);
+  const [activeTab, setActiveTab] = useState<"code" | "explain">("code");
 
   const handleBeforeMount: BeforeMount = useCallback((monaco) => {
     monaco.editor.defineTheme("monokai", {
@@ -100,6 +119,20 @@ export default function CodeEditor({
     editorRef.current = editor;
   }, []);
 
+  async function handleExplain() {
+    setLoadingExplain(true);
+    const result = await explainCode({ title: title ?? "", content: value, language });
+    setLoadingExplain(false);
+
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+
+    setExplanation(result.data);
+    setActiveTab("explain");
+  }
+
   const lineCount = value.split("\n").length;
   const contentHeight = lineCount * LINE_HEIGHT_PX + VERTICAL_PADDING_PX;
   const calculatedHeight = Math.max(
@@ -107,46 +140,112 @@ export default function CodeEditor({
     Math.min(contentHeight, MAX_EDITOR_HEIGHT_PX - HEADER_HEIGHT_PX),
   );
 
+  const headerLeft =
+    showExplain && explanation ? (
+      <div className="flex items-center gap-1 ml-2">
+        <button
+          type="button"
+          onClick={() => setActiveTab("code")}
+          className={`text-xs px-2 py-0.5 rounded transition-colors ${
+            activeTab === "code"
+              ? "text-zinc-200 bg-zinc-700"
+              : "text-zinc-500 hover:text-zinc-300"
+          }`}
+        >
+          Code
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("explain")}
+          className={`text-xs px-2 py-0.5 rounded transition-colors ${
+            activeTab === "explain"
+              ? "text-zinc-200 bg-zinc-700"
+              : "text-zinc-500 hover:text-zinc-300"
+          }`}
+        >
+          Explain
+        </button>
+      </div>
+    ) : undefined;
+
+  const explainButton = showExplain ? (
+    isPro ? (
+      <button
+        type="button"
+        onClick={handleExplain}
+        disabled={loadingExplain}
+        className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors disabled:opacity-50"
+        aria-label="Explain code with AI"
+      >
+        {loadingExplain ? (
+          <Loader2 className="size-3.5 animate-spin" />
+        ) : (
+          <Sparkles className="size-3.5" />
+        )}
+        {loadingExplain ? "Explaining…" : "Explain"}
+      </button>
+    ) : (
+      <Tooltip>
+        <TooltipTrigger className="flex items-center gap-1 text-xs text-zinc-600 cursor-default">
+          <Crown className="size-3.5" />
+          Explain
+        </TooltipTrigger>
+        <TooltipContent>AI features require Pro subscription</TooltipContent>
+      </Tooltip>
+    )
+  ) : undefined;
+
   return (
     <div className="rounded-lg overflow-hidden border border-border">
-      <MacOSWindowHeader label={displayLanguage(language)} copyValue={value} />
+      <MacOSWindowHeader
+        label={headerLeft ? undefined : displayLanguage(language)}
+        copyValue={value}
+        extraActions={explainButton}
+      >
+        {headerLeft}
+      </MacOSWindowHeader>
 
-      {/* Monaco Editor */}
-      <Editor
-        height={calculatedHeight}
-        language={normalizeLanguage(language)}
-        value={value}
-        onChange={(val) => onChange?.(val ?? "")}
-        beforeMount={handleBeforeMount}
-        onMount={handleMount}
-        theme={preferences.theme}
-        options={{
-          readOnly,
-          minimap: { enabled: preferences.minimap },
-          scrollBeyondLastLine: false,
-          lineNumbers: "on",
-          renderLineHighlight: readOnly ? "none" : "line",
-          fontSize: preferences.fontSize,
-          tabSize: preferences.tabSize,
-          fontFamily: "var(--font-mono, monospace)",
-          padding: { top: 8, bottom: 8 },
-          overviewRulerLanes: 0,
-          hideCursorInOverviewRuler: true,
-          overviewRulerBorder: false,
-          scrollbar: {
-            vertical: "auto",
-            horizontal: "auto",
-            verticalScrollbarSize: 8,
-            horizontalScrollbarSize: 8,
-          },
-          domReadOnly: readOnly,
-          contextmenu: !readOnly,
-          selectionHighlight: !readOnly,
-          occurrencesHighlight: readOnly ? "off" : "singleFile",
-          wordWrap: preferences.wordWrap ? "on" : "off",
-          automaticLayout: true,
-        }}
-      />
+      {activeTab === "explain" && explanation ? (
+        <div className="bg-[#1e1e1e] px-4 py-3 overflow-y-auto markdown-preview" style={{ minHeight: MIN_EDITOR_HEIGHT_PX, maxHeight: MAX_EDITOR_HEIGHT_PX - HEADER_HEIGHT_PX }}>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{explanation}</ReactMarkdown>
+        </div>
+      ) : (
+        <Editor
+          height={calculatedHeight}
+          language={normalizeLanguage(language)}
+          value={value}
+          onChange={(val) => onChange?.(val ?? "")}
+          beforeMount={handleBeforeMount}
+          onMount={handleMount}
+          theme={preferences.theme}
+          options={{
+            readOnly,
+            minimap: { enabled: preferences.minimap },
+            scrollBeyondLastLine: false,
+            lineNumbers: "on",
+            renderLineHighlight: readOnly ? "none" : "line",
+            fontSize: preferences.fontSize,
+            tabSize: preferences.tabSize,
+            fontFamily: "var(--font-mono, monospace)",
+            padding: { top: 8, bottom: 8 },
+            overviewRulerLanes: 0,
+            hideCursorInOverviewRuler: true,
+            overviewRulerBorder: false,
+            scrollbar: {
+              vertical: "auto",
+              horizontal: "auto",
+              verticalScrollbarSize: 8,
+              horizontalScrollbarSize: 8,
+            },
+            domReadOnly: readOnly,
+            contextmenu: !readOnly,
+            selectionHighlight: !readOnly,
+            occurrencesHighlight: readOnly ? "off" : "singleFile",
+            wordWrap: preferences.wordWrap ? "on" : "off",
+            automaticLayout: true,
+          }}
+        />
+      )}
     </div>
   );
 }

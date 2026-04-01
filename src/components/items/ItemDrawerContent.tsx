@@ -9,9 +9,10 @@ import type { ItemDetail } from "@/lib/db/items";
 
 interface ItemDrawerContentProps {
   item: ItemDetail;
+  isPro?: boolean;
 }
 
-function ContentRenderer({ item }: { item: ItemDetail }) {
+function ContentRenderer({ item, isPro }: { item: ItemDetail; isPro?: boolean }) {
   const typeLower = item.typeName.toLowerCase();
 
   if (CODE_TYPES.includes(typeLower)) {
@@ -20,6 +21,9 @@ function ContentRenderer({ item }: { item: ItemDetail }) {
         value={item.content!}
         language={item.language ?? undefined}
         readOnly
+        isPro={isPro}
+        title={item.title}
+        showExplain
       />
     );
   }
@@ -80,7 +84,7 @@ function FileDisplay({ item }: { item: ItemDetail }) {
   );
 }
 
-export default function ItemDrawerContent({ item }: ItemDrawerContentProps) {
+export default function ItemDrawerContent({ item, isPro }: ItemDrawerContentProps) {
   return (
     <div className="px-4 space-y-5">
       {item.description && (
@@ -92,7 +96,7 @@ export default function ItemDrawerContent({ item }: ItemDrawerContentProps) {
           <h3 className="text-sm font-medium text-foreground mb-2">
             Content
           </h3>
-          <ContentRenderer item={item} />
+          <ContentRenderer item={item} isPro={isPro} />
         </div>
       )}
 
