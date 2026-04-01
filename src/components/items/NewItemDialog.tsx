@@ -22,6 +22,7 @@ import ItemTypeSelector, { ITEM_TYPES } from "./ItemTypeSelector";
 import ItemTypeFields from "./ItemTypeFields";
 import CollectionSelect from "./CollectionSelect";
 import SuggestTagsButton from "@/components/ai/SuggestTagsButton";
+import GenerateDescriptionButton from "@/components/ai/GenerateDescriptionButton";
 
 interface NewItemDialogProps {
   defaultType?: string;
@@ -173,7 +174,19 @@ export default function NewItemDialog({ defaultType, trigger, open: controlledOp
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="new-description">Description</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="new-description">Description</Label>
+              {isPro && (
+                <GenerateDescriptionButton
+                  title={title}
+                  typeName={typeName}
+                  content={content}
+                  url={url}
+                  language={language}
+                  onGenerate={setDescription}
+                />
+              )}
+            </div>
             <Textarea
               id="new-description"
               value={description}

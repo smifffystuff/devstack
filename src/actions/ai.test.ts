@@ -24,7 +24,7 @@ vi.mock("@/lib/constants", () => ({
 import { auth } from "@/auth";
 import { openai } from "@/lib/ai";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { generateAutoTags } from "./ai";
+import { generateAutoTags, generateDescription } from "./ai";
 
 const mockAuth = vi.mocked(auth);
 const mockResponsesCreate = vi.mocked(openai.responses.create);
@@ -166,5 +166,107 @@ describe("generateAutoTags", () => {
 
     const callArg = mockResponsesCreate.mock.calls[0][0] as { input: string };
     expect(callArg.input.length).toBeLessThan(longContent.length + 50);
+  });
+});
+
+describe("generateDescription", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockCheckRateLimit.mockResolvedValue({ success: true, remaining: 19, reset: 0 });
+  });
+
+  it("returns unauthorized when not authenticated", async () => {
+    mockAuth.mockResolvedValue(null as never);
+
+    const result = await generateDescription({ title: "My snippet" });
+
+    expect(result).toEqual({ success: false, error: "Unauthorized" });
+  });
+
+  it("returns error for free users", async () => {
+    mockAuth.mockResolvedValue(freeSession as never);
+
+    const result = await generateDescription({ title: "My snippet" });
+
+    expect(result).toEqual({ success: false, error: "AI features require a Pro plan." });
+  });
+
+  it("returns error when rate limit exceeded", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockCheckRateLimit.mockResolvedValue({ success: false, remaining: 0, reset: Date.now() + 3600000 });
+
+    const result = await generateDescription({ title: "My snippet" });
+
+    expect(result).toEqual({
+      success: false,
+      error: "You've reached the AI usage limit. Please try again later.",
+    });
+  });
+
+  it("returns error for invalid input (empty title)", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+
+    const result = await generateDescription({ title: "" });
+
+    expect(result).toEqual({ success: false, error: "Invalid input." });
+  });
+
+  it("returns generated description on success", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({
+      output_text: "A React hook for managing form state with validation support.",
+    } as never);
+
+    const result = await generateDescription({ title: "useForm hook", typeName: "Snippet", content: "const useForm = () => {}" });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data).toBe("A React hook for managing form state with validation support.");
+    }
+  });
+
+  it("includes url and language in context when provided", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({
+      output_text: "A TypeScript snippet.",
+    } as never);
+
+    await generateDescription({ title: "My snippet", language: "TypeScript", url: "https://example.com" });
+
+    const callArg = mockResponsesCreate.mock.calls[0][0] as { input: string };
+    expect(callArg.input).toContain("TypeScript");
+    expect(callArg.input).toContain("https://example.com");
+  });
+
+  it("returns error when AI returns empty text", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({ output_text: "   " } as never);
+
+    const result = await generateDescription({ title: "My snippet" });
+
+    expect(result).toEqual({ success: false, error: "No description generated." });
+  });
+
+  it("returns error when openai throws", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockRejectedValue(new Error("Network error"));
+
+    const result = await generateDescription({ title: "My snippet" });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Failed to generate description. Please try again.",
+    });
+  });
+
+  it("truncates long content before sending", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({ output_text: "A description." } as never);
+
+    const longContent = "a".repeat(5000);
+    await generateDescription({ title: "My snippet", content: longContent });
+
+    const callArg = mockResponsesCreate.mock.calls[0][0] as { input: string };
+    expect(callArg.input.length).toBeLessThan(longContent.length + 100);
   });
 });

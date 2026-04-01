@@ -17,6 +17,7 @@ import { CONTENT_TYPES, LANGUAGE_TYPES } from "@/lib/item-type-constants";
 import ItemTypeFields from "./ItemTypeFields";
 import CollectionSelect from "./CollectionSelect";
 import SuggestTagsButton from "@/components/ai/SuggestTagsButton";
+import GenerateDescriptionButton from "@/components/ai/GenerateDescriptionButton";
 import type { ItemDetail } from "@/lib/db/items";
 
 interface ItemDrawerEditProps {
@@ -128,7 +129,19 @@ export default function ItemDrawerEdit({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="edit-description">Description</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="edit-description">Description</Label>
+            {isPro && (
+              <GenerateDescriptionButton
+                title={title}
+                typeName={item.typeName}
+                content={content}
+                url={url}
+                language={language}
+                onGenerate={setDescription}
+              />
+            )}
+          </div>
           <Textarea
             id="edit-description"
             value={description}

@@ -1,16 +1,27 @@
-# Current Feature
+# Current Feature: AI Description Generator
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals will be populated by /feature load -->
+- Add an icon button (sparkle/wand) next to the description field in both NewItemDialog and ItemDrawerEdit
+- Clicking the button calls an AI action that reads the current title + content/url/language inputs (whatever is available for that item type) and generates a 1–2 sentence description
+- The generated description is written into the description field immediately — no save required
+- Works for all item types: snippet, prompt, note, command, link, file, image
+- Pro-gated with rate limiting (consistent with existing AI features)
+- Button shows a loading spinner while generating; disables during request
+- Toast on error; no toast on success (field update is the feedback)
 
 ## Notes
 
-<!-- Notes will be populated by /feature load -->
+- Follow the same pattern as `generateAutoTags` / `SuggestTagsButton` for Pro gating and rate limiting
+- Use OpenAI gpt-5-nano via `src/lib/ai.ts`
+- Truncate content before sending (use `AI_CONTENT_TRUNCATE_CHARS` constant)
+- Server action: `generateDescription` in `src/actions/ai.ts`
+- New component: `GenerateDescriptionButton` — small icon-only button placed inline with the description label
+- No new Zod validation tests needed beyond the action's input guard; do add unit tests for the action logic
 
 ## History
 
