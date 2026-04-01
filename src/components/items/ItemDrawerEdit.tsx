@@ -160,6 +160,8 @@ export default function ItemDrawerEdit({
           url={url}
           onUrlChange={setUrl}
           idPrefix="edit"
+          isPro={isPro}
+          title={title}
         />
 
         <div className="space-y-1.5">

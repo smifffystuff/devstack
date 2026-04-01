@@ -24,7 +24,7 @@ vi.mock("@/lib/constants", () => ({
 import { auth } from "@/auth";
 import { openai } from "@/lib/ai";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { generateAutoTags, generateDescription, explainCode } from "./ai";
+import { generateAutoTags, generateDescription, explainCode, optimizePrompt } from "./ai";
 
 const mockAuth = vi.mocked(auth);
 const mockResponsesCreate = vi.mocked(openai.responses.create);
@@ -372,6 +372,114 @@ describe("explainCode", () => {
 
     const longContent = "a".repeat(5000);
     await explainCode({ title: "My snippet", content: longContent });
+
+    const callArg = mockResponsesCreate.mock.calls[0][0] as { input: string };
+    expect(callArg.input.length).toBeLessThan(longContent.length + 50);
+  });
+});
+
+describe("optimizePrompt", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockCheckRateLimit.mockResolvedValue({ success: true, remaining: 19, reset: 0 });
+  });
+
+  it("returns unauthorized when not authenticated", async () => {
+    mockAuth.mockResolvedValue(null as never);
+
+    const result = await optimizePrompt({ title: "My prompt", content: "Write me a poem" });
+
+    expect(result).toEqual({ success: false, error: "Unauthorized" });
+  });
+
+  it("returns error for free users", async () => {
+    mockAuth.mockResolvedValue(freeSession as never);
+
+    const result = await optimizePrompt({ title: "My prompt", content: "Write me a poem" });
+
+    expect(result).toEqual({ success: false, error: "AI features require a Pro plan." });
+  });
+
+  it("returns error when rate limit exceeded", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockCheckRateLimit.mockResolvedValue({ success: false, remaining: 0, reset: Date.now() + 3600000 });
+
+    const result = await optimizePrompt({ title: "My prompt", content: "Write me a poem" });
+
+    expect(result).toEqual({
+      success: false,
+      error: "You've reached the AI usage limit. Please try again later.",
+    });
+  });
+
+  it("returns error for invalid input (empty title)", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+
+    const result = await optimizePrompt({ title: "", content: "Write me a poem" });
+
+    expect(result).toEqual({ success: false, error: "Invalid input." });
+  });
+
+  it("returns error for invalid input (empty content)", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+
+    const result = await optimizePrompt({ title: "My prompt", content: "" });
+
+    expect(result).toEqual({ success: false, error: "Invalid input." });
+  });
+
+  it("returns optimized prompt on success", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({
+      output_text: "Write a haiku about the ocean at sunset with vivid imagery.",
+    } as never);
+
+    const result = await optimizePrompt({ title: "Ocean poem", content: "Write me a poem about the ocean" });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data).toBe("Write a haiku about the ocean at sunset with vivid imagery.");
+    }
+  });
+
+  it("includes title in context sent to OpenAI", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({ output_text: "Optimized prompt." } as never);
+
+    await optimizePrompt({ title: "Code review prompt", content: "Review this code" });
+
+    const callArg = mockResponsesCreate.mock.calls[0][0] as { input: string };
+    expect(callArg.input).toContain("Code review prompt");
+    expect(callArg.input).toContain("Review this code");
+  });
+
+  it("returns error when AI returns empty text", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({ output_text: "   " } as never);
+
+    const result = await optimizePrompt({ title: "My prompt", content: "Write me a poem" });
+
+    expect(result).toEqual({ success: false, error: "No optimized prompt generated." });
+  });
+
+  it("returns error when openai throws", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockRejectedValue(new Error("Network error"));
+
+    const result = await optimizePrompt({ title: "My prompt", content: "Write me a poem" });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Failed to optimize prompt. Please try again.",
+    });
+  });
+
+  it("truncates long content before sending", async () => {
+    mockAuth.mockResolvedValue(proSession as never);
+    mockResponsesCreate.mockResolvedValue({ output_text: "Optimized prompt." } as never);
+
+    const longContent = "a".repeat(5000);
+    await optimizePrompt({ title: "My prompt", content: longContent });
 
     const callArg = mockResponsesCreate.mock.calls[0][0] as { input: string };
     expect(callArg.input.length).toBeLessThan(longContent.length + 50);

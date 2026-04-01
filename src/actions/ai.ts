@@ -136,6 +136,65 @@ export async function generateDescription(input: unknown) {
   }
 }
 
+const optimizePromptInputSchema = z.object({
+  title: z.string().min(1).max(500),
+  content: z.string().min(1).max(10000),
+});
+
+export async function optimizePrompt(input: unknown) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false as const, error: "Unauthorized" };
+  }
+
+  if (!session.user.isPro) {
+    return { success: false as const, error: "AI features require a Pro plan." };
+  }
+
+  const rateLimit = await checkRateLimit("ai", session.user.id);
+  if (!rateLimit.success) {
+    return {
+      success: false as const,
+      error: "You've reached the AI usage limit. Please try again later.",
+    };
+  }
+
+  const parsed = optimizePromptInputSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false as const, error: "Invalid input." };
+  }
+
+  const { title, content } = parsed.data;
+  const truncatedContent = content.slice(0, AI_CONTENT_TRUNCATE_CHARS);
+
+  const contextLines = [
+    `Title: ${title}`,
+    `Prompt:\n${truncatedContent}`,
+  ].join("\n");
+
+  try {
+    const response = await openai.responses.create({
+      model: AI_MODEL,
+      instructions:
+        "You are a prompt engineering expert. Analyze the provided AI prompt and rewrite it to be clearer, more specific, and more effective. Maintain the original intent and tone. Output only the improved prompt — no explanations, no labels, no markdown formatting.",
+      input: contextLines,
+    });
+
+    const optimized = response.output_text.trim();
+    if (!optimized) {
+      return { success: false as const, error: "No optimized prompt generated." };
+    }
+
+    return { success: true as const, data: optimized };
+  } catch (error) {
+    console.error("AI prompt optimization failed:", error);
+    return {
+      success: false as const,
+      error: "Failed to optimize prompt. Please try again.",
+    };
+  }
+}
+
 const generateAutoTagsInputSchema = z.object({
   title: z.string().min(1).max(500),
   content: z.string().max(10000).optional(),

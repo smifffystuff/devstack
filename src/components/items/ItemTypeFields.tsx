@@ -22,6 +22,8 @@ interface ItemTypeFieldsProps {
   url: string;
   onUrlChange: (value: string) => void;
   idPrefix: string;
+  isPro?: boolean;
+  title?: string;
   fileUpload?: {
     onUploadComplete: (data: { fileUrl: string; fileName: string; fileSize: number }) => void;
     onError: (msg: string) => void;
@@ -37,6 +39,8 @@ export default function ItemTypeFields({
   url,
   onUrlChange,
   idPrefix,
+  isPro,
+  title,
   fileUpload,
 }: ItemTypeFieldsProps) {
   const typeLower = typeName.toLowerCase();
@@ -81,6 +85,9 @@ export default function ItemTypeFields({
             <MarkdownEditor
               value={content}
               onChange={onContentChange}
+              isPro={isPro}
+              title={title}
+              showOptimize={typeLower === "prompt"}
             />
           ) : (
             <Textarea
